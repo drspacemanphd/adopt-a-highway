@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-adoptahighway-dev-94152-authRole",
+      "UnauthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-94152-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-94152-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-adoptahighway-dev-94152-deployment",
+      "UnauthRoleName": "amplify-adoptahighway-dev-94152-unauthRole",
+      "StackName": "amplify-adoptahighway-dev-94152",
+      "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-dev-94152/a357ea00-64c7-11ec-9b19-0ac2e24c617d",
+      "AmplifyAppId": "dffe44ocmnq2e"
+    }
+  }
+}
