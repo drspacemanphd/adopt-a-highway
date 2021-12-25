@@ -1,0 +1,11 @@
+{
+  "permissions": {},
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "envName",
+      "environmentVariableName": "ENV_NAME"
+    }
+  ],
+  "secretNames": []
+}
