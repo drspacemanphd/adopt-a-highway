@@ -17,11 +17,12 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "postinstall": "(cd amplify/backend/function/ImageProcessor/src && yarn --cwd=./ install)",
+    "postinstall": "(cd amplify/backend/function/ImageProcessor/lib && yarn --cwd=./ install)",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "amplify:ImageProcessor": "(cd amplify/backend/function/ImageProcessor/ && tsc -p tsconfig.json && cp ./lib/*.json ./src && cp ./lib/*.json ./src && cp -r ./lib/node_modules ./src)"
   },
   "eslintConfig": {
     "extends": [
@@ -40,5 +41,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }

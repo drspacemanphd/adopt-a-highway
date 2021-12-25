@@ -1,11 +1,5 @@
 {
-  "custom": {
-    "ImageProcessingQueue": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": []
-    }
-  },
+  "custom": {},
   "function": {
     "ImageProcessor": {
       "build": true,
