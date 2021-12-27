@@ -179,6 +179,45 @@
         }
       }
     },
+    "LambdaRekognitionAccessPolicy": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "LambdaFunction"
+              },
+              {
+                "Ref": "env"
+              },
+              "lambda-rekognition-accesspolicy"
+            ]
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "rekognition:DetectModerationLabels"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
     "LambdaS3AccessPolicy": {
       "DependsOn": [
         "LambdaExecutionRole"
@@ -215,7 +254,7 @@
               ],
               "Resource": {
                 "Fn::Sub": [
-                  "arn:aws:s3:::ada-litter-image-submissions-${env}",
+                  "arn:aws:s3:::ada-litter-image-submissions-${env}/*",
                   {
                     "env": {
                       "Ref": "env"

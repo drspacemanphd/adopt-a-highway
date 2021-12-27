@@ -33,13 +33,12 @@ export const handler = async (event: S3Event ) => {
     }
   });
 
-  failedToAnalyze.forEach(async (failed) => {
-    await processFailedRequest(s3, failed.record, failed.response);
-  });
+  const processedFailures = failedToAnalyze.map((failed) => processFailedRequest(s3, failed.record, failed.response));
+  const processedInappropriate = inappropriateContent.map((inappropriate) => processInappropriateRequest(s3, inappropriate.record, inappropriate.response));
+  const processedSuccessful = imagesForFurtherAnalysis.map((image) => processSuccessfulRequest(image.record, image.response));
 
-  inappropriateContent.forEach(async (inappropriate) => {
-    await processInappropriateRequest(s3, inappropriate.record, inappropriate.response);
-  });
+  await Promise.allSettled(processedFailures);
+  await Promise.allSettled(processedInappropriate);
 
   return JSON.stringify({ body: 'bloop'});
 }
@@ -73,11 +72,11 @@ const processFailedRequest = async (
   record: S3EventRecord,
   failed: PromiseRejectedResult
 ) => {
-  console.log(`Rekognition request failed for ${record.s3.bucket}/${record.s3.object.key} due to ${failed.reason}`);
+  console.log(`Rekognition request failed for ${record.s3.bucket.name}/${record.s3.object.key} due to ${failed.reason}`);
 
   try {
     await service.deleteObject({ Bucket: record.s3.bucket.name, Key: record.s3.object.key }).promise();
-    console.log(`Successfully deleted: ${record.s3.bucket}/${record.s3.object.key}`);
+    console.log(`Successfully deleted: ${record.s3.bucket.name}/${record.s3.object.key}`);
   } catch (err) {
     console.log(`Delete object request failed for ${record.s3.bucket.name}/${record.s3.object.key} due to ${err}`);
   }
@@ -88,12 +87,19 @@ const processInappropriateRequest = async (
   record: S3EventRecord,
   inappropriate: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse>
 ) => {
-  console.log(`Rekognition request reported the following inappropriate content for ${record.s3.bucket}/${record.s3.object.key} due to ${JSON.stringify(inappropriate.value.ModerationLabels)}`);
+  console.log(`Rekognition request reported the following inappropriate content for ${record.s3.bucket.name}/${record.s3.object.key} due to ${JSON.stringify(inappropriate.value.ModerationLabels)}`);
 
   try {
     await service.deleteObject({ Bucket: record.s3.bucket.name, Key: record.s3.object.key }).promise();
-    console.log(`Successfully deleted: ${record.s3.bucket}/${record.s3.object.key}`);
+    console.log(`Successfully deleted: ${record.s3.bucket.name}/${record.s3.object.key}`);
   } catch (err) {
     console.log(`Delete object request failed for ${record.s3.bucket.name}/${record.s3.object.key} due to ${err}`);
   }
+}
+
+const processSuccessfulRequest = async (
+  record: S3EventRecord,
+  inappropriate: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse>
+) => {
+  console.log(`Rekognition request suceeded for ${record.s3.bucket.name}/${record.s3.object.key} with to ${JSON.stringify(inappropriate.value)}`);
 }
