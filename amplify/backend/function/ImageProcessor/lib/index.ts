@@ -101,5 +101,5 @@ const processSuccessfulRequest = async (
   record: S3EventRecord,
   inappropriate: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse>
 ) => {
-  console.log(`Rekognition request suceeded for ${record.s3.bucket.name}/${record.s3.object.key} with to ${JSON.stringify(inappropriate.value)}`);
+  console.log(`Rekognition request suceeded for ${record.s3.bucket.name}/${record.s3.object.key} with ${JSON.stringify(inappropriate.value)}`);
 }
