@@ -15,7 +15,7 @@
       "function": {
         "ImageProcessor": {
           "deploymentBucketName": "amplify-adoptahighway-dev-94152-deployment",
-          "s3Key": "amplify-builds/ImageProcessor-4c63514b3341516c662f-build.zip",
+          "s3Key": "amplify-builds/ImageProcessor-456f6e3747792b4c767a-build.zip",
           "envName": "ENV_VALUE"
         }
       }

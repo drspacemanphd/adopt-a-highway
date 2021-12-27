@@ -51,7 +51,7 @@ const requestContentModerationAnalysis = (
     const isFileProperExt = record.s3.object.key.endsWith('.jpg') || record.s3.object.key.endsWith('.jpeg') || record.s3.object.key.endsWith('.png');
 
     if (!isFileProperExt) {
-      return Promise.reject({ status: 'rejected', reason: `Invalid file type: ${record.s3.object.key}` });
+      return Promise.reject(`Invalid file type: ${record.s3.object.key}`);
     }
 
     const image: Rekognition.Image = {
