@@ -136,6 +136,9 @@
               {
                 "Ref": "LambdaFunction"
               },
+              {
+                "Ref": "env"
+              },
               "lambda-cloudwatch-policy"
             ]
           ]
@@ -175,6 +178,78 @@
           ]
         }
       }
+    },
+    "LambdaS3AccessPolicy": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "LambdaFunction"
+              },
+              {
+                "Ref": "env"
+              },
+              "lambda-s3-accesspolicy"
+            ]
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:DeleteObject"
+              ],
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:s3:::ada-litter-image-submissions-${env}",
+                  {
+                    "env": {
+                      "Ref": "env"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "LambdaS3TriggerPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaFunction",
+            "Arn"
+          ]
+        },
+        "Principal": "s3.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": [
+            "arn:aws:s3:::ada-litter-image-submissions-${env}",
+            {
+              "env": {
+                "Ref": "env"
+              }
+            }
+          ]
+        }
+      }
     }
   },
   "Outputs": {
@@ -189,6 +264,20 @@
           "LambdaFunction",
           "Arn"
         ]
+      },
+      "Export": {
+        "Name": {
+          "Fn::Join": [
+            "-",
+            [
+              "ImageProcessor",
+              {
+                "Ref": "env"
+              },
+              "Arn"
+            ]
+          ]
+        }
       }
     },
     "Region": {

@@ -1,5 +1,11 @@
 {
-  "custom": {},
+  "custom": {
+    "LitterImageSubmissions": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
+  },
   "function": {
     "ImageProcessor": {
       "build": true,
