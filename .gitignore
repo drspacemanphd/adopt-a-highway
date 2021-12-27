@@ -45,5 +45,5 @@ amplifytools.xcconfig
 
 #transpiled-lambda-src-intermediate-code-start
 amplify/backend/function/**/src/*
-!amplify/backend/function/**/src/test.json
+!amplify/backend/function/**/src/event.json
 #transpiled-lambda-src-intermediate-code-end
