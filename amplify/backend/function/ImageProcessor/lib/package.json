@@ -1,0 +1,16 @@
+{
+  "name": "image-processor",
+  "version": "0.1.0",
+  "description": "Image Processing Lambda",
+  "main": "index.js",
+  "dependencies": {
+    "aws-sdk": "^2.1048.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@types/aws-lambda": "^8.10.88",
+    "babel-jest": "^27.4.5",
+    "jest": "^27.4.5"
+  }
+}

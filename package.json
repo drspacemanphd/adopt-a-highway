@@ -17,8 +17,12 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
+    "postinstall": "yarn run amplify:ImageProcessor:install",
+    "amplify:ImageProcessor:install": "(cd amplify/backend/function/ImageProcessor/lib && yarn --cwd=./ install)",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "yarn run amplify:ImageProcessor",
+    "amplify:ImageProcessor": "node ./scripts/build-lambda.js ImageProcessor",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -39,5 +43,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }

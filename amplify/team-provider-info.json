@@ -10,6 +10,15 @@
       "StackName": "amplify-adoptahighway-dev-94152",
       "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-dev-94152/a357ea00-64c7-11ec-9b19-0ac2e24c617d",
       "AmplifyAppId": "dffe44ocmnq2e"
+    },
+    "categories": {
+      "function": {
+        "ImageProcessor": {
+          "deploymentBucketName": "amplify-adoptahighway-dev-94152-deployment",
+          "s3Key": "amplify-builds/ImageProcessor-667454442f7270457644-build.zip",
+          "envName": "ENV_VALUE"
+        }
+      }
     }
   }
 }
