@@ -5,6 +5,9 @@ const execAsync = promisify(exec);
 
 const buildLambda = async (functionName) => {
   try {
+    // Clean existing src
+    await execAsync(`(cd amplify/backend/function/${functionName}/ && rm -rf src && mkdir src)`);
+
     // Build JS src from TS lib
     await execAsync(`(cd amplify/backend/function/${functionName}/ && tsc -p tsconfig.json)`);
     
