@@ -1,6 +1,5 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "deploymentBucketName": {
       "Type": "String"
@@ -9,6 +8,9 @@
       "Type": "String"
     },
     "s3Key": {
+      "Type": "String"
+    },
+    "functionSubmissionHandlerSubmissionsArn": {
       "Type": "String"
     }
   },
@@ -194,9 +196,7 @@
                 "s3:DeleteObject"
               ],
               "Resource": {
-                "Fn::ImportValue": {
-                  "Fn::Sub": "Submissions-${env}-Arn"
-                }
+                "Ref": "functionSubmissionHandlerSubmissionsArn"
               }
             }
           ]
@@ -228,5 +228,6 @@
         "Ref": "LambdaExecutionRole"
       }
     }
-  }
+  },
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"function-Lambda\",\"metadata\":{}}"
 }
