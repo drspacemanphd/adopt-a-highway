@@ -1,22 +1,25 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-adoptahighway-dev-94152-authRole",
-      "UnauthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-94152-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-94152-authRole",
+      "AuthRoleName": "amplify-adoptahighway-dev-53135-authRole",
+      "UnauthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-53135-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-53135-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-adoptahighway-dev-94152-deployment",
-      "UnauthRoleName": "amplify-adoptahighway-dev-94152-unauthRole",
-      "StackName": "amplify-adoptahighway-dev-94152",
-      "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-dev-94152/a357ea00-64c7-11ec-9b19-0ac2e24c617d",
-      "AmplifyAppId": "dffe44ocmnq2e"
+      "DeploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
+      "UnauthRoleName": "amplify-adoptahighway-dev-53135-unauthRole",
+      "StackName": "amplify-adoptahighway-dev-53135",
+      "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-dev-53135/80f31150-6892-11ec-b018-0ee0692f5a4b",
+      "AmplifyAppId": "d3gp1lr0l5y30h"
     },
     "categories": {
       "function": {
-        "ImageProcessor": {
-          "deploymentBucketName": "amplify-adoptahighway-dev-94152-deployment",
-          "s3Key": "amplify-builds/ImageProcessor-667454442f7270457644-build.zip",
-          "envName": "ENV_VALUE"
+        "SubmissionHandler": {
+          "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
+          "s3Key": "amplify-builds/SubmissionHandler-4d69426b58527a45437a-build.zip"
+        },
+        "Dummy": {
+          "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
+          "s3Key": "amplify-builds/Dummy-5a6c4b73797272693746-build.zip"
         }
       }
     }

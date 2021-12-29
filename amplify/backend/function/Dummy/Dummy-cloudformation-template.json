@@ -2,13 +2,10 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
-    "env": {
-      "Type": "String"
-    },
-    "envName": {
-      "Type": "String"
-    },
     "deploymentBucketName": {
+      "Type": "String"
+    },
+    "env": {
       "Type": "String"
     },
     "s3Key": {
@@ -45,12 +42,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "ImageProcessor",
+            "Dummy",
             {
               "Fn::Join": [
                 "",
                 [
-                  "ImageProcessor",
+                  "Dummy",
                   "-",
                   {
                     "Ref": "env"
@@ -67,9 +64,6 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
-            },
-            "ENV_NAME": {
-              "Ref": "envName"
             }
           }
         },
@@ -90,12 +84,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "image-processor-lambda-execution",
+            "adoptahighwayLambdaRole326a52c3",
             {
               "Fn::Join": [
                 "",
                 [
-                  "image-processor-lambda-execution",
+                  "adoptahighwayLambdaRole326a52c3",
                   "-",
                   {
                     "Ref": "env"
@@ -129,20 +123,7 @@
       ],
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": {
-          "Fn::Join": [
-            "-",
-            [
-              {
-                "Ref": "LambdaFunction"
-              },
-              {
-                "Ref": "env"
-              },
-              "lambda-cloudwatch-policy"
-            ]
-          ]
-        },
+        "PolicyName": "lambda-execution-policy",
         "Roles": [
           {
             "Ref": "LambdaExecutionRole"
@@ -179,46 +160,7 @@
         }
       }
     },
-    "LambdaRekognitionAccessPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": {
-          "Fn::Join": [
-            "-",
-            [
-              {
-                "Ref": "LambdaFunction"
-              },
-              {
-                "Ref": "env"
-              },
-              "lambda-rekognition-accesspolicy"
-            ]
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "rekognition:DetectModerationLabels"
-              ],
-              "Resource": "*"
-            }
-          ]
-        }
-      }
-    },
-    "LambdaS3AccessPolicy": {
+    "S3AccessPolicy": {
       "DependsOn": [
         "LambdaExecutionRole"
       ],
@@ -249,41 +191,12 @@
             {
               "Effect": "Allow",
               "Action": [
-                "s3:GetObject",
                 "s3:DeleteObject"
               ],
               "Resource": {
-                "Fn::Sub": [
-                  "arn:aws:s3:::ada-litter-image-submissions-${env}/*",
-                  {
-                    "env": {
-                      "Ref": "env"
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    "LambdaS3TriggerPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "LambdaFunction",
-            "Arn"
-          ]
-        },
-        "Principal": "s3.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": [
-            "arn:aws:s3:::ada-litter-image-submissions-${env}",
-            {
-              "env": {
-                "Ref": "env"
+                "Fn::ImportValue": {
+                  "Fn::Sub": "Submissions-${env}-Arn"
+                }
               }
             }
           ]
@@ -303,20 +216,6 @@
           "LambdaFunction",
           "Arn"
         ]
-      },
-      "Export": {
-        "Name": {
-          "Fn::Join": [
-            "-",
-            [
-              "ImageProcessor",
-              {
-                "Ref": "env"
-              },
-              "Arn"
-            ]
-          ]
-        }
       }
     },
     "Region": {

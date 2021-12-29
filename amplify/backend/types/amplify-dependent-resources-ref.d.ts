@@ -1,12 +1,13 @@
 export type AmplifyDependentResourcesAttributes = {
-    "custom": {
-        "LitterImageSubmissions": {
-            "Name": "string",
-            "Arn": "string"
-        }
-    },
     "function": {
-        "ImageProcessor": {
+        "SubmissionHandler": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string",
+            "SubmissionsArn": "string"
+        },
+        "Dummy": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",
