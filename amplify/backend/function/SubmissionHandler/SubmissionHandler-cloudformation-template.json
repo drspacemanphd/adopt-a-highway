@@ -1,5 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "deploymentBucketName": {
       "Type": "String"
@@ -8,6 +9,9 @@
       "Type": "String"
     },
     "s3Key": {
+      "Type": "String"
+    },
+    "s3TriggerBucketPrefix": {
       "Type": "String"
     }
   },
@@ -43,16 +47,7 @@
             "ShouldNotCreateEnvResources",
             "SubmissionHandler",
             {
-              "Fn::Join": [
-                "",
-                [
-                  "SubmissionHandler",
-                  "-",
-                  {
-                    "Ref": "env"
-                  }
-                ]
-              ]
+              "Fn::Sub": "SubmissionHandler-${env}"
             }
           ]
         },
@@ -83,18 +78,9 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "adoptahighwayLambdaRolec1f59573",
+            "SubmissionHandlerExecutionRole",
             {
-              "Fn::Join": [
-                "",
-                [
-                  "adoptahighwayLambdaRolec1f59573",
-                  "-",
-                  {
-                    "Ref": "env"
-                  }
-                ]
-              ]
+              "Fn::Sub": "SubmissionHandlerExecutionRole-${env}"
             }
           ]
         },
@@ -122,7 +108,9 @@
       ],
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": "lambda-execution-policy",
+        "PolicyName": {
+          "Fn::Sub": "SubmissionHandlerExecutionPolicy-${env}"
+        },
         "Roles": [
           {
             "Ref": "LambdaExecutionRole"
@@ -159,51 +147,6 @@
         }
       }
     },
-    "S3AccessPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole",
-        "Submissions"
-      ],
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": {
-          "Fn::Join": [
-            "-",
-            [
-              {
-                "Ref": "LambdaFunction"
-              },
-              {
-                "Ref": "env"
-              },
-              "lambda-s3-accesspolicy"
-            ]
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "s3:DeleteObject"
-              ],
-              "Resource": {
-                "Fn::GetAtt": [
-                  "Submissions",
-                  "Arn"
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
     "S3TriggerPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -216,58 +159,7 @@
         },
         "Principal": "s3.amazonaws.com",
         "SourceArn": {
-          "Fn::Sub": "arn:aws:s3:::ada-litter-image-submissions-${env}"
-        }
-      }
-    },
-    "Submissions": {
-      "DependsOn": [
-        "S3TriggerPermission"
-      ],
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "AccessControl": "BucketOwnerFullControl",
-        "BucketName": {
-          "Fn::Join": [
-            "-",
-            [
-              "ada-litter-image-submissions",
-              {
-                "Ref": "env"
-              }
-            ]
-          ]
-        },
-        "LifecycleConfiguration": {
-          "Rules": [
-            {
-              "ExpirationInDays": 180,
-              "Status": "Enabled",
-              "Transitions": [
-                {
-                  "StorageClass": "ONEZONE_IA",
-                  "TransitionInDays": 90
-                }
-              ]
-            }
-          ]
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true
-        },
-        "NotificationConfiguration": {
-          "LambdaConfigurations": [
-            {
-              "Event": "s3:ObjectCreated:*",
-              "Function": {
-                "Fn::GetAtt": [
-                  "LambdaFunction",
-                  "Arn"
-                ]
-              }
-            }
-          ]
+          "Fn::Sub": "arn:aws:s3:::${s3TriggerBucketPrefix}-${env}"
         }
       }
     }
@@ -296,14 +188,10 @@
         "Ref": "LambdaExecutionRole"
       }
     },
-    "SubmissionsArn": {
+    "LambdaTriggerPermission": {
       "Value": {
-        "Fn::GetAtt": [
-          "Submissions",
-          "Arn"
-        ]
+        "Ref": "S3TriggerPermission"
       }
     }
-  },
-  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"function-Lambda\",\"metadata\":{}}"
+  }
 }

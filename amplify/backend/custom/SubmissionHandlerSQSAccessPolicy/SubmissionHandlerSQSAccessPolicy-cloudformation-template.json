@@ -1,0 +1,55 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "customImageProcessingQueueArn": {
+      "Type": "String",
+      "Description": "Input parameter describing Arn attribute for custom/ImageProcessingQueue resource"
+    },
+    "functionSubmissionHandlerName": {
+      "Type": "String"
+    },
+    "functionSubmissionHandlerLambdaExecutionRole": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "SQSAccessPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Sub": "${functionSubmissionHandlerName}-sqs-access-policy-${env}"
+        },
+        "Roles": [
+          {
+            "Ref": "functionSubmissionHandlerLambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sqs:SendMessage"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customImageProcessingQueueArn}"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Arn": {
+      "Value": {
+        "Ref": "SQSAccessPolicy"
+      }
+    }
+  },
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}

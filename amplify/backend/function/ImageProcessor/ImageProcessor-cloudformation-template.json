@@ -1,5 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "deploymentBucketName": {
       "Type": "String"
@@ -8,9 +9,6 @@
       "Type": "String"
     },
     "s3Key": {
-      "Type": "String"
-    },
-    "functionSubmissionHandlerSubmissionsArn": {
       "Type": "String"
     }
   },
@@ -44,18 +42,9 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "Dummy",
+            "ImageProcessor",
             {
-              "Fn::Join": [
-                "",
-                [
-                  "Dummy",
-                  "-",
-                  {
-                    "Ref": "env"
-                  }
-                ]
-              ]
+              "Fn::Sub": "ImageProcessor-${env}"
             }
           ]
         },
@@ -86,18 +75,9 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "adoptahighwayLambdaRole326a52c3",
+            "ImageProcessorExecutionRole",
             {
-              "Fn::Join": [
-                "",
-                [
-                  "adoptahighwayLambdaRole326a52c3",
-                  "-",
-                  {
-                    "Ref": "env"
-                  }
-                ]
-              ]
+              "Fn::Sub": "ImageProcessorExecutionRole-${env}"
             }
           ]
         },
@@ -125,7 +105,9 @@
       ],
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": "lambda-execution-policy",
+        "PolicyName": {
+          "Fn::Sub": "ImageProcessorExecutionPolicy-${env}"
+        },
         "Roles": [
           {
             "Ref": "LambdaExecutionRole"
@@ -161,47 +143,6 @@
           ]
         }
       }
-    },
-    "S3AccessPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": {
-          "Fn::Join": [
-            "-",
-            [
-              {
-                "Ref": "LambdaFunction"
-              },
-              {
-                "Ref": "env"
-              },
-              "lambda-s3-accesspolicy"
-            ]
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "s3:DeleteObject"
-              ],
-              "Resource": {
-                "Ref": "functionSubmissionHandlerSubmissionsArn"
-              }
-            }
-          ]
-        }
-      }
     }
   },
   "Outputs": {
@@ -228,6 +169,5 @@
         "Ref": "LambdaExecutionRole"
       }
     }
-  },
-  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"function-Lambda\",\"metadata\":{}}"
+  }
 }

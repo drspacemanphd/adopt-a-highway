@@ -1,24 +1,142 @@
 {
-  "custom": {},
+  "custom": {
+    "ImageSubmissions": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "SubmissionHandler",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
+    },
+    "SubmissionHandlerS3AccessPolicy": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "custom",
+          "resourceName": "ImageSubmissions",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "SubmissionHandler",
+          "attributes": [
+            "Name",
+            "LambdaExecutionRole"
+          ]
+        }
+      ]
+    },
+    "ImageProcessingQueue": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    },
+    "SubmissionHandlerSQSAccessPolicy": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "custom",
+          "resourceName": "ImageProcessingQueue",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "SubmissionHandler",
+          "attributes": [
+            "Name",
+            "LambdaExecutionRole"
+          ]
+        }
+      ]
+    },
+    "ImageProcessorS3AccessPolicy": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "ImageProcessor",
+          "attributes": [
+            "Name",
+            "LambdaExecutionRole"
+          ]
+        },
+        {
+          "category": "custom",
+          "resourceName": "ImageSubmissions",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "custom",
+          "resourceName": "FlaggedSubmissions",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "custom",
+          "resourceName": "LitterImages",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
+    },
+    "FlaggedSubmissions": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    },
+    "ImageProcessorSQSAccessPolicy": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "custom",
+          "resourceName": "ImageProcessingQueue",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "ImageProcessor",
+          "attributes": [
+            "Name",
+            "LambdaExecutionRole"
+          ]
+        }
+      ]
+    },
+    "LitterImages": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
+  },
   "function": {
     "SubmissionHandler": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "Dummy": {
+    "ImageProcessor": {
       "build": true,
       "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "function",
-					"resourceName": "SubmissionHandler",
-					"attributes": [
-						"SubmissionsArn"
-					]
-        }
-      ]
+      "service": "Lambda"
     }
   }
 }

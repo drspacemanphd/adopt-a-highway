@@ -1,0 +1,34 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "ImageProcessingQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "QueueName": {
+          "Fn::Sub": "ImageProcessingQueue-${env}"
+        },
+        "ReceiveMessageWaitTimeSeconds": 5,
+        "RedriveAllowPolicy": {
+          "redrivePermission": "denyAll"
+        },
+        "VisibilityTimeout": 3600
+      }
+    }
+  },
+  "Outputs": {
+    "Arn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "ImageProcessingQueue",
+          "Arn"
+        ]
+      }
+    }
+  },
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}
