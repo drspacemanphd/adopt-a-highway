@@ -1,23 +1,35 @@
-import { S3, Rekognition, Response, AWSError } from 'aws-sdk';
+import * as _ from 'lodash';
+import { S3, Rekognition, AWSError, Response } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
+import { SQSEvent, SQSRecord } from 'aws-lambda';
 
-import { S3Event, S3EventRecord } from 'aws-lambda';
+const s3 = new S3({ region: process.env.REGION });
+const rekognition = new Rekognition({ region: process.env.REGION });
 
-const rekognition = new Rekognition({ region: 'us-east-1' });
-const s3 = new S3({ region: 'us-east-1' });
+const TRASH_RELATED_LABELS = [
+  'trash',
+  'plastic bag',
+  'bottle',
+  'can',
+  'tin'
+];
 
-export const handler = async (event: S3Event ) => {
+export const handler = async (event: SQSEvent) => {
   console.log(`Handling ${event.Records?.length} records`);
 
-  const requests = requestContentModerationAnalysis(event.Records, rekognition);
+  const [validMessages, invalidMessages]: [SQSRecord[], SQSRecord[]] = partitionValidMessages(event.Records);
+  
+  handleInvalidMessages(invalidMessages);
+
+  const requests = requestContentModerationAnalysis(validMessages);
 
   const settled = await Promise.allSettled(requests);
 
-  const failedToAnalyze: Array<{ record: S3EventRecord, response: PromiseRejectedResult }> = [];
-  const inappropriateContent: Array<{ record: S3EventRecord, response: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse & {
+  const failedToAnalyzeForContentModeration: Array<{ record: SQSRecord, response: PromiseRejectedResult }> = [];
+  const inappropriateContent: Array<{ record: SQSRecord, response: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse & {
     $response: Response<Rekognition.DetectModerationLabelsResponse, AWSError>
   }>}> = [];
-  const imagesForFurtherAnalysis: Array<{ record: S3EventRecord, response: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse & {
+  const imagesForFurtherAnalysis: Array<{ record: SQSRecord, response: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse & {
     $response: Response<Rekognition.DetectModerationLabelsResponse, AWSError>
   }>}> = [];
 
@@ -25,7 +37,7 @@ export const handler = async (event: S3Event ) => {
     $response: Response<Rekognition.DetectModerationLabelsResponse, AWSError>
   }>, index: number) => {
     if (response.status === 'rejected') {
-      failedToAnalyze.push({ record: event.Records[index], response });
+      failedToAnalyzeForContentModeration.push({ record: event.Records[index], response });
     } else if (response.value.ModerationLabels?.length) {
       inappropriateContent.push({ record: event.Records[index], response });
     } else {
@@ -33,34 +45,77 @@ export const handler = async (event: S3Event ) => {
     }
   });
 
-  const processedFailures = failedToAnalyze.map((failed) => processFailedRequest(s3, failed.record, failed.response));
-  const processedInappropriate = inappropriateContent.map((inappropriate) => processInappropriateRequest(s3, inappropriate.record, inappropriate.response));
-  const processedSuccessful = imagesForFurtherAnalysis.map((image) => processSuccessfulRequest(image.record, image.response));
+  const processedContentModerationRequestFailures = failedToAnalyzeForContentModeration.map((failed) => processFailedRequest(failed.record, failed.response));
+  const processedInappropriateContent = inappropriateContent.map((inappropriate) => processInappropriateImage(inappropriate.record, inappropriate.response));
+  const processedAppropriateContent = imagesForFurtherAnalysis.map((image) => processSuccessfulContentModeration(image.record));
 
-  await Promise.allSettled(processedFailures);
-  await Promise.allSettled(processedInappropriate);
+  await Promise.allSettled(processedContentModerationRequestFailures);
+  await Promise.allSettled(processedInappropriateContent);
+
+  const settledLabelRequests = await Promise.allSettled(processedAppropriateContent);
+
+  const failedToAnalyzeForLitter: Array<{ record: SQSRecord, response: PromiseRejectedResult }> = [];
+  const imagesWithoutLitter: Array<{ record: SQSRecord, response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse & {
+    $response: Response<Rekognition.DetectLabelsResponse, AWSError>
+  }>}> = [];
+  const imagesWithLitter: Array<{ record: SQSRecord, response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse & {
+    $response: Response<Rekognition.DetectLabelsResponse, AWSError>
+  }>}> = [];
+
+  settledLabelRequests.forEach((response: PromiseSettledResult<Rekognition.DetectLabelsResponse & {
+    $response: Response<Rekognition.DetectLabelsResponse, AWSError>
+  }>, index: number) => {
+    if (response.status === 'rejected') {
+      failedToAnalyzeForLitter.push({ record: event.Records[index], response });
+    } else if (!isAtLeastOneLabelLitterPresent(response.value.Labels)) {
+      imagesWithoutLitter.push({ record: event.Records[index], response });
+    } else {
+      imagesWithLitter.push({ record: event.Records[index], response });
+    }
+  });
+
+  const processedDetectLabelsFailures = failedToAnalyzeForLitter.map((failed) => processFailedRequest(failed.record, failed.response));
+  const processedLiterlessImages = imagesWithoutLitter.map((image) => processLiterlessImage(image.record, image.response))
+
+  await Promise.allSettled(processedDetectLabelsFailures);
+  await Promise.allSettled(processedLiterlessImages);
+
+  imagesWithLitter.forEach((image) => console.log(JSON.stringify(image.response.value.Labels)))
 
   return JSON.stringify({ body: 'bloop'});
 }
 
-const requestContentModerationAnalysis = (
-  records: S3EventRecord[], service: Rekognition
-): Array<Promise<PromiseResult<Rekognition.Types.DetectModerationLabelsResponse, AWSError>>> => {
-  return records.map(async (record: S3EventRecord) => {   
-    const isFileProperExt = record.s3.object.key.endsWith('.jpg') || record.s3.object.key.endsWith('.jpeg') || record.s3.object.key.endsWith('.png');
-
-    if (!isFileProperExt) {
-      return Promise.reject(`Invalid file type: ${record.s3.object.key}`);
+const partitionValidMessages = (messages: SQSRecord[]) => {
+  return _.partition(messages, (message: SQSRecord) => {
+    try {
+      const body = JSON.parse(message.body);
+      return typeof body.Bucket === 'string' && typeof body.Key === 'string';
+    } catch (err) {
+      return false;
     }
+  });
+}
+
+const handleInvalidMessages = (messages: SQSRecord[]) => {
+  messages.forEach((message: SQSRecord) => {
+    console.error(`Image Processor - Invalid Message - ${message.messageId}, Could Not Parse - ${message.body}`);
+  });
+}
+
+const requestContentModerationAnalysis = (
+  records: SQSRecord[]
+): Array<Promise<PromiseResult<Rekognition.Types.DetectModerationLabelsResponse, AWSError>>> => {
+  return records.map(async (record: SQSRecord) => {   
+    const { Bucket, Key } = JSON.parse(record.body);
 
     const image: Rekognition.Image = {
       S3Object: {
-        Bucket: record.s3.bucket.name,
-        Name: record.s3.object.key,
+        Bucket,
+        Name: Key
       }
     };
 
-    return service.detectModerationLabels({
+    return rekognition.detectModerationLabels({
       Image: image,
       MinConfidence: 50,
     }).promise();
@@ -68,38 +123,68 @@ const requestContentModerationAnalysis = (
 }
 
 const processFailedRequest = async (
-  service: S3,
-  record: S3EventRecord,
+  record: SQSRecord,
   failed: PromiseRejectedResult
 ) => {
-  console.log(`Rekognition request failed for ${record.s3.bucket.name}/${record.s3.object.key} due to ${failed.reason}`);
+  const { Bucket, Key } = JSON.parse(record.body);
+  console.warn(`Image Processor - Rekognition request failed for ${Bucket}/${Key} due to ${failed.reason}`);
 
   try {
-    await service.deleteObject({ Bucket: record.s3.bucket.name, Key: record.s3.object.key }).promise();
-    console.log(`Successfully deleted: ${record.s3.bucket.name}/${record.s3.object.key}`);
+    await s3.deleteObject({ Bucket, Key }).promise();
+    console.log(`Image Processor - Successfully deleted: ${Bucket}/${Key}`);
   } catch (err) {
-    console.log(`Delete object request failed for ${record.s3.bucket.name}/${record.s3.object.key} due to ${err}`);
+    console.warn(`Image Processor - Delete object request failed for ${Bucket}/${Key} due to ${err}`);
   }
 }
 
-const processInappropriateRequest = async (
-  service: S3,
-  record: S3EventRecord,
+const processInappropriateImage = async (
+  record: SQSRecord,
   inappropriate: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse>
 ) => {
-  console.log(`Rekognition request reported the following inappropriate content for ${record.s3.bucket.name}/${record.s3.object.key} due to ${JSON.stringify(inappropriate.value.ModerationLabels)}`);
+  const { Bucket, Key } = JSON.parse(record.body);
+  console.warn(`Image Processor - Rekognition request reported the following inappropriate content for ${Bucket}/${Key} due to ${JSON.stringify(inappropriate.value.ModerationLabels)}`);
 
   try {
-    await service.deleteObject({ Bucket: record.s3.bucket.name, Key: record.s3.object.key }).promise();
-    console.log(`Successfully deleted: ${record.s3.bucket.name}/${record.s3.object.key}`);
+    await s3.deleteObject({ Bucket, Key }).promise();
+    console.log(`Image Processor - Successfully deleted: ${Bucket}/${Key}`);
   } catch (err) {
-    console.log(`Delete object request failed for ${record.s3.bucket.name}/${record.s3.object.key} due to ${err}`);
+    console.warn(`Image Processor - Delete object request failed for ${Bucket}/${Key} due to ${err}`);
   }
 }
 
-const processSuccessfulRequest = async (
-  record: S3EventRecord,
-  inappropriate: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse>
+const processSuccessfulContentModeration = async (
+  record: SQSRecord,
 ) => {
-  console.log(`Rekognition request suceeded for ${record.s3.bucket.name}/${record.s3.object.key} with ${JSON.stringify(inappropriate.value)}`);
+  const { Bucket, Key } = JSON.parse(record.body);
+  console.log(`Image Processor - Rekognition Content Moderation request succeeded for ${Bucket}/${Key}`);
+
+  return rekognition.detectLabels({
+    Image: {
+      S3Object: {
+        Bucket,
+        Name: Key
+      }
+    },
+    MaxLabels: 20,
+    MinConfidence: 35
+  }).promise();
+}
+
+const isAtLeastOneLabelLitterPresent = (labels: Rekognition.Labels) => {
+  return labels.filter((label: Rekognition.Label) => TRASH_RELATED_LABELS.includes(label.Name.toLowerCase())).length
+}
+
+const processLiterlessImage = async (
+  record: SQSRecord,
+  literless: PromiseFulfilledResult<Rekognition.DetectLabelsResponse>
+) => {
+  const { Bucket, Key } = JSON.parse(record.body);
+  console.warn(`Image Processor - Rekognition reported that ${Bucket}/${Key} did not contain litter and instead contained ${JSON.stringify(literless.value.Labels)}`);
+
+  try {
+    await s3.deleteObject({ Bucket, Key }).promise();
+    console.log(`Image Processor - Successfully deleted: ${Bucket}/${Key}`);
+  } catch (err) {
+    console.warn(`Image Processor - Delete object request failed for ${Bucket}/${Key} due to ${err}`);
+  }
 }

@@ -10,6 +10,12 @@
     },
     "s3Key": {
       "Type": "String"
+    },
+    "s3TriggerBucketPrefix": {
+      "Type": "String"
+    },
+    "customImageProcessingQueueUrl": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -42,9 +48,9 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "ImageProcessor",
+            "SubmissionHandler",
             {
-              "Fn::Sub": "ImageProcessor-${env}"
+              "Fn::Sub": "SubmissionHandler-${env}"
             }
           ]
         },
@@ -55,6 +61,9 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
+            },
+            "SQS_QUEUE_URL": {
+              "Ref": "customImageProcessingQueueUrl"
             }
           }
         },
@@ -75,9 +84,9 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "ImageProcessorExecutionRole",
+            "SubmissionHandlerExecutionRole",
             {
-              "Fn::Sub": "ImageProcessorExecutionRole-${env}"
+              "Fn::Sub": "SubmissionHandlerExecutionRole-${env}"
             }
           ]
         },
@@ -106,7 +115,7 @@
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyName": {
-          "Fn::Sub": "ImageProcessorExecutionPolicy-${env}"
+          "Fn::Sub": "SubmissionHandlerExecutionPolicy-${env}"
         },
         "Roles": [
           {
@@ -144,32 +153,19 @@
         }
       }
     },
-    "LambdaRekognitionAccessPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
-      "Type": "AWS::IAM::Policy",
+    "S3TriggerPermission": {
+      "Type": "AWS::Lambda::Permission",
       "Properties": {
-        "PolicyName": {
-          "Fn::Sub": "ImageProcessor-Rekognition-Access-Policy-${env}"
-        },
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "rekognition:DetectModerationLabels",
-                "rekognition:DetectLabels"
-              ],
-              "Resource": "*"
-            }
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaFunction",
+            "Arn"
           ]
+        },
+        "Principal": "s3.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:s3:::${s3TriggerBucketPrefix}-${env}"
         }
       }
     }
@@ -196,6 +192,11 @@
     "LambdaExecutionRole": {
       "Value": {
         "Ref": "LambdaExecutionRole"
+      }
+    },
+    "LambdaTriggerPermission": {
+      "Value": {
+        "Ref": "S3TriggerPermission"
       }
     }
   }

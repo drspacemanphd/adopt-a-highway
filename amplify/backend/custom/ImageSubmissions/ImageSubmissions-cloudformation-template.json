@@ -3,23 +3,21 @@
   "Parameters": {
     "env": {
       "Type": "String"
+    },
+    "s3TriggerBucketPrefix": {
+      "Type": "String"
+    },
+    "functionSubmissionHandlerArn": {
+      "Type": "String"
     }
   },
   "Resources": {
-    "LitterImageSubmissions": {
+    "ImageSubmissions": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "AccessControl": "BucketOwnerFullControl",
         "BucketName": {
-          "Fn::Join": [
-            "-",
-            [
-              "ada-litter-image-submissions",
-              {
-                "Ref": "env"
-              }
-            ]
-          ]
+          "Fn::Sub": "${s3TriggerBucketPrefix}-${env}"
         },
         "LifecycleConfiguration": {
           "Rules": [
@@ -44,14 +42,7 @@
             {
               "Event": "s3:ObjectCreated:*",
               "Function": {
-                "Fn::Sub": [
-                  "arn:aws:lambda:${region}:${account}:function:ImageProcessor-${env}",
-                  {
-                    "account": { "Ref": "AWS::AccountId" },
-                    "region": { "Ref": "AWS::Region" },
-                    "env": { "Ref": "env" }
-                  }
-                ]
+                "Ref": "functionSubmissionHandlerArn"
               }
             }
           ]
@@ -62,30 +53,15 @@
   "Outputs": {
     "Name": {
       "Value": {
-        "Ref": "LitterImageSubmissions"
+        "Ref": "ImageSubmissions"
       }
     },
     "Arn": {
       "Value": {
         "Fn::GetAtt": [
-          "LitterImageSubmissions",
+          "ImageSubmissions",
           "Arn"
         ]
-      },
-      "Export": {
-        "Name": {
-          "Fn::Join": [
-            "-",
-            [
-              "LitterImageSubmissions",
-              {
-                "Ref": "env"
-              },
-              "Bucket",
-              "Arn"
-            ]
-          ]
-        }
       }
     }
   },

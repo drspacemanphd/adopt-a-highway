@@ -1,0 +1,56 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "customImageProcessingQueueArn": {
+      "Type": "String"
+    },
+    "functionImageProcessorName": {
+      "Type": "String"
+    },
+    "functionImageProcessorLambdaExecutionRole": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "SQSAccessPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Sub": "${functionImageProcessorName}-sqs-access-policy-${env}"
+        },
+        "Roles": [
+          {
+            "Ref": "functionImageProcessorLambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sqs:ReceiveMessage",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customImageProcessingQueueArn}"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Arn": {
+      "Value": {
+        "Ref": "SQSAccessPolicy"
+      }
+    }
+  },
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}

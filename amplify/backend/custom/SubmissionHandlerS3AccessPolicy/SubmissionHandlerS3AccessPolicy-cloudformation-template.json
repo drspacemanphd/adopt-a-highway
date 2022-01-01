@@ -1,0 +1,54 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "customImageSubmissionsArn": {
+      "Type": "String"
+    },
+    "functionSubmissionHandlerName": {
+      "Type": "String"
+    },
+    "functionSubmissionHandlerLambdaExecutionRole": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "S3AccessPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Sub": "${functionSubmissionHandlerName}-s3-access-policy-${env}"
+        },
+        "Roles": [
+          {
+            "Ref": "functionSubmissionHandlerLambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:DeleteObject"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customImageSubmissionsArn}/*"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Arn": {
+      "Value": {
+        "Ref": "S3AccessPolicy"
+      }
+    }
+  },
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}

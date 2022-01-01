@@ -1,7 +1,7 @@
 {
-  "name": "image-processor",
-  "version": "2.0.0",
-  "description": "Lambda that processes submitted images for inappropriate or non-litter content",
+  "name": "submission-handler",
+  "version": "0.1.0",
+  "description": "Lambda that handles raw file submissions to the ImageSubmissions S3 Bucket",
   "main": "index.js",
   "license": "Apache-2.0",
   "devDependencies": {

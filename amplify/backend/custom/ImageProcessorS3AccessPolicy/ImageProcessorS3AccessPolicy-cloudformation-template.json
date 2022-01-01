@@ -1,0 +1,111 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "functionImageProcessorName": {
+      "Type": "String",
+      "Description": "Input parameter describing Name attribute for function/ImageProcessor resource"
+    },
+    "functionImageProcessorLambdaExecutionRole": {
+      "Type": "String",
+      "Description": "Input parameter describing LambdaExecutionRole attribute for function/ImageProcessor resource"
+    },
+    "customImageSubmissionsArn": {
+      "Type": "String"
+    },
+    "customFlaggedSubmissionsArn": {
+      "Type": "String"
+    },
+    "customLitterImagesArn": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "S3AccessPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Sub": "${functionImageProcessorName}-s3-access-policy-${env}"
+        },
+        "Roles": [
+          {
+            "Ref": "functionImageProcessorLambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customImageSubmissionsArn}"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customFlaggedSubmissionsArn}"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customLitterImagesArn}"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:GetObjectTagging",
+                "s3:DeleteObject"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customImageSubmissionsArn}/*"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject",
+                "s3:PutObjectTagging"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customFlaggedSubmissionsArn}/*"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject",
+                "s3:PutObjectTagging"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customLitterImagesArn}/*"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Arn": {
+      "Value": {
+        "Ref": "S3AccessPolicy"
+      }
+    }
+  },
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}

@@ -17,11 +17,13 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "postinstall": "yarn run amplify:ImageProcessor:install",
+    "postinstall": "yarn run amplify:SubmissionHandler:install && yarn run amplify:ImageProcessor:install",
+    "amplify:SubmissionHandler:install": "(cd amplify/backend/function/SubmissionHandler/lib && yarn --cwd=./ install)",
     "amplify:ImageProcessor:install": "(cd amplify/backend/function/ImageProcessor/lib && yarn --cwd=./ install)",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "yarn run amplify:ImageProcessor",
+    "postbuild": "yarn run amplify:SubmissionHandler && yarn run amplify:ImageProcessor",
+    "amplify:SubmissionHandler": "node ./scripts/build-lambda.js SubmissionHandler",
     "amplify:ImageProcessor": "node ./scripts/build-lambda.js ImageProcessor",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

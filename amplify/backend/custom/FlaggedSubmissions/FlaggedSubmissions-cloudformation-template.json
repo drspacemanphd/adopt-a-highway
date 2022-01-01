@@ -1,0 +1,56 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "s3BucketPrefix": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "FlaggedSubmissions": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "BucketOwnerFullControl",
+        "BucketName": {
+          "Fn::Sub": "${s3BucketPrefix}-${env}"
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 180,
+              "Status": "Enabled",
+              "Transitions": [
+                {
+                  "StorageClass": "ONEZONE_IA",
+                  "TransitionInDays": 30
+                }
+              ]
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Name": {
+      "Value": {
+        "Ref": "FlaggedSubmissions"
+      }
+    },
+    "Arn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "FlaggedSubmissions",
+          "Arn"
+        ]
+      }
+    }
+  },
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}

@@ -1,0 +1,34 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "customImageProcessingQueueArn": {
+      "Type": "String"
+    },
+    "customImageProcessorSQSAccessPolicyArn": {
+      "Type": "String"
+    },
+    "functionImageProcessorArn": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "EventSourceMapping": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "BatchSize": 3,
+        "EventSourceArn": {
+          "Ref": "customImageProcessingQueueArn"
+        },
+        "FunctionName": {
+          "Ref": "functionImageProcessorArn"
+        },
+        "MaximumBatchingWindowInSeconds": 3
+      }
+    }
+  },
+  "Outputs": {},
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}
