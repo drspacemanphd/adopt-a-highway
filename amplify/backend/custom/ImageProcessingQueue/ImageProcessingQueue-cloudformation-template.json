@@ -3,6 +3,9 @@
   "Parameters": {
     "env": {
       "Type": "String"
+    },
+    "sqsQueuePrefix": {
+      "Type": "String"
     }
   },
   "Resources": {
@@ -10,7 +13,7 @@
       "Type": "AWS::SQS::Queue",
       "Properties": {
         "QueueName": {
-          "Fn::Sub": "ImageProcessingQueue-${env}"
+          "Fn::Sub": "${sqsQueuePrefix}-${env}"
         },
         "ReceiveMessageWaitTimeSeconds": 5,
         "RedriveAllowPolicy": {
@@ -27,6 +30,11 @@
           "ImageProcessingQueue",
           "Arn"
         ]
+      }
+    },
+    "Url": {
+      "Value": {
+        "Ref": "ImageProcessingQueue"
       }
     }
   },

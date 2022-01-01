@@ -32,7 +32,9 @@
             {
               "Effect": "Allow",
               "Action": [
-                "sqs:ReceiveMessage"
+                "sqs:ReceiveMessage",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes"
               ],
               "Resource": {
                 "Fn::Sub": "${customImageProcessingQueueArn}"

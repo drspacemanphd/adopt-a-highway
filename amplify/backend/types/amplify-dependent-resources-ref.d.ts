@@ -8,7 +8,8 @@ export type AmplifyDependentResourcesAttributes = {
             "Arn": "string"
         },
         "ImageProcessingQueue": {
-            "Arn": "string"
+            "Arn": "string",
+            "Url": "string"
         },
         "SubmissionHandlerSQSAccessPolicy": {
             "Arn": "string"

@@ -125,13 +125,49 @@
       "service": "customCloudformation",
       "providerPlugin": "awscloudformation",
       "dependsOn": []
+    },
+    "ImageProcessorEventSourceMapping": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "custom",
+          "resourceName": "ImageProcessingQueue",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "custom",
+          "resourceName": "ImageProcessorSQSAccessPolicy",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "ImageProcessor",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
     }
   },
   "function": {
     "SubmissionHandler": {
       "build": true,
       "providerPlugin": "awscloudformation",
-      "service": "Lambda"
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "custom",
+          "resourceName": "ImageProcessingQueue",
+          "attributes": [
+            "Url"
+          ]
+        }
+      ]
     },
     "ImageProcessor": {
       "build": true,

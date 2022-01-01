@@ -143,6 +143,35 @@
           ]
         }
       }
+    },
+    "LambdaRekognitionAccessPolicy": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Sub": "ImageProcessor-Rekognition-Access-Policy-${env}"
+        },
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "rekognition:DetectModerationLabels",
+                "rekognition:DetectLabels"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      }
     }
   },
   "Outputs": {

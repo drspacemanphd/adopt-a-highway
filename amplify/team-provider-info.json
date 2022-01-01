@@ -15,11 +15,11 @@
       "function": {
         "SubmissionHandler": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/SubmissionHandler-56634d657a7a6e335772-build.zip"
+          "s3Key": "amplify-builds/SubmissionHandler-7135755742525665476e-build.zip"
         },
         "ImageProcessor": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/ImageProcessor-72464f55525562463852-build.zip"
+          "s3Key": "amplify-builds/ImageProcessor-4f746277705841426939-build.zip"
         }
       }
     }
