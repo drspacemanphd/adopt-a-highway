@@ -48,3 +48,7 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+#amplify-api-and-auth-start
+!amplify/backend/auth/**/build
+#amplify-api-and-auth-end

@@ -21,6 +21,9 @@
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
           "s3Key": "amplify-builds/ImageProcessor-4f746277705841426939-build.zip"
         }
+      },
+      "auth": {
+        "adoptahighwayef719878": {}
       }
     }
   }
