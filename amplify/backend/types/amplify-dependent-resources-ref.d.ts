@@ -27,6 +27,16 @@ export type AmplifyDependentResourcesAttributes = {
         "LitterImages": {
             "Name": "string",
             "Arn": "string"
+        },
+        "FlaggedSubmissionHandlerS3AccessPolicy": {
+            "Arn": "string"
+        },
+        "FlaggedSubmissionsQueue": {
+            "Arn": "string",
+            "Url": "string"
+        },
+        "FlaggedSubmissionHandlerSQSAccessPolicy": {
+            "Arn": "string"
         }
     },
     "function": {
@@ -38,6 +48,12 @@ export type AmplifyDependentResourcesAttributes = {
             "LambdaTriggerPermission": "string"
         },
         "ImageProcessor": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        },
+        "FlaggedSubmissionHandler": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",

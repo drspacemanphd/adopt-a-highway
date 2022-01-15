@@ -112,6 +112,13 @@
           ]
         },
         {
+          "category": "custom",
+          "resourceName": "FlaggedSubmissionsQueue",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
           "category": "function",
           "resourceName": "ImageProcessor",
           "attributes": [
@@ -152,6 +159,87 @@
           ]
         }
       ]
+    },
+    "FlaggedSubmissionHandlerS3AccessPolicy": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "FlaggedSubmissionHandler",
+          "attributes": [
+            "Name",
+            "LambdaExecutionRole"
+          ]
+        },
+        {
+          "category": "custom",
+          "resourceName": "ImageSubmissions",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "custom",
+          "resourceName": "FlaggedSubmissions",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
+    },
+    "FlaggedSubmissionsQueue": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    },
+    "FlaggedSubmissionsHandlerEventSourceMapping": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "custom",
+          "resourceName": "FlaggedSubmissionsQueue",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "custom",
+          "resourceName": "FlaggedSubmissionHandlerSQSAccessPolicy",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "FlaggedSubmissionHandler",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
+    },
+    "FlaggedSubmissionHandlerSQSAccessPolicy": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "custom",
+          "resourceName": "FlaggedSubmissionsQueue",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "FlaggedSubmissionHandler",
+          "attributes": [
+            "Name",
+            "LambdaExecutionRole"
+          ]
+        }
+      ]
     }
   },
   "function": {
@@ -170,6 +258,20 @@
       ]
     },
     "ImageProcessor": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "custom",
+          "resourceName": "FlaggedSubmissionsQueue",
+          "attributes": [
+            "Url"
+          ]
+        }
+      ]
+    },
+    "FlaggedSubmissionHandler": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
