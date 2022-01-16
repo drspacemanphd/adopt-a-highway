@@ -51,4 +51,5 @@ amplifytools.xcconfig
 
 #amplify-api-and-auth-start
 !amplify/backend/auth/**/build
+!amplify/backend/api/**/build
 #amplify-api-and-auth-end
