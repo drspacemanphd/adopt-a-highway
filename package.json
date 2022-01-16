@@ -17,16 +17,18 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "postinstall": "yarn run amplify:SubmissionHandler:install && yarn run amplify:ImageProcessor:install && yarn run amplify:FlaggedSubmissionHandler:install",
+    "postinstall": "yarn run amplify:SubmissionHandler:install && yarn run amplify:ImageProcessor:install && yarn run amplify:FlaggedSubmissionHandler:install && yarn run amplify:RejectedSubmissionHandler:install",
     "amplify:SubmissionHandler:install": "(cd amplify/backend/function/SubmissionHandler/lib && yarn --cwd=./ install)",
     "amplify:ImageProcessor:install": "(cd amplify/backend/function/ImageProcessor/lib && yarn --cwd=./ install)",
     "amplify:FlaggedSubmissionHandler:install": "(cd amplify/backend/function/FlaggedSubmissionHandler/lib && yarn --cwd=./ install)",
+    "amplify:RejectedSubmissionHandler:install": "(cd amplify/backend/function/RejectedSubmissionHandler/lib && yarn --cwd=./ install)",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "yarn run amplify:SubmissionHandler && yarn run amplify:ImageProcessor && yarn run amplify:FlaggedSubmissionHandler",
+    "postbuild": "yarn run amplify:SubmissionHandler && yarn run amplify:ImageProcessor && yarn run amplify:FlaggedSubmissionHandler && yarn run amplify:RejectedSubmissionHandler",
     "amplify:SubmissionHandler": "node ./scripts/build-lambda.js SubmissionHandler",
     "amplify:ImageProcessor": "node ./scripts/build-lambda.js ImageProcessor",
     "amplify:FlaggedSubmissionHandler": "node ./scripts/build-lambda.js FlaggedSubmissionHandler",
+    "amplify:RejectedSubmissionHandler": "node ./scripts/build-lambda.js RejectedSubmissionHandler",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

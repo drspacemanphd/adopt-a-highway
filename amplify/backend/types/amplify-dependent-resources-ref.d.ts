@@ -37,6 +37,20 @@ export type AmplifyDependentResourcesAttributes = {
         },
         "FlaggedSubmissionHandlerSQSAccessPolicy": {
             "Arn": "string"
+        },
+        "RejectedSubmissionsQueue": {
+            "Arn": "string",
+            "Url": "string"
+        },
+        "RejectedSubmissions": {
+            "Name": "string",
+            "Arn": "string"
+        },
+        "RejectedSubmissionHandlerS3AccessPolicy": {
+            "Arn": "string"
+        },
+        "RejectedSubmissionHandlerSQSAccessPolicy": {
+            "Arn": "string"
         }
     },
     "function": {
@@ -54,6 +68,12 @@ export type AmplifyDependentResourcesAttributes = {
             "LambdaExecutionRole": "string"
         },
         "FlaggedSubmissionHandler": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        },
+        "RejectedSubmissionHandler": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",

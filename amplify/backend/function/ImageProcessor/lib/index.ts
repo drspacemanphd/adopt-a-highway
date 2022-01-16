@@ -235,9 +235,16 @@ const processLiterlessImage = async (
   console.warn(`Image Processor - Rekognition reported that ${Bucket}/${Key} did not contain litter and instead contained ${JSON.stringify(literless.value.Labels)}`);
 
   try {
-    await s3.deleteObject({ Bucket, Key }).promise();
-    console.log(`Image Processor - Successfully deleted: ${Bucket}/${Key}`);
+    await sqs.sendMessage({
+      QueueUrl: process.env.REJECTED_SUBMISSIONS_QUEUE_URL,
+      MessageBody: JSON.stringify({
+        Bucket,
+        Key,
+        Labels: literless.value.Labels
+      })
+    }).promise();
+    console.log(`Image Processor - Successfully sent: ${Bucket}/${Key} to rejected submissions queue`);
   } catch (err) {
-    console.warn(`Image Processor - Delete object request failed for ${Bucket}/${Key} due to ${err}`);
+    console.warn(`Image Processor - Send message request failed for ${Bucket}/${Key} due to ${err}`);
   }
 }
