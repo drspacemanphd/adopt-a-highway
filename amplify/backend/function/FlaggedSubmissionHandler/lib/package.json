@@ -1,7 +1,7 @@
 {
-  "name": "image-processor",
+  "name": "flagged-submission-handler",
   "version": "0.1.0",
-  "description": "Lambda that processes submitted images for inappropriate or non-litter content",
+  "description": "Lambda that handles submissions flagged as inappropriate",
   "main": "index.js",
   "license": "Apache-2.0",
   "devDependencies": {

@@ -4,19 +4,13 @@
     "env": {
       "Type": "String"
     },
-    "customImageProcessingQueueArn": {
-      "Type": "String"
-    },
-    "customFlaggedSubmissionsQueueArn": {
-      "Type": "String"
-    },
     "customRejectedSubmissionsQueueArn": {
       "Type": "String"
     },
-    "functionImageProcessorName": {
+    "functionRejectedSubmissionHandlerName": {
       "Type": "String"
     },
-    "functionImageProcessorLambdaExecutionRole": {
+    "functionRejectedSubmissionHandlerLambdaExecutionRole": {
       "Type": "String"
     }
   },
@@ -25,11 +19,11 @@
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyName": {
-          "Fn::Sub": "${functionImageProcessorName}-sqs-access-policy-${env}"
+          "Fn::Sub": "${functionRejectedSubmissionHandlerName}-sqs-access-policy-${env}"
         },
         "Roles": [
           {
-            "Ref": "functionImageProcessorLambdaExecutionRole"
+            "Ref": "functionRejectedSubmissionHandlerLambdaExecutionRole"
           }
         ],
         "PolicyDocument": {
@@ -41,24 +35,6 @@
                 "sqs:ReceiveMessage",
                 "sqs:DeleteMessage",
                 "sqs:GetQueueAttributes"
-              ],
-              "Resource": {
-                "Fn::Sub": "${customImageProcessingQueueArn}"
-              }
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "sqs:SendMessage"
-              ],
-              "Resource": {
-                "Fn::Sub": "${customFlaggedSubmissionsQueueArn}"
-              }
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "sqs:SendMessage"
               ],
               "Resource": {
                 "Fn::Sub": "${customRejectedSubmissionsQueueArn}"

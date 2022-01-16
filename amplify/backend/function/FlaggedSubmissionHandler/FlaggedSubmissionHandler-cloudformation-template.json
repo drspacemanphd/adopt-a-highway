@@ -11,10 +11,7 @@
     "s3Key": {
       "Type": "String"
     },
-    "customFlaggedSubmissionsQueueUrl": {
-      "Type": "String"
-    },
-    "customRejectedSubmissionsQueueUrl": {
+    "flaggedSubmissionsBucketPrefix": {
       "Type": "String"
     }
   },
@@ -48,9 +45,9 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "ImageProcessor",
+            "FlaggedSubmissionHandler",
             {
-              "Fn::Sub": "ImageProcessor-${env}"
+              "Fn::Sub": "FlaggedSubmissionHandler-${env}"
             }
           ]
         },
@@ -62,11 +59,8 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "FLAGGED_SUBMISSIONS_QUEUE_URL": {
-              "Ref": "customFlaggedSubmissionsQueueUrl"
-            },
-            "REJECTED_SUBMISSIONS_QUEUE_URL": {
-              "Ref": "customRejectedSubmissionsQueueUrl"
+            "FLAGGED_SUBMISSIONS_BUCKET": {
+              "Fn::Sub": "${flaggedSubmissionsBucketPrefix}-${env}"
             }
           }
         },
@@ -87,9 +81,9 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "ImageProcessorExecutionRole",
+            "FlaggedSubmissionHandlerExecutionRole",
             {
-              "Fn::Sub": "ImageProcessorExecutionRole-${env}"
+              "Fn::Sub": "FlaggedSubmissionHandlerExecutionRole-${env}"
             }
           ]
         },
@@ -118,7 +112,7 @@
       "Type": "AWS::IAM::Policy",
       "Properties": {
         "PolicyName": {
-          "Fn::Sub": "ImageProcessorExecutionPolicy-${env}"
+          "Fn::Sub": "FlaggedSubmissionHandlerExecutionPolicy-${env}"
         },
         "Roles": [
           {
@@ -151,35 +145,6 @@
                   }
                 ]
               }
-            }
-          ]
-        }
-      }
-    },
-    "LambdaRekognitionAccessPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": {
-          "Fn::Sub": "ImageProcessor-Rekognition-Access-Policy-${env}"
-        },
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "rekognition:DetectModerationLabels",
-                "rekognition:DetectLabels"
-              ],
-              "Resource": "*"
             }
           ]
         }

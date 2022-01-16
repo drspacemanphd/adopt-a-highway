@@ -4,13 +4,13 @@
     "env": {
       "Type": "String"
     },
-    "customImageProcessingQueueArn": {
+    "customRejectedSubmissionsQueueArn": {
       "Type": "String"
     },
-    "customImageProcessorSQSAccessPolicyArn": {
+    "customRejectedSubmissionHandlerSQSAccessPolicyArn": {
       "Type": "String"
     },
-    "functionImageProcessorArn": {
+    "functionRejectedSubmissionHandlerArn": {
       "Type": "String"
     }
   },
@@ -18,12 +18,12 @@
     "EventSourceMapping": {
       "Type": "AWS::Lambda::EventSourceMapping",
       "Properties": {
-        "BatchSize": 1,
+        "BatchSize": 3,
         "EventSourceArn": {
-          "Ref": "customImageProcessingQueueArn"
+          "Ref": "customRejectedSubmissionsQueueArn"
         },
         "FunctionName": {
-          "Ref": "functionImageProcessorArn"
+          "Ref": "functionRejectedSubmissionHandlerArn"
         },
         "MaximumBatchingWindowInSeconds": 3
       }
