@@ -29,10 +29,6 @@
         "RejectedSubmissionHandler": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
           "s3Key": "amplify-builds/RejectedSubmissionHandler-7a584939493846506630-build.zip"
-        },
-        "SubmissionApi": {
-          "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/SubmissionApi-56645842504250327678-build.zip"
         }
       },
       "auth": {
