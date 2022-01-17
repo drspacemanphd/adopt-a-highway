@@ -12,6 +12,9 @@
     },
     "env": {
       "Type": "String"
+    },
+    "authadoptahighwayef719878UserPoolId": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -232,7 +235,7 @@
                 },
                 "security": [
                   {
-                    "sigv4": []
+                    "UserPool": []
                   }
                 ]
               }
@@ -332,18 +335,26 @@
                 },
                 "security": [
                   {
-                    "sigv4": []
+                    "UserPool": []
                   }
                 ]
               }
             }
           },
           "securityDefinitions": {
-            "sigv4": {
+            "UserPool": {
               "type": "apiKey",
               "name": "Authorization",
               "in": "header",
-              "x-amazon-apigateway-authtype": "awsSigv4"
+              "x-amazon-apigateway-authtype": "cognito_user_pools",
+              "x-amazon-apigateway-authorizer": {
+                "type": "cognito_user_pools",
+                "providerARNs": [
+                  {
+                    "Fn::Sub": "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${authadoptahighwayef719878UserPoolId}"
+                  }
+                ]
+              }
             }
           },
           "definitions": {
@@ -378,7 +389,7 @@
         "Name": "SubmissionApi"
       }
     },
-    "DeploymentAPIGWSubmissionApi2d19b0f4": {
+    "DeploymentAPIGWSubmissionApib0a779e6": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {

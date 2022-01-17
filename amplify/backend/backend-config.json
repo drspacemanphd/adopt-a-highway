@@ -427,6 +427,13 @@
             "Name",
             "Arn"
           ]
+        },
+        {
+          "category": "auth",
+          "resourceName": "adoptahighwayef719878",
+          "attributes": [
+            "UserPoolId"
+          ]
         }
       ]
     }
