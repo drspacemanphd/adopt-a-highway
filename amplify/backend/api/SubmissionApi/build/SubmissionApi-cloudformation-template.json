@@ -389,7 +389,7 @@
         "Name": "SubmissionApi"
       }
     },
-    "DeploymentAPIGWSubmissionApif8ad04a2": {
+    "DeploymentAPIGWSubmissionApifb0a15eb": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {

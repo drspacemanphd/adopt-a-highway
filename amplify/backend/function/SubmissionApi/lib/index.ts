@@ -1,6 +1,10 @@
 import * as awslambda from 'aws-lambda';
 
 export const handler = async (event: awslambda.APIGatewayProxyEvent) => {
+  if (event.httpMethod === 'POST' && event.resource === '/{proxy+}' && event.path === '/submission') {
+    return 'A POST'
+  }
+
   return {
     statusCode: 200,
     headers: {
@@ -11,7 +15,7 @@ export const handler = async (event: awslambda.APIGatewayProxyEvent) => {
       'Access-Control-Allow-Headers': '*'
     },
     body: JSON.stringify({
-      test: 'TESTING'
-    })
+      event
+    }),
   }
 }

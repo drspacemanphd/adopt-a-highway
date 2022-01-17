@@ -32,7 +32,7 @@
         },
         "SubmissionApi": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/SubmissionApi-595a4c58493133695230-build.zip"
+          "s3Key": "amplify-builds/SubmissionApi-56645842504250327678-build.zip"
         }
       },
       "auth": {

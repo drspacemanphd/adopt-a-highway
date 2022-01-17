@@ -1,20 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
-import { API, Auth } from 'aws-amplify';
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
 
 import './App.css';
 
 class App extends React.Component {
-  async componentWillMount() {
-    await API.get('SubmissionApi', '/', {
-      headers: {
-        Authorization: `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`,
-        'Content-Type': 'application/json'
-      }
-    });
-  }
-
   render () {
     return (
       <div className="App">
