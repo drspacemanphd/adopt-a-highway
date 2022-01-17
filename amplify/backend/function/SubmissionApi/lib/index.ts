@@ -11,7 +11,7 @@ export const handler = async (event: awslambda.APIGatewayProxyEvent) => {
       'Access-Control-Allow-Headers': '*'
     },
     body: JSON.stringify({
-      test: 'TEST'
+      test: 'TESTING'
     })
   }
 }
