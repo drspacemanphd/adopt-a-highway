@@ -15,7 +15,7 @@
         "QueueName": {
           "Fn::Sub": "${sqsQueuePrefix}-${env}"
         },
-        "ReceiveMessageWaitTimeSeconds": 5,
+        "ReceiveMessageWaitTimeSeconds": 20,
         "RedriveAllowPolicy": {
           "redrivePermission": "denyAll"
         },
