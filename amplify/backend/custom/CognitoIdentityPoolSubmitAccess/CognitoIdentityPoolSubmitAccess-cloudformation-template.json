@@ -1,0 +1,98 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "customImageSubmissionsArn": {
+      "Type": "String"
+    },
+    "authadoptahighwayef719878IdentityPoolId": {
+      "Type": "String"
+    }
+  },
+  "Conditions": {
+    "CreateProdAccess": {
+      "Fn::Equals": [
+        {
+          "Ref": "env"
+        },
+        "prod"
+      ]
+    },
+    "CreateQAAccess": {
+      "Fn::Equals": [
+        {
+          "Ref": "env"
+        },
+        "qa"
+      ]
+    }
+  },
+  "Resources": {
+    "S3AccessPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Sub": "cognito-identity-pool-s3-access-policy-${env}"
+        },
+        "Roles": [
+          {
+            "Fn::If": [
+              "CreateProdAccess",
+              "PROD_ROLE",
+              {
+                "Fn::If": [
+                  "CreateQAAccess",
+                  "QA_ROLE",
+                  "amplify-adoptahighway-dev-53135-authRole"
+                ]
+              }
+            ]
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customImageSubmissionsArn}"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetBucketCORS"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customImageSubmissionsArn}"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject",
+                "s3:PutObjectTagging"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customImageSubmissionsArn}/*"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Arn": {
+      "Value": {
+        "Ref": "S3AccessPolicy"
+      }
+    }
+  },
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}

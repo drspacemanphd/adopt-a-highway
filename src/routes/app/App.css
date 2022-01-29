@@ -1,0 +1,10 @@
+.app {
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(243, 242, 239);
+}
+
+[data-amplify-authenticator] {
+  height: 92%;
+}
+

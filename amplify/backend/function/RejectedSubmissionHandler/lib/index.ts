@@ -23,7 +23,7 @@ export const handler = async (event: SQSEvent) => {
   await Promise.allSettled(cleaned);
 
   return JSON.stringify({ body: 'reject content successfully handled'});
-}
+};
 
 const partitionValidMessages = (messages: SQSRecord[]) => {
   return _.partition(messages, (message: SQSRecord) => {
@@ -34,13 +34,13 @@ const partitionValidMessages = (messages: SQSRecord[]) => {
       return false;
     }
   });
-}
+};
 
 const handleInvalidMessages = (messages: SQSRecord[]) => {
   messages.forEach((message: SQSRecord) => {
     console.error(`Rejected Submission Handler - Invalid Message - ${message.messageId}, Could Not Parse - ${message.body}`);
   });
-}
+};
 
 const processRejectedImage = async (
   record: SQSRecord,
@@ -59,7 +59,7 @@ const processRejectedImage = async (
     console.error(`Rejected Submission Handler - Copied object request failed for ${Bucket}/${Key} due to ${err}`);
     throw err;
   }
-}
+};
 
 const cleanup = async (
   record: SQSRecord,
@@ -72,4 +72,4 @@ const cleanup = async (
   } catch (err) {
     console.warn(`Rejected Submission Handler - Delete object request failed for ${Bucket}/${Key} due to ${err}`);
   }
-}
+};

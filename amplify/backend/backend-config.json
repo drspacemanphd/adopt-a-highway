@@ -333,6 +333,26 @@
           ]
         }
       ]
+    },
+    "CognitoIdentityPoolSubmitAccess": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "custom",
+          "resourceName": "ImageSubmissions",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "auth",
+          "resourceName": "adoptahighwayef719878",
+          "attributes": [
+            "IdentityPoolId"
+          ]
+        }
+      ]
     }
   },
   "function": {
@@ -410,5 +430,12 @@
       }
     }
   },
-  "api": {}
+  "api": {},
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "providerPlugin": "awscloudformation",
+      "type": "manual"
+    }
+  }
 }

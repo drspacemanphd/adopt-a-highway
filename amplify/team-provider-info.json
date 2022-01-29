@@ -33,6 +33,12 @@
       },
       "auth": {
         "adoptahighwayef719878": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3gp1lr0l5y30h",
+          "type": "manual"
+        }
       }
     }
   }

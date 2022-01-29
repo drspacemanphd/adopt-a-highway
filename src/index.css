@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+[data-amplify-authenticator] {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/*
+A Hack to hide the Sign Up display
+Works because the authenitcator tab only has 2 states (sign in and sign up)
+and the former is configured to be initially active
+*/
+[data-amplify-authenticator] [data-state=inactive][role=tab] {
+  display: none;
+}
