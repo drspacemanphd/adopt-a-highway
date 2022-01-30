@@ -19,13 +19,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install Toolchain
-        run: npm install -g @aws-amplify/cli@7.6.13
-      - name: Install
-        run: yarn install
+        run: npm install -g @aws-amplify/cli@7.6.4
       - name: Cat 1
         run: cat amplify/backend/function/RejectedSubmissionHandler/lib/index.ts
       - name: Pull dev
         run: sh ./scripts/ci-amplify-pull.sh
+      - name: Install
+        run: yarn install
       - name: Cat 2
         run: cat amplify/backend/function/RejectedSubmissionHandler/lib/index.ts
       - name: Status
