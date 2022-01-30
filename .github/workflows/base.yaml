@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install Toolchain
-        run: npm install -g @aws-amplify/cli
+        run: npm install -g @aws-amplify/cli colors@1.4.0
       - name: Install
         run: yarn install
       - name: Cat 1
