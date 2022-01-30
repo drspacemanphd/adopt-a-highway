@@ -22,7 +22,13 @@ jobs:
         run: npm install -g @aws-amplify/cli
       - name: Install
         run: yarn install
+      - name: Cat 1
+        run: cat amplify/backend/function/RejectedSubmissionHandler/lib/index.ts
       - name: Pull dev
         run: sh ./scripts/ci-amplify-pull.sh
+      - name: Cat 2
+        run: cat amplify/backend/function/RejectedSubmissionHandler/lib/index.ts
       - name: Status
         run: amplify status
+      - name: Git Status
+        run: git status
