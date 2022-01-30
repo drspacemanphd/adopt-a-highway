@@ -20,6 +20,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Install Toolchain
         run: npm install -g @aws-amplify/cli@7.6.4
+      - name: Version
+        run: amplify -v
       - name: Cat 1
         run: cat amplify/backend/function/RejectedSubmissionHandler/lib/index.ts
       - name: Pull dev
