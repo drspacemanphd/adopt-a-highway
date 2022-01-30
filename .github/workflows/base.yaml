@@ -13,7 +13,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install Toolchain
+        run: yarn add global @aws-amplify/cli
       - name: Install
         run: yarn install
-      - name: Build
-        run: yarn run build
+      - name: Pull dev
+        run: amplify pull dev
