@@ -24,3 +24,5 @@ jobs:
         run: yarn install
       - name: Pull dev
         run: sh ./scripts/ci-amplify-pull.sh
+      - name: Push dev
+        run: sh ./scripts/ci-amplify-push.sh
