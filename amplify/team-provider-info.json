@@ -16,23 +16,29 @@
       "function": {
         "SubmissionHandler": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/SubmissionHandler-7135755742525665476e-build.zip"
+          "s3Key": "amplify-builds/SubmissionHandler-62396d697659524e6a44-build.zip"
         },
         "ImageProcessor": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/ImageProcessor-385044676671534e6a31-build.zip"
+          "s3Key": "amplify-builds/ImageProcessor-686b6d3755477630625a-build.zip"
         },
         "FlaggedSubmissionHandler": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/FlaggedSubmissionHandler-44424b5a342f42506472-build.zip"
+          "s3Key": "amplify-builds/FlaggedSubmissionHandler-3174582f4f6c434f3956-build.zip"
         },
         "RejectedSubmissionHandler": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/RejectedSubmissionHandler-7a584939493846506630-build.zip"
+          "s3Key": "amplify-builds/RejectedSubmissionHandler-45744754697943674939-build.zip"
         }
       },
       "auth": {
         "adoptahighwayef719878": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3gp1lr0l5y30h",
+          "type": "manual"
+        }
       }
     }
   }

@@ -51,6 +51,9 @@ export type AmplifyDependentResourcesAttributes = {
         },
         "RejectedSubmissionHandlerSQSAccessPolicy": {
             "Arn": "string"
+        },
+        "CognitoIdentityPoolSubmitAccess": {
+            "Arn": "string"
         }
     },
     "function": {

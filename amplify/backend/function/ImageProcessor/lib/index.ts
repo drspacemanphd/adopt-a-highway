@@ -24,10 +24,10 @@ export const handler = async (event: SQSEvent) => {
   const unflaggedImages = await handleContentModerationAnalysis(validMessages);
   const imagesWithLitter = await handleImageLabelAnalysis(unflaggedImages);
 
-  imagesWithLitter.forEach((image) => console.log(JSON.stringify(image.response.value.Labels)))
+  imagesWithLitter.forEach((image) => console.log(JSON.stringify(image.response.value.Labels)));
 
   return JSON.stringify({ body: 'bloop'});
-}
+};
 
 const partitionValidImages = async (messages: SQSRecord[]) => {
   const [validMessages, invalidMessages] = _.partition(messages, message => {
@@ -58,18 +58,18 @@ const partitionValidImages = async (messages: SQSRecord[]) => {
     if (response.status === 'rejected') {
       invalidMessages.push(validMessages[index]);
     } else {
-      validImages.push(validMessages[index])
+      validImages.push(validMessages[index]);
     }
-  })
+  });
 
-  return { validMessages: validImages as SQSRecord[], invalidMessages }
-}
+  return { validMessages: validImages as SQSRecord[], invalidMessages };
+};
 
 const handleInvalidMessages = (messages: SQSRecord[]) => {
   messages.forEach((message: SQSRecord) => {
     console.error(`Image Processor - Invalid Message - ${message.messageId}, Could Not Parse - ${message.body}`);
   });
-}
+};
 
 const handleContentModerationAnalysis = async (records: SQSRecord[]) => {
   const requests = requestContentModerationAnalysis(records);
@@ -88,9 +88,9 @@ const handleContentModerationAnalysis = async (records: SQSRecord[]) => {
   }, { failed: [], inappropriate: [], successful: [] });
 
   await handleContentModerationRequestFailures(responses.failed);
-  await handleInappropriateContent(responses.inappropriate)
+  await handleInappropriateContent(responses.inappropriate);
   return responses.successful;
-}
+};
 
 const handleImageLabelAnalysis = async (images: Array<{ record: SQSRecord, response: any }>) => {
   const requests = images.map(image => processImageContent(image.record));
@@ -109,9 +109,9 @@ const handleImageLabelAnalysis = async (images: Array<{ record: SQSRecord, respo
   }, { failed: [], imagesWithoutLitter: [], imagesWithLitter: [] });
 
   await handleLabelDetectionRequestFailures(responses.failed);
-  await handleLiterlessImages(responses.imagesWithoutLitter)
+  await handleLiterlessImages(responses.imagesWithoutLitter);
   return responses.imagesWithLitter;
-}
+};
 
 const requestContentModerationAnalysis = (
   records: SQSRecord[]
@@ -131,14 +131,14 @@ const requestContentModerationAnalysis = (
       MinConfidence: 50,
     }).promise();
   });
-}
+};
 
 const handleContentModerationRequestFailures = async (failures: Array<{ record: SQSRecord, response: PromiseRejectedResult }>) => {
   const processedFailures = failures.map((failed) => processFailedRequest(failed.record, failed.response));
 
   // Simply log failures, no need for a retry
   await Promise.allSettled(processedFailures);
-}
+};
 
 const handleInappropriateContent = async (content: Array<{ record: SQSRecord, response: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse & {
   $response: Response<Rekognition.DetectModerationLabelsResponse, AWSError>
@@ -152,7 +152,7 @@ const handleInappropriateContent = async (content: Array<{ record: SQSRecord, re
   if (failed.length) {
     throw new Error('At least one inappropriate image could not be delivered to queue');
   }
-}
+};
 
 const processFailedRequest = async (
   record: SQSRecord,
@@ -167,7 +167,7 @@ const processFailedRequest = async (
   } catch (err) {
     console.warn(`Image Processor - Delete object request failed for ${Bucket}/${Key} due to ${err}`);
   }
-}
+};
 
 const processInappropriateImage = async (
   record: SQSRecord,
@@ -190,7 +190,7 @@ const processInappropriateImage = async (
     console.error(`Image Processor - Send message request failed for ${Bucket}/${Key} due to ${JSON.stringify(err)}`);
     throw err;
   }
-}
+};
 
 const processImageContent = async (
   record: SQSRecord,
@@ -207,25 +207,25 @@ const processImageContent = async (
     MaxLabels: 20,
     MinConfidence: 35
   }).promise();
-}
+};
 
 const isAtLeastOneLabelLitterPresent = (labels: Rekognition.Labels) => {
-  return labels.filter((label: Rekognition.Label) => TRASH_RELATED_LABELS.includes(label.Name.toLowerCase())).length
-}
+  return labels.filter((label: Rekognition.Label) => TRASH_RELATED_LABELS.includes(label.Name.toLowerCase())).length;
+};
 
 const handleLabelDetectionRequestFailures = async (failures: Array<{ record: SQSRecord, response: PromiseRejectedResult }>) => {
   const processedFailures = failures.map((failed) => processFailedRequest(failed.record, failed.response));
 
   // Simply log failures, no need for a retry
   await Promise.allSettled(processedFailures);
-}
+};
 
 const handleLiterlessImages = async (literless: Array<{ record: SQSRecord, response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse> }>) => {
-  const processedLiterlessImages = literless.map((image) => processLiterlessImage(image.record, image.response))
+  const processedLiterlessImages = literless.map((image) => processLiterlessImage(image.record, image.response));
 
   // Simply log failures, no need for a retry
   await Promise.allSettled(processedLiterlessImages);
-}
+};
 
 const processLiterlessImage = async (
   record: SQSRecord,
@@ -247,4 +247,4 @@ const processLiterlessImage = async (
   } catch (err) {
     console.warn(`Image Processor - Send message request failed for ${Bucket}/${Key} due to ${err}`);
   }
-}
+};
