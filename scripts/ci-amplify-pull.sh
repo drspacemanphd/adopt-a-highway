@@ -16,8 +16,8 @@ AWSCLOUDFORMATIONCONFIG="{\
 \"region\":\"$AWS_REGION\"\
 }"
 AMPLIFY="{\
-\"projectName\":\"headlessProjectName\",\
-\"appId\":\"amplifyServiceProjectAppId\",\
+\"projectName\":\"adoptahighway\",\
+\"appId\":\"d3gp1lr0l5y30h\",\
 \"envName\":\"$ENV\",\
 \"defaultEditor\":\"code\"\
 }"
