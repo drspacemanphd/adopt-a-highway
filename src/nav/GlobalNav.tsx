@@ -25,7 +25,7 @@ export function GlobalNav(): JSX.Element {
                 per JSX eslint, sorry :( */}
               <li className="app-nav-link">
                 <Button
-                  id={`app-global-nav-link${location.pathname === "/" ? "-active" : ""}`}
+                  className={`app-nav-link-button${location.pathname === "/" ? "-active" : ""}`}
                   onClick={() => navigate("/")}
                 >
                   <IconMap />
@@ -34,7 +34,7 @@ export function GlobalNav(): JSX.Element {
               </li>
               <li className="app-nav-link">
                 <Button
-                  id={`app-global-nav-link${location.pathname === "/upload" ? "-active" : ""}`}
+                  className={`app-nav-link-button${location.pathname === "/upload" ? "-active" : ""}`}
                   onClick={() => navigate("/upload")}
                 >
                   <IconPhotoCamera />
@@ -44,6 +44,7 @@ export function GlobalNav(): JSX.Element {
               {user ? (
                 <li className="app-nav-link">
                   <Button
+                    className='app-nav-link-button'
                     onClick={async () => {
                       await Auth.signOut();
                       navigate("/");

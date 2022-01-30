@@ -1,3 +1,10 @@
-.Upload {
-  text-align: center;
+.upload {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#ada-image-upload {
+  display: none;
 }

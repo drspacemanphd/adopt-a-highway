@@ -2,6 +2,7 @@ import React from "react";
 import { v4 } from "uuid";
 import { Auth } from "aws-amplify";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { Button } from "@aws-amplify/ui-react";
 
 import "./Upload.css";
 
@@ -149,17 +150,18 @@ class Upload extends React.Component<any, any> {
 
   render() {
     return (
-      <div className="Upload">
-        <div className="Upload-header">
-          <input
-            id="ada-image-input"
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={async () => await this.handlePhoto()}
-            onClick={async () => await this.getGeolocationPermission()}
-          ></input>
-        </div>
+      <div className="upload route-layout">
+        <Button data-variation="primary">
+          <label htmlFor="ada-image-upload">Submit an Image!</label>
+        </Button>
+        <input
+          id="ada-image-upload"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={async () => await this.handlePhoto()}
+          onClick={async () => await this.getGeolocationPermission()}
+        />
       </div>
     );
   }
