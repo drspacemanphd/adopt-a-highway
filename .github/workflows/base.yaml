@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: node:16-alpine
+    env:
+      ENV: dev
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-east-1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -18,4 +23,4 @@ jobs:
       - name: Install
         run: yarn install
       - name: Pull dev
-        run: amplify pull dev
+        run: sh ./scripts/ci-amplify-push.sh
