@@ -1,0 +1,19 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - dev
+  
+jobs:
+  setup:
+    name: Install, Test and Build
+    runs-on: ubuntu-latest
+    container:
+      image: node:16-alpine
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: yarn install
+      - name: Build
+        run: yarn run build
