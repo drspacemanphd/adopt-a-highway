@@ -20,7 +20,8 @@ jobs:
           node-version: 16.x
       - name: Install Toolchain
         run: |
-          apk add git
+          sudo apt update -y
+          sudo apt-get git -y
           npm install -g @aws-amplify/cli@7.6.4
       - name: ls
         run: ls -al
