@@ -4,6 +4,9 @@ import { SQSEvent, SQSRecord } from 'aws-lambda';
 
 const s3 = new S3({ region: process.env.REGION });
 
+console.log(process.env.REGION);
+console.log(process.env.REGION);
+
 export const handler = async (event: SQSEvent) => {
   console.log(`Handling ${event.Records?.length} records`);
 

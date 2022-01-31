@@ -1,4 +1,7 @@
 {
+  "providers": [
+    "awscloudformation"
+  ],
   "projectName": "AdoptAHighway",
   "version": "3.1",
   "frontend": "javascript",
@@ -10,8 +13,5 @@
       "BuildCommand": "yarn run build",
       "StartCommand": "yarn run start"
     }
-  },
-  "providers": [
-    "awscloudformation"
-  ]
+  }
 }
