@@ -17,7 +17,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install Toolchain
-        run: npm install -g @aws-amplify/cli@7.6.4 && apt-get install -y git
+        run: |
+          sudo apt-get update
+          sudo apt-get install git
+          npm install -g @aws-amplify/cli@7.6.4
       - name: Install
         run: yarn install
       - name: Pull environment
