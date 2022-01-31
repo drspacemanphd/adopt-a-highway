@@ -2,4 +2,4 @@
 set -e
 IFS='|'
 
-amplify push --yes
+amplify publish --yes
