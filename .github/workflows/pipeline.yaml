@@ -23,7 +23,7 @@ jobs:
       - name: Pull environment
         run: sh ./scripts/ci-amplify-init.sh
         env:
-          ENV: github.ref_name
+          ENV: ${{ github.ref_name }}
       - name: Build
         run: yarn run build
       - name: Deploy
