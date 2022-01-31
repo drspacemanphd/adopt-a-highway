@@ -18,15 +18,15 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
+      - name: Git Log
+        run: git log
       - name: Install Toolchain
         run: |
-          sudo apt update -y
-          sudo apt-get git -y
+          sudo apt-get update -y
+          sudo apt-get install git -y
           npm install -g @aws-amplify/cli@7.6.4
       - name: ls
         run: ls -al
-      - name: Git Log
-        run: git log
       - name: Install
         run: yarn install
       - name: Pull environment
