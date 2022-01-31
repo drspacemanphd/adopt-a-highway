@@ -9,8 +9,7 @@
       "UnauthRoleName": "amplify-adoptahighway-dev-53135-unauthRole",
       "StackName": "amplify-adoptahighway-dev-53135",
       "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-dev-53135/80f31150-6892-11ec-b018-0ee0692f5a4b",
-      "AmplifyAppId": "d3gp1lr0l5y30h",
-      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-adoptahighway-dev-53135-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+      "AmplifyAppId": "d3gp1lr0l5y30h"
     },
     "categories": {
       "function": {
@@ -28,7 +27,7 @@
         },
         "RejectedSubmissionHandler": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/RejectedSubmissionHandler-45744754697943674939-build.zip"
+          "s3Key": "amplify-builds/RejectedSubmissionHandler-572b75594f7a7a79744e-build.zip"
         }
       },
       "auth": {
