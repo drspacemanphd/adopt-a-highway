@@ -26,6 +26,7 @@ export const handler = async (event: SQSEvent) => {
 
   imagesWithLitter.forEach((image) => console.log(JSON.stringify(image.response.value.Labels)));
 
+  console.log('done');
   return JSON.stringify({ body: 'bloop'});
 };
 
