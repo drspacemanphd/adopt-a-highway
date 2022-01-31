@@ -19,7 +19,7 @@
         },
         "ImageProcessor": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-          "s3Key": "amplify-builds/ImageProcessor-686b6d3755477630625a-build.zip"
+          "s3Key": "amplify-builds/ImageProcessor-35356c4d4c7343626957-build.zip"
         },
         "FlaggedSubmissionHandler": {
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
