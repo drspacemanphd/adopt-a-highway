@@ -20,6 +20,8 @@ jobs:
         run: |
           apk add git
           npm install -g @aws-amplify/cli@7.6.4
+      - name: Git Log
+        run: git log
       - name: Install
         run: yarn install
       - name: Pull environment
