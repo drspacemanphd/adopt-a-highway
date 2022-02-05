@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "aws-sdk": "^2.1048.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "axios": "^0.25.0"
   },
   "eslintConfig": {
     "extends": [
@@ -19,7 +20,10 @@
       "react-app/jest"
     ],
     "rules": {
-      "semi": [2, "always"]
+      "semi": [
+        2,
+        "always"
+      ]
     }
   }
 }

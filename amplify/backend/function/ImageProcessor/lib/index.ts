@@ -1,16 +1,16 @@
 import * as _ from 'lodash';
-import { S3, Rekognition, AWSError } from 'aws-sdk';
+import { S3, SSM, Rekognition, AWSError } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { SQSEvent, SQSRecord } from 'aws-lambda';
+import axios from 'axios';
 
 const REGION = process.env.REGION;
 const FLAGGED_SUBMISSIONS_BUCKET = process.env.FLAGGED_SUBMISSIONS_BUCKET;
 const REJECTED_SUBMISSIONS_BUCKET = process.env.REJECTED_SUBMISSIONS_BUCKET;
-const ARCGIS_USER_NAME = process.env.ARCGIS_USER_NAME;
-const ARCGIS_USER_PASSWORD = process.env.ARCGIS_USER_PASSWORD;
 
 const s3 = new S3({ region: REGION });
 const rekognition = new Rekognition({ region: REGION });
+const ssm = new SSM({ region: REGION });
 
 const TRASH_RELATED_LABELS = [
   'trash',
@@ -32,6 +32,27 @@ export const handler = async (event: SQSEvent) => {
   const imagesWithLitter: Array<{ record: SQSRecord, response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse> }> = await handleImageLabelAnalysis(unflaggedImages);
 
   imagesWithLitter.forEach((image) => console.log(JSON.stringify(image.response.value.Labels)));
+
+  const usernameSecretName = process.env.ArcgisUsername;
+  const userPasswordSecretName = process.env.ArcgisPassword;
+
+  const { Parameters } = await ssm.getParameters({
+    Names: [
+      usernameSecretName,
+      userPasswordSecretName
+    ],
+    WithDecryption: true }).promise();
+
+  const username = Parameters.find(p => p.Name === usernameSecretName)?.Value;
+  const password = Parameters.find(p => p.Name === userPasswordSecretName)?.Value;
+
+  const params = new URLSearchParams();
+  params.append('username', username);
+  params.append('password', password);
+  params.append('referer', 'amplifyapp.com');
+  const res = await axios.post('https://www.arcgis.com/sharing/rest/generateToken?f=json', params);
+
+  console.log(res.data);
 
   return JSON.stringify({ body: 'done'});
 };

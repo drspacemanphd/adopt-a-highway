@@ -21,6 +21,7 @@
     "amplify:ImageProcessor:install": "(cd amplify/backend/function/ImageProcessor/lib && yarn --cwd=./ install)",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:services": "yarn run postbuild",
     "postbuild": "yarn run amplify:SubmissionHandler && yarn run amplify:ImageProcessor",
     "amplify:SubmissionHandler": "node ./scripts/build-lambda.js SubmissionHandler",
     "amplify:ImageProcessor": "node ./scripts/build-lambda.js ImageProcessor",
