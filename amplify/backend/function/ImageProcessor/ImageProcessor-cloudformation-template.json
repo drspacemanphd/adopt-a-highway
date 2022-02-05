@@ -11,10 +11,10 @@
     "s3Key": {
       "Type": "String"
     },
-    "customFlaggedSubmissionsQueueUrl": {
+    "customFlaggedSubmissionsName": {
       "Type": "String"
     },
-    "customRejectedSubmissionsQueueUrl": {
+    "customRejectedSubmissionsName": {
       "Type": "String"
     }
   },
@@ -62,11 +62,11 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "FLAGGED_SUBMISSIONS_QUEUE_URL": {
-              "Ref": "customFlaggedSubmissionsQueueUrl"
+            "FLAGGED_SUBMISSIONS_BUCKET": {
+              "Ref": "customFlaggedSubmissionsName"
             },
-            "REJECTED_SUBMISSIONS_QUEUE_URL": {
-              "Ref": "customRejectedSubmissionsQueueUrl"
+            "REJECTED_SUBMISSIONS_BUCKET": {
+              "Ref": "customRejectedSubmissionsName"
             }
           }
         },

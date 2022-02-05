@@ -28,28 +28,8 @@ export type AmplifyDependentResourcesAttributes = {
             "Name": "string",
             "Arn": "string"
         },
-        "FlaggedSubmissionHandlerS3AccessPolicy": {
-            "Arn": "string"
-        },
-        "FlaggedSubmissionsQueue": {
-            "Arn": "string",
-            "Url": "string"
-        },
-        "FlaggedSubmissionHandlerSQSAccessPolicy": {
-            "Arn": "string"
-        },
-        "RejectedSubmissionsQueue": {
-            "Arn": "string",
-            "Url": "string"
-        },
         "RejectedSubmissions": {
             "Name": "string",
-            "Arn": "string"
-        },
-        "RejectedSubmissionHandlerS3AccessPolicy": {
-            "Arn": "string"
-        },
-        "RejectedSubmissionHandlerSQSAccessPolicy": {
             "Arn": "string"
         },
         "CognitoIdentityPoolSubmitAccess": {
@@ -70,13 +50,7 @@ export type AmplifyDependentResourcesAttributes = {
             "Region": "string",
             "LambdaExecutionRole": "string"
         },
-        "FlaggedSubmissionHandler": {
-            "Name": "string",
-            "Arn": "string",
-            "Region": "string",
-            "LambdaExecutionRole": "string"
-        },
-        "RejectedSubmissionHandler": {
+        "LitterImageHandler": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",

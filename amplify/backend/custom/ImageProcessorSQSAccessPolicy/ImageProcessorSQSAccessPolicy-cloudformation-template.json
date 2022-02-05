@@ -7,12 +7,6 @@
     "customImageProcessingQueueArn": {
       "Type": "String"
     },
-    "customFlaggedSubmissionsQueueArn": {
-      "Type": "String"
-    },
-    "customRejectedSubmissionsQueueArn": {
-      "Type": "String"
-    },
     "functionImageProcessorName": {
       "Type": "String"
     },
@@ -44,24 +38,6 @@
               ],
               "Resource": {
                 "Fn::Sub": "${customImageProcessingQueueArn}"
-              }
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "sqs:SendMessage"
-              ],
-              "Resource": {
-                "Fn::Sub": "${customFlaggedSubmissionsQueueArn}"
-              }
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "sqs:SendMessage"
-              ],
-              "Resource": {
-                "Fn::Sub": "${customRejectedSubmissionsQueueArn}"
               }
             }
           ]
