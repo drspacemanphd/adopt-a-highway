@@ -11,10 +11,13 @@
     "s3Key": {
       "Type": "String"
     },
-    "customFlaggedSubmissionsQueueUrl": {
+    "customFlaggedSubmissionsName": {
       "Type": "String"
     },
-    "customRejectedSubmissionsQueueUrl": {
+    "customRejectedSubmissionsName": {
+      "Type": "String"
+    },
+    "secretsPathAmplifyAppId": {
       "Type": "String"
     }
   },
@@ -62,12 +65,57 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "FLAGGED_SUBMISSIONS_QUEUE_URL": {
-              "Ref": "customFlaggedSubmissionsQueueUrl"
+            "FLAGGED_SUBMISSIONS_BUCKET": {
+              "Ref": "customFlaggedSubmissionsName"
             },
-            "REJECTED_SUBMISSIONS_QUEUE_URL": {
-              "Ref": "customRejectedSubmissionsQueueUrl"
-            }
+            "REJECTED_SUBMISSIONS_BUCKET": {
+              "Ref": "customRejectedSubmissionsName"
+            },
+            "ArcgisUsername": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::Sub": [
+                      "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
+                      {
+                        "appId": {
+                          "Ref": "secretsPathAmplifyAppId"
+                        },
+                        "env": {
+                          "Ref": "env"
+                        },
+                        "functionName": "ImageProcessor"
+                      }
+                    ]
+                  },
+                  "ArcgisUsername"
+                ]
+              ]
+            },
+            "ArcgisPassword": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::Sub": [
+                      "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
+                      {
+                        "appId": {
+                          "Ref": "secretsPathAmplifyAppId"
+                        },
+                        "env": {
+                          "Ref": "env"
+                        },
+                        "functionName": "ImageProcessor"
+                      }
+                    ]
+                  },
+                  "ArcgisPassword"
+                ]
+              ]
+            },
+            "LITTER_FEATURE_LAYER_URL": "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-dev/FeatureServer/0"
           }
         },
         "Role": {
@@ -184,6 +232,63 @@
           ]
         }
       }
+    },
+    "AmplifyFunctionSecretsPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "amplify-function-secrets-policy",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetParameter",
+                "ssm:GetParameters"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ssm:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":parameter",
+                    {
+                      "Fn::Sub": [
+                        "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
+                        {
+                          "appId": {
+                            "Ref": "secretsPathAmplifyAppId"
+                          },
+                          "env": {
+                            "Ref": "env"
+                          },
+                          "functionName": "ImageProcessor"
+                        }
+                      ]
+                    },
+                    "*"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ]
     }
   },
   "Outputs": {

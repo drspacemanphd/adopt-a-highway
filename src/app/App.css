@@ -4,10 +4,6 @@
   background-color: rgb(243, 242, 239);
 }
 
-.route-layout {
-  height: 92%;
-}
-
 [data-amplify-authenticator] {
   padding-left: 1rem;
   padding-right: 1rem;

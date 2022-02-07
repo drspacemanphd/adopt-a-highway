@@ -18,6 +18,9 @@
     "customFlaggedSubmissionsArn": {
       "Type": "String"
     },
+    "customRejectedSubmissionsArn": {
+      "Type": "String"
+    },
     "customLitterImagesArn": {
       "Type": "String"
     }
@@ -61,6 +64,15 @@
                 "s3:ListBucket"
               ],
               "Resource": {
+                "Fn::Sub": "${customRejectedSubmissionsArn}"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket"
+              ],
+              "Resource": {
                 "Fn::Sub": "${customLitterImagesArn}"
               }
             },
@@ -83,6 +95,16 @@
               ],
               "Resource": {
                 "Fn::Sub": "${customFlaggedSubmissionsArn}/*"
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject",
+                "s3:PutObjectTagging"
+              ],
+              "Resource": {
+                "Fn::Sub": "${customRejectedSubmissionsArn}/*"
               }
             },
             {

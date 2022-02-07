@@ -1,10 +1,10 @@
-import React from "react";
-import { v4 } from "uuid";
-import { Auth } from "aws-amplify";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { Button } from "@aws-amplify/ui-react";
+import React from 'react';
+import { v4 } from 'uuid';
+import { Auth } from 'aws-amplify';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { Button } from '@aws-amplify/ui-react';
 
-import "./Upload.css";
+import './Upload.css';
 
 class Upload extends React.Component<any, any> {
   private s3: S3Client = null;
@@ -89,7 +89,7 @@ class Upload extends React.Component<any, any> {
         navigator.geolocation.getCurrentPosition(
           (geolocation) => {
             this.geolocation = geolocation;
-            resolve("successful");
+            resolve('successful');
           },
           (err) => {
             reject(err);
@@ -101,7 +101,7 @@ class Upload extends React.Component<any, any> {
 
   private async instantiateS3Client() {
     const credentials = await Auth.currentCredentials();
-    this.s3 = new S3Client({ region: "us-east-1", credentials });
+    this.s3 = new S3Client({ region: 'us-east-1', credentials });
   }
 
   private setupGeolocationRefresher(): any {
@@ -120,20 +120,21 @@ class Upload extends React.Component<any, any> {
   }
 
   private async handlePhoto() {
-    const imageUploadEl = document.getElementById("ada-image-input");
+    const imageUploadEl = document.getElementById('ada-image-input');
     if (imageUploadEl) {
       const file = (imageUploadEl as any)?.files[0];
       if (file) {
         const user = await Auth.currentAuthenticatedUser();
         const ext = (file.name as string).match(/\.\w+$/g);
+        const guid = v4();
         return await this.s3.send(
           new PutObjectCommand({
-            Bucket: "ada-image-submissions-dev",
-            Key: `${v4()}${ext}`,
+            Bucket: 'ada-image-submissions-dev',
+            Key: `${guid}${ext}`,
             Body: file,
             Metadata: {
-              userId: user?.attributes?.sub,
-              email: user?.attributes?.email,
+              guid,
+              userGuid: user?.attributes?.sub,
               latitude: this.geolocation?.coords?.latitude
                 ? this.geolocation.coords.latitude.toString()
                 : null,
@@ -150,15 +151,15 @@ class Upload extends React.Component<any, any> {
 
   render() {
     return (
-      <div className="upload route-layout">
-        <Button data-variation="primary">
-          <label htmlFor="ada-image-upload">Submit an Image!</label>
+      <div className='route-layout' id='ada-upload'>
+        <Button data-variation='primary'>
+          <label htmlFor='ada-image-upload'>Submit an Image!</label>
         </Button>
         <input
-          id="ada-image-upload"
-          type="file"
-          accept="image/*"
-          capture="environment"
+          id='ada-image-upload'
+          type='file'
+          accept='image/*'
+          capture='environment'
           onChange={async () => await this.handlePhoto()}
           onClick={async () => await this.getGeolocationPermission()}
         />

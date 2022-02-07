@@ -22,6 +22,6 @@ const buildLambda = async (functionName) => {
     console.log(err);
     process.exit(1);
   }
-}
+};
 
 buildLambda(process.argv[2]);

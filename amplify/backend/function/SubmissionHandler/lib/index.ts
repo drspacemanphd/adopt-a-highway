@@ -2,8 +2,11 @@ import { S3, SQS } from 'aws-sdk';
 import { S3EventRecord, S3Event } from 'aws-lambda';
 import * as _ from 'lodash';
 
-const s3 = new S3({ region: process.env.REGION });
-const sqs = new SQS({ region: process.env.REGION });
+const REGION = process.env.REGION;
+const SQS_QUEUE_URL = process.env.SQS_QUEUE_URL;
+
+const s3 = new S3({ region: REGION });
+const sqs = new SQS({ region: REGION });
 
 export const handler = async (event: S3Event) => {
   const [validFiles, invalidFiles]: [S3EventRecord[], S3EventRecord[]] = _.partition(event.Records || [], (record: S3EventRecord) => {
@@ -54,7 +57,7 @@ const handleValidFiles = async (validFiles: S3EventRecord[]) => {
     })
   }));
 
-  const response = await sqs.sendMessageBatch({ Entries: messages, QueueUrl: process.env.SQS_QUEUE_URL }).promise();
+  const response = await sqs.sendMessageBatch({ Entries: messages, QueueUrl: SQS_QUEUE_URL }).promise();
 
   response.Successful.forEach((success: SQS.SendMessageBatchResultEntry) => {
     console.log(`Submission Handler - Successful Valid File Enqueue - ${success.Id}`);

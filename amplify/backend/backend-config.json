@@ -88,6 +88,13 @@
         },
         {
           "category": "custom",
+          "resourceName": "RejectedSubmissions",
+          "attributes": [
+            "Arn"
+          ]
+        },
+        {
+          "category": "custom",
           "resourceName": "LitterImages",
           "attributes": [
             "Arn"
@@ -107,20 +114,6 @@
         {
           "category": "custom",
           "resourceName": "ImageProcessingQueue",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "custom",
-          "resourceName": "FlaggedSubmissionsQueue",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "custom",
-          "resourceName": "RejectedSubmissionsQueue",
           "attributes": [
             "Arn"
           ]
@@ -167,172 +160,10 @@
         }
       ]
     },
-    "FlaggedSubmissionHandlerS3AccessPolicy": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "FlaggedSubmissionHandler",
-          "attributes": [
-            "Name",
-            "LambdaExecutionRole"
-          ]
-        },
-        {
-          "category": "custom",
-          "resourceName": "ImageSubmissions",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "custom",
-          "resourceName": "FlaggedSubmissions",
-          "attributes": [
-            "Arn"
-          ]
-        }
-      ]
-    },
-    "FlaggedSubmissionsQueue": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": []
-    },
-    "FlaggedSubmissionsHandlerEventSourceMapping": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "custom",
-          "resourceName": "FlaggedSubmissionsQueue",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "custom",
-          "resourceName": "FlaggedSubmissionHandlerSQSAccessPolicy",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "FlaggedSubmissionHandler",
-          "attributes": [
-            "Arn"
-          ]
-        }
-      ]
-    },
-    "FlaggedSubmissionHandlerSQSAccessPolicy": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "custom",
-          "resourceName": "FlaggedSubmissionsQueue",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "FlaggedSubmissionHandler",
-          "attributes": [
-            "Name",
-            "LambdaExecutionRole"
-          ]
-        }
-      ]
-    },
-    "RejectedSubmissionsQueue": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": []
-    },
     "RejectedSubmissions": {
       "service": "customCloudformation",
       "providerPlugin": "awscloudformation",
       "dependsOn": []
-    },
-    "RejectedSubmissionHandlerS3AccessPolicy": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "RejectedSubmissionHandler",
-          "attributes": [
-            "Name",
-            "LambdaExecutionRole"
-          ]
-        },
-        {
-          "category": "custom",
-          "resourceName": "ImageSubmissions",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "custom",
-          "resourceName": "RejectedSubmissions",
-          "attributes": [
-            "Arn"
-          ]
-        }
-      ]
-    },
-    "RejectedSubmissionHandlerSQSAccessPolicy": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "custom",
-          "resourceName": "RejectedSubmissionsQueue",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "RejectedSubmissionHandler",
-          "attributes": [
-            "Name",
-            "LambdaExecutionRole"
-          ]
-        }
-      ]
-    },
-    "RejectedSubmissionHandlerEventSourceMapping": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "custom",
-          "resourceName": "RejectedSubmissionsQueue",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "custom",
-          "resourceName": "RejectedSubmissionHandlerSQSAccessPolicy",
-          "attributes": [
-            "Arn"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "RejectedSubmissionHandler",
-          "attributes": [
-            "Arn"
-          ]
-        }
-      ]
     },
     "CognitoIdentityPoolSubmitAccess": {
       "service": "customCloudformation",
@@ -377,29 +208,19 @@
       "dependsOn": [
         {
           "category": "custom",
-          "resourceName": "FlaggedSubmissionsQueue",
+          "resourceName": "FlaggedSubmissions",
           "attributes": [
-            "Url"
+            "Name"
           ]
         },
         {
           "category": "custom",
-          "resourceName": "RejectedSubmissionsQueue",
+          "resourceName": "RejectedSubmissions",
           "attributes": [
-            "Url"
+            "Name"
           ]
         }
       ]
-    },
-    "FlaggedSubmissionHandler": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "RejectedSubmissionHandler": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
     }
   },
   "auth": {
