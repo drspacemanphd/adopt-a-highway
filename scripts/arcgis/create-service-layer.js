@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 
 const env = process.env.ENV;
 const username = process.env.USERNAME;
-const token = process.env.TOKEN;
+const password = process.env.PASSWORD;
 
 // Feature Service Params
 const createServerParameters = {
@@ -36,8 +36,6 @@ const createServerParameters = {
   },
 };
 
-const f = "json";
-
 const outputType = "featureService";
 
 // Feature Layer Params
@@ -50,7 +48,7 @@ const createLayerParameters = {
       //   xssTrustedFields: "",
       // },
       id: 0,
-      name: "Litter Reports",
+      name: `Litter-Reports-${env}`,
       type: "Feature Layer",
       displayField: "",
       description: "Submissions of litter",
@@ -148,7 +146,8 @@ const createLayerParameters = {
           type: "esriFieldTypeGUID",
           alias: "GUID",
           domain: null,
-          editable: false,
+          length: 50,
+          editable: true,
           nullable: false,
           defaultValue: null,
           modelName: "GUID",
@@ -158,19 +157,20 @@ const createLayerParameters = {
           type: "esriFieldTypeGUID",
           alias: "USER_GUID",
           domain: null,
-          editable: false,
-          nullable: true,
+          length: 50,
+          editable: true,
+          nullable: false,
           defaultValue: null,
           modelName: "USER_GUID",
         },
         {
-          name: "IMAGE_URL",
+          name: "IMAGE_KEY",
           type: "esriFieldTypeString",
-          length: 125,
-          alias: "IMAGEURL",
+          length: 50,
+          alias: "IMAGE_KEY",
           domain: null,
-          editable: false,
-          nullable: true,
+          editable: true,
+          nullable: false,
           defaultValue: null,
           modelName: "IMAGEURL",
         },
@@ -178,33 +178,85 @@ const createLayerParameters = {
           name: "SUBMIT_DATE",
           type: "esriFieldTypeDate",
           alias: "SUBMIT_DATE",
-          length: 8,
-          nullable: false,
-          editable: false,
-          domain: null,
-          defaultValue: null,
-          modelName: "SUBMIT_DATE",
-        },
-        {
-          name: "CLASSIFICATION",
-          type: "esriFieldTypeString",
-          alias: "CLASSIFICATION",
           length: 25,
           nullable: false,
           editable: true,
           domain: null,
           defaultValue: null,
-          modelName: "CLASSIFICATION",
+          modelName: "SUBMIT_DATE",
         },
         {
-          name: "MODEL_CONFIDENCE",
-          type: "esriFieldTypeDouble",
-          alias: "MODEL_CONFIDENCE",
+          name: "RAW_ANALYSIS",
+          type: "esriFieldTypeString",
+          alias: "RAW_ANALYSIS",
           nullable: false,
           editable: true,
           domain: null,
           defaultValue: null,
-          modelName: "MODEL_CONFIDENCE",
+          modelName: "RAW_ANALYSIS",
+        },
+        {
+          name: "CLASSIFICATION_FIRST",
+          type: "esriFieldTypeString",
+          alias: "CLASSIFICATION_FIRST",
+          length: 25,
+          nullable: true,
+          editable: true,
+          domain: null,
+          defaultValue: null,
+          modelName: "CLASSIFICATION_FIRST",
+        },
+        {
+          name: "MODEL_CONFIDENCE_FIRST",
+          type: "esriFieldTypeDouble",
+          alias: "MODEL_CONFIDENCE_FIRST",
+          nullable: true,
+          editable: true,
+          domain: null,
+          defaultValue: null,
+          modelName: "MODEL_CONFIDENCE_FIRST",
+        },
+        {
+          name: "CLASSIFICATION_SECOND",
+          type: "esriFieldTypeString",
+          alias: "CLASSIFICATION_SECOND",
+          length: 25,
+          nullable: true,
+          editable: true,
+          domain: null,
+          defaultValue: null,
+          modelName: "CLASSIFICATION_SECOND",
+        },
+        {
+          name: "MODEL_CONFIDENCE_SECOND",
+          type: "esriFieldTypeDouble",
+          alias: "MODEL_CONFIDENCE_SECOND",
+          nullable: true,
+          editable: true,
+          domain: null,
+          defaultValue: null,
+          modelName: "MODEL_CONFIDENCE_SECOND",
+        },
+        {
+          name: "CLASSIFICATION_THIRD",
+          type: "esriFieldTypeString",
+          alias: "CLASSIFICATION_THIRD",
+          length: 25,
+          nullable: true,
+          editable: true,
+          domain: null,
+          defaultValue: null,
+          modelName: "CLASSIFICATION_THIRD",
+        },
+        {
+          name: "MODEL_CONFIDENCE_THIRD",
+          type: "esriFieldTypeDouble",
+          alias: "MODEL_CONFIDENCE_THIRD",
+          nullable: true,
+          editable: true,
+          domain: null,
+          defaultValue: null,
+          modelName: "MODEL_CONFIDENCE_THIRD",
         },
       ],
       indexes: [
@@ -263,10 +315,27 @@ const createLayerParameters = {
   ],
 };
 
-async function createService(url) {
+async function generateToken() {
+  const params = new URLSearchParams();
+  params.append("username", username);
+  params.append("password", password);
+  params.append("referer", "awsamplify.com");
+
+  const url = 'https://www.arcgis.com/sharing/rest/generateToken?f=json';
+
+  return await fetch(url, {
+    method: "POST",
+    body: params,
+  });
+}
+
+async function createService(token) {
+  const url = new URL(
+    `https://www.arcgis.com/sharing/rest/content/users/${username}/createService?token=${token}&f=json`
+  );
+
   const params = new URLSearchParams();
   params.append("createParameters", JSON.stringify(createServerParameters));
-  params.append("f", f);
   params.append("outputType", outputType);
   params.append("isView", false);
 
@@ -279,25 +348,31 @@ async function createService(url) {
 async function createLayer(url) {
   const params = new URLSearchParams();
   params.append("addToDefinition", JSON.stringify(createLayerParameters));
-  params.append("f", f);
   return await fetch(url, {
     method: "POST",
     body: params,
   });
 }
 
-const url = new URL(
-  `https://www.arcgis.com/sharing/rest/content/users/${username}/createService?token=${token}&f=json`
-);
+let token;
 
-createService(url)
+generateToken()
   .then(res => {
     return res.json();
   })
+  .then(json => {
+    if (!json.token) throw new Error(JSON.stringify(json));
+    token = json.token;
+    return createService(token);
+  })
   .then(res => {
-    const serviceUrl = res.serviceurl;
+    return res.json();
+  })
+  .then(json => {
+    if (!json.serviceurl) throw new Error(JSON.stringify(json));
+    const serviceUrl = json.serviceurl;
     const adminUrl = serviceUrl.replace(/\/arcgis\/rest\/services/, /\/arcgis\/rest\/admin\/services/);
-    const addToDefinitionUrl = new URL(`${adminUrl}/addToDefinition?token=${token}`);
+    const addToDefinitionUrl = new URL(`${adminUrl}/addToDefinition?token=${token}&f=json`);
     return createLayer(addToDefinitionUrl);
   })
   .then(res => {
