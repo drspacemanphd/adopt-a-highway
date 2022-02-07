@@ -340,6 +340,5 @@ const saveImageDateToLayer = async (imageData: Array<{ record: { bucket: string,
 
   const res = await axios.post(`${LITTER_FEATURE_LAYER_URL}/addFeatures?token=${token}&f=json`, params);
 
-  console.log(JSON.stringify(res.data));
   return res.data;
 };
