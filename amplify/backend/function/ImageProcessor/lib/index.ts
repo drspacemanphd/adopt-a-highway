@@ -382,6 +382,8 @@ const saveLitterImageDataToLayer = async (imageData: Array<{ record: { bucket: s
 
   const res = await axios.post(`${LITTER_FEATURE_LAYER_URL}/addFeatures?token=${token}&f=json`, params);
 
+  console.log(`Image Processor - Received response when saving litter record: ${JSON.stringify(res.data)}`);
+
   return res.data;
 };
 
@@ -409,6 +411,8 @@ const saveFlaggedImageDataToLayer = async (imageData: Array<{ record: { bucket: 
 
   const res = await axios.post(`${INAPPROPRIATE_FEATURE_LAYER_URL}/addFeatures?token=${token}&f=json`, params);
 
+  console.log(`Image Processor - Received response when saving inappropriate image record: ${JSON.stringify(res.data)}`);
+
   return res.data;
 };
 
@@ -435,6 +439,8 @@ const saveLitterlessImageDataToLayer = async (imageData: Array<{ record: { bucke
   params.append('f', 'json');
 
   const res = await axios.post(`${LITTERLESS_FEATURE_LAYER_URL}/addFeatures?token=${token}&f=json`, params);
+
+  console.log(`Image Processor - Received response when saving litterless record: ${JSON.stringify(res.data)}`);
 
   return res.data;
 };
