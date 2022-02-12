@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import ArcGISMap from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
 import './Map.css';
 
@@ -36,6 +37,8 @@ export default function Map() {
         },
         zoom: 10,
       });
+
+      map.add(new FeatureLayer({ url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL }));
 
       return () => { view && view.destroy(); };
     }, 

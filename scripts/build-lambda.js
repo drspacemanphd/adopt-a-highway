@@ -15,7 +15,7 @@ const buildLambda = async (functionName) => {
     await execAsync(`(cd amplify/backend/function/${functionName}/ && cp ./lib/*.json ./src && cp ./lib/yarn.lock ./src)`);
 
     // Copy install production dependencies
-    await execAsync(`(cd amplify/backend/function/${functionName}/src && yarn --cwd=./ --production install)`);
+    await execAsync(`(cd amplify/backend/function/${functionName}/src && yarn --cwd=./ --production --frozen-lockfile install)`);
 
     process.exit(0);
   } catch (err) {
