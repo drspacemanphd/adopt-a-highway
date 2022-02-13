@@ -7,15 +7,17 @@ import './Map.css';
 
 export default function Map() {
   const mapRef = useRef();
+  const arcGISMapRef = useRef({} as ArcGISMap);
+  const featureLayerRefreshInterval = useRef({} as any);
 
   useEffect(
     () => {
-      const map = new ArcGISMap({
+      arcGISMapRef.current = new ArcGISMap({
         basemap: 'gray-vector'
       });
     
       const view = new MapView({
-        map: map,
+        map: arcGISMapRef.current,
         container: mapRef.current as any,
         center: {
           type: 'point',
@@ -37,12 +39,36 @@ export default function Map() {
         },
         zoom: 10,
       });
-
-      map.add(new FeatureLayer({ url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL }));
+   
+      arcGISMapRef.current.add(new FeatureLayer({
+        url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL,
+        definitionExpression: 'SUBMIT_DATE > CURRENT_TIMESTAMP - INTERVAL \'7\' DAY'
+      }));
 
       return () => { view && view.destroy(); };
     }, 
     [] // On initial render
+  );
+
+  useEffect(
+    () => {
+      featureLayerRefreshInterval.current = setInterval(() => {
+        if (arcGISMapRef.current) {
+          arcGISMapRef.current.removeAll();
+          arcGISMapRef.current.add(new FeatureLayer({
+            url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL,
+            definitionExpression: 'SUBMIT_DATE > CURRENT_TIMESTAMP - INTERVAL \'7\' DAY'
+          }));
+        }
+      }, 120000);
+
+      return () => {
+        if (featureLayerRefreshInterval.current) {
+          clearInterval(featureLayerRefreshInterval.current);
+        }
+      };
+    },
+    []
   );
 
   return (

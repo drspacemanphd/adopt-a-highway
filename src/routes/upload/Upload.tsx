@@ -134,7 +134,7 @@ class Upload extends React.Component<any, any> {
             Body: file,
             Metadata: {
               guid,
-              userGuid: user?.attributes?.sub,
+              userguid: user?.attributes?.sub,
               latitude: this.geolocation?.coords?.latitude
                 ? this.geolocation.coords.latitude.toString()
                 : null,
