@@ -31,8 +31,6 @@ jobs:
           ENV: ${{ github.ref_name }}
       - name: Build
         run: yarn run build
-        env:
-          REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL: https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-dev/FeatureServer/0
       - name: Deploy
         run: sh ./scripts/ci-amplify-publish.sh
       - name: Force commit amplify modifications
