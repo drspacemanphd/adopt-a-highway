@@ -54,7 +54,11 @@ export const handler = async (event: SQSEvent) => {
     return JSON.stringify({ body: 'done'});
   }
 
-  await saveLitterImageDataToLayer(imagesWithLitter, token);
+  const res = await saveLitterImageDataToLayer(imagesWithLitter, token);
+
+  if (!res.data || !Array.isArray(res.data.addResults) || (res.data.addResults as any[]).filter(result => !result.success).length) {
+    throw new Error(JSON.stringify(res.data));
+  }
 };
 
 const partitionImages = async (messages: SQSRecord[]) => {
@@ -353,11 +357,11 @@ const getArcgisToken = async () => {
 const saveLitterImageDataToLayer = async (imageData: Array<{ record: { bucket: string, key: string, metadata: any }, response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse> }>, token: string) => {
   const features = imageData.map(image => {
     const litterLabels = image.response.value.Labels.filter(label => TRASH_RELATED_LABELS.includes(label.Name.toLowerCase()));
-
+  
     return {
       attributes: {
         GUID: image.record.metadata?.guid || '{11111111-1111-1111-1111-111111111111}',
-        USER_GUID: image.record.metadata?.userGuid || '{11111111-1111-1111-1111-111111111111}',
+        USER_GUID: image.record.metadata?.userguid || '{11111111-1111-1111-1111-111111111111}',
         IMAGE_KEY: image.record.key,
         SUBMIT_DATE: new Date().toISOString(),
         RAW_ANALYSIS: JSON.stringify(image.response.value.Labels),
@@ -384,7 +388,7 @@ const saveLitterImageDataToLayer = async (imageData: Array<{ record: { bucket: s
 
   console.log(`Image Processor - Received response when saving litter record: ${JSON.stringify(res.data)}`);
 
-  return res.data;
+  return res;
 };
 
 const saveFlaggedImageDataToLayer = async (imageData: Array<{ record: { bucket: string, key: string, metadata: any }, response: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse> }>, token: string) => {
@@ -392,7 +396,7 @@ const saveFlaggedImageDataToLayer = async (imageData: Array<{ record: { bucket: 
     return {
       attributes: {
         GUID: image.record.metadata?.guid || '{11111111-1111-1111-1111-111111111111}',
-        USER_GUID: image.record.metadata?.userGuid || '{11111111-1111-1111-1111-111111111111}',
+        USER_GUID: image.record.metadata?.userguid || '{11111111-1111-1111-1111-111111111111}',
         IMAGE_KEY: image.record.key,
         SUBMIT_DATE: new Date().toISOString(),
         RAW_ANALYSIS: JSON.stringify(image.response.value.ModerationLabels),
@@ -413,7 +417,7 @@ const saveFlaggedImageDataToLayer = async (imageData: Array<{ record: { bucket: 
 
   console.log(`Image Processor - Received response when saving inappropriate image record: ${JSON.stringify(res.data)}`);
 
-  return res.data;
+  return res;
 };
 
 const saveLitterlessImageDataToLayer = async (imageData: Array<{ record: { bucket: string, key: string, metadata: any }, response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse> }>, token: string) => {
@@ -421,7 +425,7 @@ const saveLitterlessImageDataToLayer = async (imageData: Array<{ record: { bucke
     return {
       attributes: {
         GUID: image.record.metadata?.guid || '{11111111-1111-1111-1111-111111111111}',
-        USER_GUID: image.record.metadata?.userGuid || '{11111111-1111-1111-1111-111111111111}',
+        USER_GUID: image.record.metadata?.userguid || '{11111111-1111-1111-1111-111111111111}',
         IMAGE_KEY: image.record.key,
         SUBMIT_DATE: new Date().toISOString(),
         RAW_ANALYSIS: JSON.stringify(image.response.value.Labels),
@@ -442,5 +446,5 @@ const saveLitterlessImageDataToLayer = async (imageData: Array<{ record: { bucke
 
   console.log(`Image Processor - Received response when saving litterless record: ${JSON.stringify(res.data)}`);
 
-  return res.data;
+  return res;
 };
