@@ -120,7 +120,7 @@ class Upload extends React.Component<any, any> {
   }
 
   private async handlePhoto() {
-    const imageUploadEl = document.getElementById('ada-image-input');
+    const imageUploadEl = document.getElementById('ada-image-upload');
     if (imageUploadEl) {
       const file = (imageUploadEl as any)?.files[0];
       if (file) {
@@ -134,7 +134,7 @@ class Upload extends React.Component<any, any> {
             Body: file,
             Metadata: {
               guid,
-              userGuid: user?.attributes?.sub,
+              userguid: user?.attributes?.sub,
               latitude: this.geolocation?.coords?.latitude
                 ? this.geolocation.coords.latitude.toString()
                 : null,
