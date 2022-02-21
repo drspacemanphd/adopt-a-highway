@@ -8,3 +8,7 @@
 #ada-image-upload {
   display: none;
 }
+
+#ada-upload #upload-button:hover {
+  background-color: rgba(4,75,100,1);
+}

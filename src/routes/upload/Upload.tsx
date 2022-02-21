@@ -152,7 +152,7 @@ class Upload extends React.Component<any, any> {
   render() {
     return (
       <div className='route-layout' id='ada-upload'>
-        <Button data-variation='primary'>
+        <Button id='upload-button' data-variation='primary'>
           <label htmlFor='ada-image-upload'>Submit an Image!</label>
         </Button>
         <input
