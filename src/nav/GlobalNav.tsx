@@ -1,8 +1,9 @@
 import {
-  Button,
   IconLogin,
   IconMap,
   IconPhotoCamera,
+  Menu,
+  MenuItem
 } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -19,43 +20,33 @@ export function GlobalNav(): JSX.Element {
       {({ user }) => {
         return (
           <nav className='app-nav'>
-            <div>ADOPT_A_HIGHWAY</div>
-            <ul className='app-nav-links'>
-              {/* Using Buttons instead of Links for more consistent styling for Amplify Signout
-                per JSX eslint, sorry :( */}
-              <li className='app-nav-link'>
-                <Button
-                  className={`app-nav-link-button${location.pathname === '/' ? '-active' : ''}`}
-                  onClick={() => navigate('/')}
-                >
-                  <IconMap />
-                  Map
-                </Button>
-              </li>
-              <li className='app-nav-link'>
-                <Button
-                  className={`app-nav-link-button${location.pathname === '/upload' ? '-active' : ''}`}
-                  onClick={() => navigate('/upload')}
-                >
-                  <IconPhotoCamera />
-                  Upload
-                </Button>
-              </li>
-              {user ? (
-                <li className='app-nav-link'>
-                  <Button
-                    className='app-nav-link-button'
-                    onClick={async () => {
-                      await Auth.signOut();
-                      navigate('/');
-                    }}
+            <Menu className='app-nav-menu'>
+              <MenuItem
+                onClick={() => navigate('/')}
+                className={location.pathname === '/' ? 'app-nav-menu-item active' : 'app-nav-menu-item'}
+              >
+                <IconMap className='app-nav-menu-item-icon' />
+                Map
+              </MenuItem>
+              <MenuItem
+                onClick={() => navigate('/upload')}
+                className={location.pathname === '/upload' ? 'app-nav-menu-item active' : 'app-nav-menu-item'}
+              >
+                <IconPhotoCamera className='app-nav-menu-item-icon' />
+                Upload
+              </MenuItem>
+              {user ?
+                <MenuItem
+                  onClick={async () => {
+                    await Auth.signOut();
+                    navigate('/');
+                  }}
                   >
-                    <IconLogin />
+                    <IconLogin className='app-nav-menu-item-icon' />
                     Sign Out
-                  </Button>
-                </li>
-              ) : null}
-            </ul>
+                </MenuItem>
+                : null}
+            </Menu>
           </nav>
         );
       }}
