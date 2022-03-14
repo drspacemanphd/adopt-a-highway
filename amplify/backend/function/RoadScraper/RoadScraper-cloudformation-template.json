@@ -142,18 +142,9 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "adoptahighwayLambdaRole9c621cb1",
+            "RoadScraperExecutionRole",
             {
-              "Fn::Join": [
-                "",
-                [
-                  "adoptahighwayLambdaRole9c621cb1",
-                  "-",
-                  {
-                    "Ref": "env"
-                  }
-                ]
-              ]
+              "Fn::Sub": "RoadScraperExecutionRole-${env}"
             }
           ]
         },
