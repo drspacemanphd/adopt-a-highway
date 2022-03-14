@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import litterParams from "./create-litter-service-params.js";
 import nonlitterParams from "./create-nonlitter-service-params.js";
 import inappropriateImageParams from "./create-inappropriate-service-params.js";
+import roadParams from "./create-road-service-params.js";
 
 const env = process.env.ENV;
 const username = process.env.USERNAME;
@@ -39,7 +40,10 @@ async function createService(token) {
     createServerParameters = nonlitterParams.getCreateServiceParams({ env });
   } else if (domainType.toLowerCase() === "inappropriate") {
     createServerParameters = inappropriateImageParams.getCreateServiceParams({ env });
+  } else if (domainType.toLowerCase() === "roads") {
+    createServerParameters = roadParams.getCreateServiceParams({ env });
   }
+
 
   const params = new URLSearchParams();
   params.append("createParameters", JSON.stringify(createServerParameters));
@@ -61,7 +65,9 @@ async function createLayer(url) {
     createLayerParameters = nonlitterParams.getCreateLayerParams({ env });
   } else if (domainType.toLowerCase() === 'inappropriate') {
     createLayerParameters = inappropriateImageParams.getCreateLayerParams({ env });
-  }  
+  } else if (domainType.toLowerCase() === 'roads') {
+    createLayerParameters = roadParams.getCreateLayerParams({ env });
+  }
 
   const params = new URLSearchParams();
   params.append("addToDefinition", JSON.stringify(createLayerParameters));

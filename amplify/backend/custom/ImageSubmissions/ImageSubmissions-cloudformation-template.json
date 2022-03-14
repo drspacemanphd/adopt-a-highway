@@ -50,9 +50,19 @@
         "CorsConfiguration": {
           "CorsRules": [
             {
-              "AllowedHeaders": ["*"],
-              "AllowedMethods": ["GET","PUT","HEAD","POST","DELETE"],
-              "AllowedOrigins": ["*"]
+              "AllowedHeaders": [
+                "*"
+              ],
+              "AllowedMethods": [
+                "GET",
+                "PUT",
+                "HEAD",
+                "POST",
+                "DELETE"
+              ],
+              "AllowedOrigins": [
+                "*"
+              ]
             }
           ]
         }

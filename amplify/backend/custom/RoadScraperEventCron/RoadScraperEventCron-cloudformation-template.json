@@ -1,0 +1,64 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "functionRoadScraperArn": {
+      "Type": "String",
+      "Description": "Input parameter describing Arn attribute for function/RoadScraper resource"
+    }
+  },
+  "Resources": {
+    "RoadScraperEventCron": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Cron trigger for Road Scraper Lambda",
+        "Name": {
+          "Fn::Sub": [
+            "road-scraper-event-cron-${env}",
+            {
+              "env": {
+                "Ref": "env"
+              }
+            }
+          ]
+        },
+        "ScheduleExpression": "cron(0 12 * * ? *)",
+        "Targets": [
+          {
+            "Arn": {
+              "Ref": "functionRoadScraperArn"
+            },
+            "Id": {
+              "Fn::Sub": [
+                "road-scraper-lambda-${env}",
+                {
+                  "env": {
+                    "Ref": "env"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "EventId": {
+      "Value": {
+        "Ref": "RoadScraperEventCron"
+      }
+    },
+    "Arn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "RoadScraperEventCron",
+          "Arn"
+        ]
+      }
+    }
+  },
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}

@@ -1,0 +1,37 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    },
+    "functionRoadScraperName": {
+      "Type": "String",
+      "Description": "Input parameter describing Name attribute for function/RoadScraper resource"
+    },
+    "functionRoadScraperLambdaExecutionRole": {
+      "Type": "String",
+      "Description": "Input parameter describing Lambda Execution Role attribute for function/RoadScraper resource"
+    },
+    "customRoadScraperEventCronArn": {
+      "Type": "String",
+      "Description": "Input parameter describing Arn attribute for custom/RoadScraperEventCron resource"
+    }
+  },
+  "Resources": {
+    "RoadScraperEventCronInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties":             {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "functionRoadScraperName"
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Ref": "customRoadScraperEventCronArn"
+        }
+      }
+    }
+  },
+  "Outputs": {},
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.6.4\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}

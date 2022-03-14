@@ -184,6 +184,40 @@
           ]
         }
       ]
+    },
+    "RoadScraperEventCron": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "RoadScraper",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
+    },
+    "RoadScraperEventCronInvokePolicy": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "RoadScraper",
+          "attributes": [
+            "Name",
+            "LambdaExecutionRole"
+          ]
+        },
+        {
+          "category": "custom",
+          "resourceName": "RoadScraperEventCron",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
     }
   },
   "function": {
@@ -221,6 +255,11 @@
           ]
         }
       ]
+    },
+    "RoadScraper": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "auth": {
