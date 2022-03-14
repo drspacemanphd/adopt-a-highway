@@ -34,6 +34,10 @@ export type AmplifyDependentResourcesAttributes = {
         },
         "CognitoIdentityPoolSubmitAccess": {
             "Arn": "string"
+        },
+        "RoadScraperEventCron": {
+            "EventId": "string",
+            "Arn": "string"
         }
     },
     "function": {
@@ -45,6 +49,12 @@ export type AmplifyDependentResourcesAttributes = {
             "LambdaTriggerPermission": "string"
         },
         "ImageProcessor": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        },
+        "RoadScraper": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",

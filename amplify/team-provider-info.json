@@ -21,6 +21,11 @@
           "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
           "s3Key": "amplify-builds/ImageProcessor-4b656935532f79345669-build.zip",
           "secretsPathAmplifyAppId": "d3gp1lr0l5y30h"
+        },
+        "RoadScraper": {
+          "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
+          "s3Key": "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip",
+          "secretsPathAmplifyAppId": "d3gp1lr0l5y30h"
         }
       },
       "auth": {

@@ -184,6 +184,19 @@
           ]
         }
       ]
+    },
+    "RoadScraperEventCron": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "RoadScraper",
+          "attributes": [
+            "Arn"
+          ]
+        }
+      ]
     }
   },
   "function": {
@@ -221,6 +234,11 @@
           ]
         }
       ]
+    },
+    "RoadScraper": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "auth": {

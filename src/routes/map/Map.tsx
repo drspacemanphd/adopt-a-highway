@@ -6,7 +6,7 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import './Map.css';
 
 export default function Map() {
-  const mapRef = useRef();
+  const mapContainerRef = useRef();
   const arcGISMapRef = useRef({} as ArcGISMap);
   const featureLayerRefreshInterval = useRef({} as any);
 
@@ -18,7 +18,7 @@ export default function Map() {
     
       const view = new MapView({
         map: arcGISMapRef.current,
-        container: mapRef.current as any,
+        container: mapContainerRef.current as any,
         center: {
           type: 'point',
           latitude: 39.723555,
@@ -42,7 +42,19 @@ export default function Map() {
    
       arcGISMapRef.current.add(new FeatureLayer({
         url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL,
-        definitionExpression: 'SUBMIT_DATE > CURRENT_TIMESTAMP - INTERVAL \'7\' DAY'
+        definitionExpression: 'SUBMIT_DATE > CURRENT_TIMESTAMP - INTERVAL \'7\' DAY',
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'simple-marker',
+            color: 'rgba(200,90,0,1)',
+            size: 6,
+            outline: {
+              color: 'black',
+              width: '1px'
+            }
+          }
+        } as __esri.RendererProperties
       }));
 
       return () => { view && view.destroy(); };
@@ -57,7 +69,19 @@ export default function Map() {
           arcGISMapRef.current.removeAll();
           arcGISMapRef.current.add(new FeatureLayer({
             url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL,
-            definitionExpression: 'SUBMIT_DATE > CURRENT_TIMESTAMP - INTERVAL \'7\' DAY'
+            definitionExpression: 'SUBMIT_DATE > CURRENT_TIMESTAMP - INTERVAL \'7\' DAY',
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'simple-marker',
+                color: 'rgba(200,90,0,1)',
+                size: 6,
+                outline: {
+                  color: 'black',
+                  width: '1px'
+                }
+              }
+            } as __esri.RendererProperties
           }));
         }
       }, 120000);
@@ -73,7 +97,7 @@ export default function Map() {
 
   return (
     <div className='route-layout' id='ada-map'>
-      <div className='ada-map' ref={mapRef}></div>
+      <div className='ada-map' ref={mapContainerRef}></div>
     </div>
   );
 }
