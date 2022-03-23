@@ -4,9 +4,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Amplify from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 
-import App from './app/App';
-import Upload from './routes/upload/Upload';
-import Map from './routes/map/Map';
+import { App } from './app/App';
+import { Upload } from './routes/upload/Upload';
+import { Map } from './routes/map/Map';
 
 import reportWebVitals from './reportWebVitals';
 import awsExports from './aws-exports';

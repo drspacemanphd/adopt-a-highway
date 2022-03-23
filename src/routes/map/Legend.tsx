@@ -1,22 +1,12 @@
-import { CheckboxField, Radio } from '@aws-amplify/ui-react';
 import React from 'react';
+import { CheckboxField, Radio } from '@aws-amplify/ui-react';
+import { Filter } from './Filter';
 
 import './Legend.css';
 
-export type LegendFilter = {
-  label: string,
-  filterName: string,
-  selectMode: 'single' | 'multi',
-  options: Array<{
-    label: string,
-    value: any,
-    selected: boolean,
-  }>
-}
-
 type LegendProps = {
   open: boolean,
-  filters: Array<LegendFilter>,
+  filters: Array<Filter>,
   onChange: (e: {
     filterLabel: string,
     filterName: string,
@@ -25,7 +15,7 @@ type LegendProps = {
   }) => any
 }
 
-export default function Legend(props: LegendProps) {
+export function Legend(props: LegendProps) {
   const filters = props.filters || [];
 
   const sections = filters.map((filter: Record<string, any>) => {
@@ -40,6 +30,7 @@ export default function Legend(props: LegendProps) {
         return (
           <CheckboxField
             className='filter-option-checkbox'
+            key={`${filterLabel}-${option.label}`}
             label={option.label}
             name={option.label}
             value={option.value}
@@ -65,6 +56,7 @@ export default function Legend(props: LegendProps) {
       const inputs = (filterOptions || []).map((option: { label: string, value: string, selected: boolean }) => {
         return (
           <Radio
+            key={`${filterLabel}-${option.label}`}
             className='filter-option-radio'
             value={option.value}
             checked={option.selected}
@@ -90,7 +82,7 @@ export default function Legend(props: LegendProps) {
     }
 
     return (
-      <div className='filter-section'>
+      <div className='filter-section' key={filterLabel}>
         {section}
       </div>
     );

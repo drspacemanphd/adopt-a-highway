@@ -7,7 +7,7 @@ import { GlobalNav } from '../nav/GlobalNav';
 
 import './App.css';
 
-function App() {
+export function App() {
   const [user, setUser] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,5 +50,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import ArcGISMap from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import Legend, { LegendFilter } from './Legend';
+import { Legend } from './Legend';
+import { Filter } from './Filter';
 
 import './Map.css';
 
-const defaultFilters: Record<string, LegendFilter> = {
+const defaultFilters: Record<string, Filter> = {
   Adoptable: {
     label: 'Adopted',
     filterName: 'Adoptable',
@@ -70,7 +71,7 @@ const defaultFilters: Record<string, LegendFilter> = {
   }
 };
 
-const buildFilterExpression = (filter: LegendFilter, operator: string, wrapper?: (value: string) => string) => {
+const buildFilterExpression = (filter: Filter, operator: string, wrapper?: (value: string) => string) => {
   return filter.options.filter((option) => option.selected)
     .map(option => {
       return `${filter.filterName} ${operator} ${wrapper ? wrapper(option.value) : option.value}`;
@@ -80,7 +81,7 @@ const buildFilterExpression = (filter: LegendFilter, operator: string, wrapper?:
 
 const updateFilters = (
   filters: Record<string, any>, filterName: string, optionValue: any
-): Record<string, LegendFilter> => {
+): Record<string, Filter> => {
   const clonedFilters = { ...filters };
 
   const filter = clonedFilters[filterName];
@@ -99,11 +100,10 @@ const updateFilters = (
   return clonedFilters;
 };
 
-export default function Map() {
+export function Map() {
   const mapContainerRef = useRef();
   const arcGISMapRef = useRef({} as ArcGISMap);
 
-  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState(defaultFilters);
 
   // Hooks
