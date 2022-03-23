@@ -6,7 +6,7 @@ import { Button } from '@aws-amplify/ui-react';
 
 import './Upload.css';
 
-class Upload extends React.Component<any, any> {
+export class Upload extends React.Component<any, any> {
   private s3: S3Client = null;
   private hasRequiredPermissions: boolean = false;
   private geolocationRefresher: any = null;
@@ -167,5 +167,3 @@ class Upload extends React.Component<any, any> {
     );
   }
 }
-
-export default Upload;
