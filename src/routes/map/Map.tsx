@@ -1,73 +1,73 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import { loadModules } from "esri-loader";
-import { Icon } from "@aws-amplify/ui-react";
+import { loadModules } from 'esri-loader';
+import { Icon } from '@aws-amplify/ui-react';
 
-import { Legend } from "./Legend";
-import { Modal } from "./Modal";
-import { Filter } from "./Filter";
-import { onSmallDevice } from "../../utils/on-small-device";
+import { Legend } from './Legend';
+import { Modal } from './Modal';
+import { Filter } from './Filter';
+import { onSmallDevice } from '../../utils/on-small-device';
 
-import "./Map.css";
+import './Map.css';
 
 const defaultFilters: Record<string, Filter> = {
   Adoptable: {
-    label: "Adopted",
-    filterName: "Adoptable",
-    selectMode: "multi",
+    label: 'Adopted',
+    filterName: 'Adoptable',
+    selectMode: 'multi',
     options: [
       {
-        label: "No",
-        value: "N",
+        label: 'No',
+        value: 'N',
         selected: true,
       },
       {
-        label: "Yes",
-        value: "Y",
+        label: 'Yes',
+        value: 'Y',
         selected: true,
       },
     ],
   },
   CountyFull: {
-    label: "County",
-    filterName: "CountyFull",
-    selectMode: "multi",
+    label: 'County',
+    filterName: 'CountyFull',
+    selectMode: 'multi',
     options: [
       {
-        label: "New Castle",
-        value: "New Castle County",
+        label: 'New Castle',
+        value: 'New Castle County',
         selected: true,
       },
       {
-        label: "Kent",
-        value: "Kent County",
+        label: 'Kent',
+        value: 'Kent County',
         selected: false,
       },
       {
-        label: "Sussex",
-        value: "Sussex County",
+        label: 'Sussex',
+        value: 'Sussex County',
         selected: false,
       },
     ],
   },
   SUBMIT_DATE: {
-    label: "Litter",
-    filterName: "SUBMIT_DATE",
-    selectMode: "single" as "single" | "multi",
+    label: 'Litter',
+    filterName: 'SUBMIT_DATE',
+    selectMode: 'single' as 'single' | 'multi',
     options: [
       {
-        label: "Past Week",
-        value: "7",
+        label: 'Past Week',
+        value: '7',
         selected: true,
       },
       {
-        label: "Past Month",
-        value: "30",
+        label: 'Past Month',
+        value: '30',
         selected: false,
       },
       {
-        label: "Past Year",
-        value: "365",
+        label: 'Past Year',
+        value: '365',
         selected: false,
       },
     ],
@@ -86,7 +86,7 @@ const buildFilterExpression = (
         wrapper ? wrapper(option.value) : option.value
       }`;
     })
-    .join(" OR ");
+    .join(' OR ');
 };
 
 const updateFilters = (
@@ -104,7 +104,7 @@ const updateFilters = (
   filter.options.forEach((o: any) => {
     if (o.value === optionValue) {
       o.selected = !o.selected;
-    } else if (filter.selectMode === "single") {
+    } else if (filter.selectMode === 'single') {
       o.selected = false;
     }
   });
@@ -127,7 +127,7 @@ export function Map() {
   useEffect(
     () => {
       const loadMapModules = async () => {
-        return loadModules(["esri/Map", "esri/views/MapView"]).then(
+        return loadModules(['esri/Map', 'esri/views/MapView']).then(
           ([ArcGISMap, MapView]) => {
             _Map.current = ArcGISMap;
             _MapView.current = MapView;
@@ -138,20 +138,20 @@ export function Map() {
 
       const loadMap = async () => {
         arcGISMapRef.current = new (_Map.current as any)({
-          basemap: "gray-vector",
+          basemap: 'gray-vector',
         });
 
         viewInstance.current = new (_MapView.current as any)({
           map: arcGISMapRef.current,
           container: mapContainerRef.current as any,
           center: {
-            type: "point",
+            type: 'point',
             latitude: 39.723555,
             longitude: -75.658499,
           },
           constraints: {
             geometry: {
-              type: "extent",
+              type: 'extent',
               xmin: -8436794.6354,
               ymin: 4643205.1946,
               xmax: -8354516.4673,
@@ -167,7 +167,7 @@ export function Map() {
       };
 
       const loadFeatureLayerModule = async () => {
-        return loadModules(["esri/layers/FeatureLayer"]).then(
+        return loadModules(['esri/layers/FeatureLayer']).then(
           ([FeatureLayer]) => {
             _FeatureLayer.current = FeatureLayer;
             renderFeatures();
@@ -181,46 +181,46 @@ export function Map() {
         layers.removeAll();
 
         const litterDefinitionExpression = buildFilterExpression(
-          filters["SUBMIT_DATE"],
-          ">",
+          filters['SUBMIT_DATE'],
+          '>',
           (val: string) => `CURRENT_TIMESTAMP - INTERVAL '${val}' DAY`
         );
 
         arcGISMapRef.current.add(
           new (_FeatureLayer.current as any)({
             url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL,
-            definitionExpression: litterDefinitionExpression || "1=1",
+            definitionExpression: litterDefinitionExpression || '1=1',
             renderer: {
-              type: "simple",
+              type: 'simple',
               symbol: {
-                type: "simple-marker",
-                color: "rgba(200,90,0,1)",
+                type: 'simple-marker',
+                color: 'rgba(200,90,0,1)',
                 size: 6,
                 outline: {
-                  color: "black",
-                  width: "1px",
+                  color: 'black',
+                  width: '1px',
                 },
               },
             } as __esri.RendererProperties,
           })
         );
 
-        const roadsDefinitionExpression = ["Adoptable", "CountyFull"]
+        const roadsDefinitionExpression = ['Adoptable', 'CountyFull']
           .map((filterName) => {
             const filter = filters[filterName];
             return `(${buildFilterExpression(
               filter,
-              "=",
+              '=',
               (val: string) => `'${val}'`
             )})`;
           })
-          .filter((expr: string) => expr !== "()");
+          .filter((expr: string) => expr !== '()');
 
         arcGISMapRef.current.add(
           new (_FeatureLayer.current as any)({
             url: process.env.REACT_APP_ROADS_FEATURE_SERVICE_LAYER_URL,
             definitionExpression:
-              roadsDefinitionExpression.join(" AND ") || "1=1",
+              roadsDefinitionExpression.join(' AND ') || '1=1',
           })
         );
       };
@@ -263,19 +263,19 @@ export function Map() {
 
   const renderFilterIcon = () => (
     <Icon
-      className="ada-map-filters-mobile-icon"
-      role="button"
+      className='ada-map-filters-mobile-icon'
+      role='button'
       onClick={() => setModalOpen(true)}
-      ariaLabel="open-filter-modal"
-      pathData="M6.99999 6H17L11.99 12.3L6.99999 6ZM4.24999 5.61C6.26999 8.2 9.99999 13 9.99999 13V19C9.99999 19.55 10.45 20 11 20H13C13.55 20 14 19.55 14 19V13C14 13 17.72 8.2 19.74 5.61C20.25 4.95 19.78 4 18.95 4H5.03999C4.20999 4 3.73999 4.95 4.24999 5.61Z"
+      ariaLabel='open-filter-modal'
+      pathData='M6.99999 6H17L11.99 12.3L6.99999 6ZM4.24999 5.61C6.26999 8.2 9.99999 13 9.99999 13V19C9.99999 19.55 10.45 20 11 20H13C13.55 20 14 19.55 14 19V13C14 13 17.72 8.2 19.74 5.61C20.25 4.95 19.78 4 18.95 4H5.03999C4.20999 4 3.73999 4.95 4.24999 5.61Z'
       viewBox={{ minX: 0, minY: 0, height: 24, width: 24 }}
     />
   );
 
   return (
-    <div className="route-layout">
-      <div id="ada-map-container">
-        <div className="ada-map" ref={mapContainerRef}></div>
+    <div className='route-layout'>
+      <div id='ada-map-container'>
+        <div className='ada-map' ref={mapContainerRef}></div>
       </div>
       {onSmallDevice() ? (
         renderFilterIcon()
