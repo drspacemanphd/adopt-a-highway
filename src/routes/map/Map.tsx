@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import ArcGISMap from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import { Icon } from '@aws-amplify/ui-react';
+
 import { Legend } from './Legend';
 import { Modal } from './Modal';
 import { Filter } from './Filter';
+import { onSmallDevice } from '../../utils/on-small-device';
 
 import './Map.css';
-import { onSmallDevice } from '../../utils/on-small-device';
-import { Icon } from '@aws-amplify/ui-react';
 
 const defaultFilters: Record<string, Filter> = {
   Adoptable: {
