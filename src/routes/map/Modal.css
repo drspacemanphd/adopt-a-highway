@@ -1,0 +1,66 @@
+.ada-map-modal {
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  width: 100vw;
+  position: absolute;
+  bottom: 0vh;
+  left: 0vw;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ada-map-modal-content {
+  height: 40%;
+  width: 80%;
+  background-color: white;
+  box-shadow: 0px 3px 8px rgb(0,0,0);
+  border-radius: 5px;
+  padding: 10px 20px 10px 20px;
+}
+
+.ada-map-modal-header {
+  height: 10%;
+  position: relative;
+}
+
+.ada-map-modal-header svg {
+  position: absolute;
+  right: 0;
+  top: 5px;
+}
+
+.ada-map-modal-main {
+  height: 80%;
+}
+
+.ada-map-modal-footer {
+  height: 10%;
+}
+
+
+.ada-map-modal .filter-section:not(:first-child) {
+  margin-top: 20px;
+}
+
+.ada-map-modal .filter-section-options {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 5px;
+}
+
+.ada-map-modal .filter-option-checkbox {
+  margin-right: 5%;
+}
+
+.ada-map-modal .filter-option-radio {
+  margin-right: 20px;
+  gap: 10px;
+}
+
+.ada-map-modal .filter-option-radio .amplify-text {
+  max-width: 50px;
+}

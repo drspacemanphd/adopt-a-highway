@@ -1,5 +1,6 @@
 .app {
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   width: 100vw;
   background-color: rgb(243, 242, 239);
 }
