@@ -84,7 +84,7 @@ const litterPopupTemplate: __esri.PopupTemplate = {
       <ul>
       <li> Submit Date: {SUBMIT_DATE} </li>
       <li> Classification: {CLASSIFICATION_FIRST} </li>
-      <li><a href="${process.env.REACT_APP_LITTER_BUCKET_URL}/{IMAGE_KEY}">Image Link</a></li>
+      <li><a target="_blank" href="${process.env.REACT_APP_LITTER_BUCKET_URL}/{IMAGE_KEY}">Image Link</a></li>
       </ul> 
     `;
   }
