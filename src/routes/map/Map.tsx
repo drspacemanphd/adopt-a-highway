@@ -78,8 +78,6 @@ const litterPopupTemplate: __esri.PopupTemplate = {
   title: 'Litter',
   outFields: ['*'],
   content: (_event: any) => {
-    console.log(process.env);
-    console.log(process.env.REACT_APP_LITTER_BUCKET_URL);
     return `
       <ul>
       <li> Submit Date: {SUBMIT_DATE} </li>
