@@ -6,6 +6,8 @@ import axios from 'axios';
 const REGION = process.env.REGION;
 const FLAGGED_SUBMISSIONS_BUCKET = process.env.FLAGGED_SUBMISSIONS_BUCKET;
 const REJECTED_SUBMISSIONS_BUCKET = process.env.REJECTED_SUBMISSIONS_BUCKET;
+const LITTER_IMAGES_BUCKET = process.env.LITTER_IMAGES_BUCKET;
+
 const LITTER_FEATURE_LAYER_URL = process.env.LITTER_FEATURE_LAYER_URL;
 const LITTERLESS_FEATURE_LAYER_URL = process.env.LITTERLESS_FEATURE_LAYER_URL;
 const INAPPROPRIATE_FEATURE_LAYER_URL = process.env.INAPPROPRIATE_FEATURE_LAYER_URL;
@@ -26,7 +28,7 @@ let token;
 
 // Design in case of multiple images, knowing max records length is 1 per Cloudformation config
 export const handler = async (event: SQSEvent) => {
-  console.log(`Handling ${event.Records?.length} records`);
+  console.log(`Image Processor - Handling ${event.Records?.length} records`);
 
   const { images, invalidMessages } = await partitionImages(event.Records);
   logInvalidMessages(invalidMessages);
@@ -54,11 +56,9 @@ export const handler = async (event: SQSEvent) => {
     return JSON.stringify({ body: 'done'});
   }
 
-  const res = await saveLitterImageDataToLayer(imagesWithLitter, token);
+  await handleImagesWithLitter(imagesWithLitter);
 
-  if (!res.data || !Array.isArray(res.data.addResults) || (res.data.addResults as any[]).filter(result => !result.success).length) {
-    throw new Error(JSON.stringify(res.data));
-  }
+  return JSON.stringify({ body: 'done'});
 };
 
 const partitionImages = async (messages: SQSRecord[]) => {
@@ -150,6 +150,17 @@ const handleImageLabelAnalysis = async (images: Array<{ record:  { bucket: strin
   }
 
   return responses.imagesWithLitter;
+};
+
+const handleImagesWithLitter = async (images: Array<{ record: { bucket: string, key: string, metadata: any }, response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse> }>) => {
+  const processedLitterImages = images.map((image) => processLitterImage(image.record, image.response));
+
+  // Simply log failures, no need for a retry
+  const responses = await Promise.allSettled(processedLitterImages);
+
+  if (responses.some(res => res.status === 'rejected')) {
+    throw new Error('Image Processor - At least one image containing litter could not be processed');
+  }
 };
 
 const requestContentModerationAnalysis = (
@@ -447,4 +458,51 @@ const saveLitterlessImageDataToLayer = async (imageData: Array<{ record: { bucke
   console.log(`Image Processor - Received response when saving litterless record: ${JSON.stringify(res.data)}`);
 
   return res;
+};
+
+const processLitterImage = async (
+  record: { bucket: string, key: string, metadata: any },
+  response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse>,
+) => {
+  console.info(`Image Processor - Rekognition reported that ${record.bucket}/${record.key} contains litter`);
+
+  try {
+    await s3.copyObject({
+      CopySource: `${record.bucket}/${record.key}`,
+      Bucket: LITTER_IMAGES_BUCKET,
+      Key: record.key,
+      ACL: 'public-read',
+    }).promise();
+    console.log(`Image Processor - Successfully copied: ${record.bucket}/${record.key} to ${LITTER_IMAGES_BUCKET}`);
+  } catch (err) {
+    console.error(`Image Processor - Copied object request failed for ${record.bucket}/${record.key} due to ${err}`);
+    throw err;
+  }
+
+  try {
+    const res = await saveLitterImageDataToLayer([
+      {
+        record: { bucket: LITTER_IMAGES_BUCKET, key: record.key, metadata: record.metadata },
+        response
+      },
+    ], token);
+
+    if (!res.data || !Array.isArray(res.data.addResults) || (res.data.addResults as any[]).filter(result => !result.success).length) {
+      throw new Error(JSON.stringify(res.data));
+    }
+
+    console.log(`Image Processor - Successfully saved litter image to layer: ${LITTER_IMAGES_BUCKET}/${record.key}`);
+
+  } catch (err) {
+    console.error(`Image Processor - Saving litter image to layer failed for ${record.bucket}/${record.key} due to ${err}`);
+    throw err;
+  }
+
+  try {
+    await s3.deleteObject({ Bucket: record.bucket, Key: record.key }).promise();
+    console.log(`Image Processor - Successfully deleted: ${record.bucket}/${record.key}`);
+  } catch (err) {
+    // Not worth a retry
+    console.warn(`Image Processor - Delete object request failed for ${record.bucket}/${record.key} due to ${err}`);
+  }
 };
