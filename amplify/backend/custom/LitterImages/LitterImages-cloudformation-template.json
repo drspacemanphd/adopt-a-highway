@@ -12,7 +12,7 @@
     "LitterImages": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "AccessControl": "BucketOwnerFullControl",
+        "AccessControl": "PublicRead",
         "BucketName": {
           "Fn::Sub": "${s3BucketPrefix}-${env}"
         },
@@ -24,15 +24,17 @@
               "Transitions": [
                 {
                   "StorageClass": "STANDARD_IA",
-                  "TransitionInDays": 30
+                  "TransitionInDays": 370
                 }
               ]
             }
           ]
         },
         "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true
+          "BlockPublicAcls": false,
+          "BlockPublicPolicy": false,
+          "IgnorePublicAcls" : false,
+          "RestrictPublicBuckets" : false
         }
       }
     }

@@ -17,6 +17,9 @@
     "customRejectedSubmissionsName": {
       "Type": "String"
     },
+    "customLitterImagesName": {
+      "Type": "String"
+    },
     "secretsPathAmplifyAppId": {
       "Type": "String"
     }
@@ -70,6 +73,9 @@
             },
             "REJECTED_SUBMISSIONS_BUCKET": {
               "Ref": "customRejectedSubmissionsName"
+            },
+            "LITTER_IMAGES_BUCKET": {
+              "Ref": "customLitterImagesName"
             },
             "ArcgisUsername": {
               "Fn::Join": [

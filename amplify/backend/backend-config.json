@@ -253,6 +253,13 @@
           "attributes": [
             "Name"
           ]
+        },
+        {
+          "category": "custom",
+          "resourceName": "LitterImages",
+          "attributes": [
+            "Name"
+          ]
         }
       ]
     },
