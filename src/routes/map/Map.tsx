@@ -74,6 +74,21 @@ const defaultFilters: Record<string, Filter> = {
   },
 };
 
+const litterPopupTemplate: __esri.PopupTemplate = {
+  title: 'Litter',
+  outFields: ['*'],
+  content: (event: any) => {
+    console.log(event.graphic);
+    return `
+      <ul>
+      <li> Submit Date: {SUBMIT_DATE} </li>
+      <li> Classification: {CLASSIFICATION_FIRST} </li>
+      <li><a href="${process.env.REACT_APP_LITTER_BUCKET_URL}/{IMAGE_KEY}">Image Link</a></li>
+      </ul> 
+    `;
+  }
+} as any;
+
 const buildFilterExpression = (
   filter: Filter,
   operator: string,
@@ -137,11 +152,14 @@ export function Map() {
       };
 
       const loadMap = async () => {
-        arcGISMapRef.current = new (_Map.current as any)({
+        const Map = _Map.current as __esri.MapConstructor;
+        const MapView = _MapView.current as __esri.MapViewConstructor;
+
+        arcGISMapRef.current = new Map({
           basemap: 'gray-vector',
         });
 
-        viewInstance.current = new (_MapView.current as any)({
+        viewInstance.current = new MapView({
           map: arcGISMapRef.current,
           container: mapContainerRef.current as any,
           center: {
@@ -159,7 +177,7 @@ export function Map() {
               spatialReference: {
                 wkid: 3857,
               },
-            },
+            } as __esri.Extent,
             minZoom: 10,
           },
           zoom: 10,
@@ -177,6 +195,8 @@ export function Map() {
 
 
       const renderFeatures = async () => {
+        const FeatureLayer = _FeatureLayer.current as __esri.FeatureLayerConstructor;
+
         const layers = arcGISMapRef.current.layers;
         layers.removeAll();
 
@@ -187,7 +207,7 @@ export function Map() {
         );
 
         arcGISMapRef.current.add(
-          new (_FeatureLayer.current as any)({
+          new FeatureLayer({
             url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL,
             definitionExpression: litterDefinitionExpression || '1=1',
             renderer: {
@@ -202,6 +222,7 @@ export function Map() {
                 },
               },
             } as __esri.RendererProperties,
+            popupTemplate: litterPopupTemplate
           })
         );
 
@@ -217,7 +238,7 @@ export function Map() {
           .filter((expr: string) => expr !== '()');
 
         arcGISMapRef.current.add(
-          new (_FeatureLayer.current as any)({
+          new FeatureLayer({
             url: process.env.REACT_APP_ROADS_FEATURE_SERVICE_LAYER_URL,
             definitionExpression:
               roadsDefinitionExpression.join(' AND ') || '1=1',
