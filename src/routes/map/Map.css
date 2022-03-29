@@ -6,6 +6,26 @@
   height: 100%;
 }
 
+.ada-map-loader {
+  position: absolute !important;
+  z-index: 10 !important;
+  margin: auto !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+.ada-map-loader-modal-open {
+  position: absolute !important;
+  z-index: 10 !important;
+  margin-left: auto !important;
+  left: 0 !important;
+  margin-right: auto !important;
+  right: 0 !important;
+  top: 5% !important;
+}
+
 .ada-map-filters-mobile-icon {
   position: absolute !important;
   top: 5% !important;

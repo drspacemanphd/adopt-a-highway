@@ -5,7 +5,7 @@
   position: absolute;
   bottom: 0vh;
   left: 0vw;
-  z-index: 10;
+  z-index: 1000;
   background-color: rgba(0,0,0,0.4);
   display: flex;
   justify-content: center;
