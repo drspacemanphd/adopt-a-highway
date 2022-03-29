@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { loadModules } from 'esri-loader';
-import { Icon } from '@aws-amplify/ui-react';
+import { Icon, Loader } from '@aws-amplify/ui-react';
 
 import { Legend } from './Legend';
 import { Modal } from './Modal';
@@ -135,6 +135,8 @@ export function Map() {
   const viewInstance = useRef({});
 
   const [filters, setFilters] = useState(defaultFilters);
+  const [loadedLitterLayer, setLoadedLitterLayer] = useState(false);
+  const [loadedRoadLayer, setLoadedRoadLayer] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   // Hooks
@@ -196,8 +198,8 @@ export function Map() {
       const renderFeatures = async () => {
         const FeatureLayer = _FeatureLayer.current as __esri.FeatureLayerConstructor;
 
-        const layers = arcGISMapRef.current.layers;
-        layers.removeAll();
+        const oldLayers = arcGISMapRef.current.layers;
+        oldLayers.removeAll();
 
         const litterDefinitionExpression = buildFilterExpression(
           filters['SUBMIT_DATE'],
@@ -205,43 +207,46 @@ export function Map() {
           (val: string) => `CURRENT_TIMESTAMP - INTERVAL '${val}' DAY`
         );
 
-        arcGISMapRef.current.add(
-          new FeatureLayer({
-            url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL,
-            definitionExpression: litterDefinitionExpression || '1=1',
-            renderer: {
-              type: 'simple',
-              symbol: {
-                type: 'simple-marker',
-                color: 'rgba(200,90,0,1)',
-                size: 6,
-                outline: {
-                  color: 'black',
-                  width: '1px',
-                },
-              },
-            } as __esri.RendererProperties,
-            popupTemplate: litterPopupTemplate
-          })
-        );
-
         const roadsDefinitionExpression = ['Adoptable', 'CountyFull']
-          .map((filterName) => {
-            const filter = filters[filterName];
-            return `(${buildFilterExpression(
-              filter,
-              '=',
-              (val: string) => `'${val}'`
-            )})`;
-          })
-          .filter((expr: string) => expr !== '()');
+        .map((filterName) => {
+          const filter = filters[filterName];
+          return `(${buildFilterExpression(
+            filter,
+            '=',
+            (val: string) => `'${val}'`
+          )})`;
+        })
+        .filter((expr: string) => expr !== '()');
 
-        arcGISMapRef.current.add(
-          new FeatureLayer({
-            url: process.env.REACT_APP_ROADS_FEATURE_SERVICE_LAYER_URL,
-            definitionExpression:
-              roadsDefinitionExpression.join(' AND ') || '1=1',
-          })
+        const litterLayer = new FeatureLayer({
+          url: process.env.REACT_APP_LITTER_FEATURE_SERVICE_LAYER_URL,
+          definitionExpression: litterDefinitionExpression || '1=1',
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'simple-marker',
+              color: 'rgba(200,90,0,1)',
+              size: 6,
+              outline: {
+                color: 'black',
+                width: '1px',
+              },
+            },
+          } as __esri.RendererProperties,
+          popupTemplate: litterPopupTemplate
+        });
+
+        const roadLayer = new FeatureLayer({
+          url: process.env.REACT_APP_ROADS_FEATURE_SERVICE_LAYER_URL,
+          definitionExpression:
+            roadsDefinitionExpression.join(' AND ') || '1=1',
+        });
+
+        litterLayer.on('layerview-create', () => setLoadedLitterLayer(l => true));
+        roadLayer.on('layerview-create', () => setLoadedRoadLayer(l => true));
+
+        arcGISMapRef.current.addMany(
+          [litterLayer, roadLayer]
         );
       };
 
@@ -276,6 +281,8 @@ export function Map() {
       filters={Object.values(filters)}
       onChange={(e: any) => {
         const updates = updateFilters(filters, e.filterName, e.optionValue);
+        setLoadedLitterLayer(false);
+        setLoadedRoadLayer(false);
         setFilters(updates);
       }}
     />
@@ -292,8 +299,13 @@ export function Map() {
     />
   );
 
+  const renderLoader = () => (
+    <Loader size='large' className={`ada-map-loader${modalOpen ? '-modal-open' : ''}`} />
+  );
+
   return (
     <div className='route-layout'>
+      {loadedLitterLayer && loadedRoadLayer ? null: renderLoader()}
       <div id='ada-map-container'>
         <div className='ada-map' ref={mapContainerRef}></div>
       </div>
@@ -304,6 +316,8 @@ export function Map() {
           filters={Object.values(filters)}
           onChange={(e) => {
             const updates = updateFilters(filters, e.filterName, e.optionValue);
+            setLoadedLitterLayer(false);
+            setLoadedRoadLayer(false);
             setFilters(updates);
           }}
         />
