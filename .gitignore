@@ -25,7 +25,6 @@ yarn-error.log*
 
 #transpiled-lambda-src-intermediate-code-start
 amplify/backend/function/**/src/*
-!amplify/backend/function/**/src/event.json
 #transpiled-lambda-src-intermediate-code-end
 
 #amplify-do-not-edit-begin
