@@ -111,7 +111,8 @@
               "Effect": "Allow",
               "Action": [
                 "s3:PutObject",
-                "s3:PutObjectTagging"
+                "s3:PutObjectTagging",
+                "s3:PutObjectAcl"
               ],
               "Resource": {
                 "Fn::Sub": "${customLitterImagesArn}/*"

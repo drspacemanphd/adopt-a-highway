@@ -77,13 +77,12 @@ const defaultFilters: Record<string, Filter> = {
 const litterPopupTemplate: __esri.PopupTemplate = {
   title: 'Litter',
   outFields: ['*'],
-  content: (event: any) => {
-    console.log(event.graphic);
+  content: (_event: any) => {
     return `
       <ul>
       <li> Submit Date: {SUBMIT_DATE} </li>
       <li> Classification: {CLASSIFICATION_FIRST} </li>
-      <li><a href="${process.env.REACT_APP_LITTER_BUCKET_URL}/{IMAGE_KEY}">Image Link</a></li>
+      <li><a target="_blank" href="${process.env.REACT_APP_LITTER_BUCKET_URL}/{IMAGE_KEY}">Image Link</a></li>
       </ul> 
     `;
   }
