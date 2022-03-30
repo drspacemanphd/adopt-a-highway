@@ -2,4 +2,4 @@
 set -e
 IFS='|'
 
-amplify publish --force --yes
+AMPLIFY_ENV=$ENV amplify publish --force --yes

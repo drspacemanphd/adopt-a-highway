@@ -33,6 +33,8 @@ jobs:
           ENV: ${{ github.ref_name }}
       - name: Deploy
         run: sh ./scripts/ci-amplify-publish.sh
+        env:
+          ENV: ${{ github.ref_name }}
       - name: Force commit amplify modifications
         uses: EndBug/add-and-commit@v8
         with:
