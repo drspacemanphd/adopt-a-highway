@@ -19,20 +19,24 @@
   display: none;
 }
 
-.ada-upload-error-message-container {
+.ada-upload-message-container {
   height: 50px;
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
-.ada-upload-error-message {
+.ada-upload-message {
   max-width: 80%;
   margin-top: 10px;
-  color: darkred;
+  color: darkgreen;
   font-weight: 700;
   overflow-wrap: normal;
   text-align: center;
+}
+
+.ada-upload-message.submit-error {
+  color: darkred;
 }
 
 #ada-upload #upload-button:hover {
