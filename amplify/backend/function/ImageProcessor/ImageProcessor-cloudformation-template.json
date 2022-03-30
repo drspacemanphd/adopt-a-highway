@@ -121,9 +121,36 @@
                 ]
               ]
             },
-            "LITTER_FEATURE_LAYER_URL": "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-dev/FeatureServer/0",
-            "LITTERLESS_FEATURE_LAYER_URL": "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-literless-dev/FeatureServer/0",
-            "INAPPROPRIATE_FEATURE_LAYER_URL": "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-inappropriate-dev/FeatureServer/0"
+            "LITTER_FEATURE_LAYER_URL": {
+              "Fn::Sub": [
+                "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-${env}/FeatureServer/0",
+                {
+                  "env": {
+                    "Ref": "env"
+                  }
+                }
+              ]
+            },
+            "LITTERLESS_FEATURE_LAYER_URL": {
+              "Fn::Sub": [
+                "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-literless-${env}/FeatureServer/0",
+                {
+                  "env": {
+                    "Ref": "env"
+                  }
+                }
+              ]
+            },
+            "INAPPROPRIATE_FEATURE_LAYER_URL": {
+              "Fn::Sub": [
+                "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-inappropriate-${env}/FeatureServer/0",
+                {
+                  "env": {
+                    "Ref": "env"
+                  }
+                }
+              ]
+            }
           }
         },
         "Role": {

@@ -141,7 +141,7 @@ export class Upload extends React.Component<any, any> {
           this.setState({ submitting: true, submitError: false, submitMessage: '' });
           await this.s3.send(
             new PutObjectCommand({
-              Bucket: 'ada-image-submissions-dev',
+              Bucket: process.env.REACT_APP_SUBMISSIONS_BUCKET_NAME,
               Key: `${guid}${ext}`,
               Body: file,
               Metadata: {
