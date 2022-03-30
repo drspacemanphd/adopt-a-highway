@@ -24,7 +24,7 @@ jobs:
           sudo apt-get install git -y
           npm install -g @aws-amplify/cli@7.6.4
       - name: Install
-        run: yarn install
+        run: yarn install --frozen-lockfile
       - name: Pull environment
         run: sh ./scripts/ci-amplify-init.sh
         env:
