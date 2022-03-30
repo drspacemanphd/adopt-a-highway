@@ -9,6 +9,9 @@
   align-items: center;
 }
 
+.app-nav .amplify-menu-trigger {
+  max-height: 80% !important;
+}
 .app-nav .amplify-menu-trigger:hover {
   background-color: rgba(4,75,100,1) !important;
   color: white;
