@@ -17,7 +17,8 @@ export class Upload extends React.Component<any, any> {
     super(props);
     this.state = {
       submitting: false,
-      submitError: '',
+      submitError: false,
+      submitMessage: '',
     };
   }
 
@@ -137,7 +138,7 @@ export class Upload extends React.Component<any, any> {
         const guid = v4();
 
         try {
-          this.setState({ submitting: true, submitError: '' });
+          this.setState({ submitting: true, submitError: false, submitMessage: '' });
           await this.s3.send(
             new PutObjectCommand({
               Bucket: 'ada-image-submissions-dev',
@@ -156,9 +157,17 @@ export class Upload extends React.Component<any, any> {
               },
             })
           );
-          this.setState({ submitting: false, submitError: '' });
+          this.setState({
+            submitting: false,
+            submitError: false,
+            submitMessage: 'Photo successfully submitted!'
+          });
         } catch (err) {
-          this.setState({ submitting: false, submitError: 'Something went wrong when submitting!' });
+          this.setState({
+            submitting: false,
+            submitError: true,
+            submitMessage: 'Something went wrong when submitting!'
+          });
         }
       }
     }
@@ -179,8 +188,8 @@ export class Upload extends React.Component<any, any> {
           onChange={async () => await this.handlePhoto()}
           onClick={async () => await this.getGeolocationPermission()}
         />
-        <div className='ada-upload-error-message-container'>
-          <div className='ada-upload-error-message'>{this.state.submitError}</div>
+        <div className='ada-upload-message-container'>
+          <div className={`ada-upload-message ${this.state.submitError ? 'submit-error' : ''}`}>{this.state.submitMessage}</div>
         </div>
       </div>
     );
