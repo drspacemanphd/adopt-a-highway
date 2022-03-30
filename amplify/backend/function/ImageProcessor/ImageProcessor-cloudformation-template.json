@@ -125,7 +125,9 @@
               "Fn::Sub": [
                 "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-${env}/FeatureServer/0",
                 {
-                  "env": { "Ref": "env" }
+                  "env": {
+                    "Ref": "env"
+                  }
                 }
               ]
             },
@@ -133,7 +135,9 @@
               "Fn::Sub": [
                 "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-literless-${env}/FeatureServer/0",
                 {
-                  "env": { "Ref": "env" }
+                  "env": {
+                    "Ref": "env"
+                  }
                 }
               ]
             },
@@ -141,7 +145,9 @@
               "Fn::Sub": [
                 "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-inappropriate-${env}/FeatureServer/0",
                 {
-                  "env": { "Ref": "env" }
+                  "env": {
+                    "Ref": "env"
+                  }
                 }
               ]
             }
