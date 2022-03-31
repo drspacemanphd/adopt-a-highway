@@ -40,12 +40,12 @@
           {
             "Fn::If": [
               "CreateProdAccess",
-              "PROD_ROLE",
+              "amplify-adoptahighway-prod-authRole",
               {
                 "Fn::If": [
                   "CreateQAAccess",
-                  "QA_ROLE",
-                  "amplify-adoptahighway-authRole"
+                  "amplify-adoptahighway-qa-authRole",
+                  "amplify-adoptahighway-dev-authRole"
                 ]
               }
             ]
