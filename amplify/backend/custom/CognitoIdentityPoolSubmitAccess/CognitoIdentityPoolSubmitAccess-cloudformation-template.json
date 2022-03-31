@@ -45,7 +45,7 @@
                 "Fn::If": [
                   "CreateQAAccess",
                   "QA_ROLE",
-                  "amplify-adoptahighway-dev-53135-authRole"
+                  "amplify-adoptahighway-authRole"
                 ]
               }
             ]
