@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - dev
+      - qa
   
 jobs:
   setup:

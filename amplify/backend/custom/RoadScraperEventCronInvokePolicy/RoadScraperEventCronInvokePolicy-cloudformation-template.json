@@ -20,7 +20,7 @@
   "Resources": {
     "RoadScraperEventCronInvokePermission": {
       "Type": "AWS::Lambda::Permission",
-      "Properties":             {
+      "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
           "Ref": "functionRoadScraperName"
