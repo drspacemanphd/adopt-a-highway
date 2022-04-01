@@ -39,16 +39,16 @@
       }
     }
   },
-  "qa": {
+  "prod": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-adoptahighway-qa-authRole",
-      "UnauthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-qa-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-qa-authRole",
+      "AuthRoleName": "amplify-adoptahighway-prod-authRole",
+      "UnauthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-prod-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-prod-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-adoptahighway-qa-210633-deployment",
-      "UnauthRoleName": "amplify-adoptahighway-qa-unauthRole",
-      "StackName": "amplify-adoptahighway-qa-210633",
-      "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-qa-210633/f997d0b0-b157-11ec-98d1-0ec98749ac69",
+      "DeploymentBucketName": "amplify-adoptahighway-prod-34600-deployment",
+      "UnauthRoleName": "amplify-adoptahighway-prod-unauthRole",
+      "StackName": "amplify-adoptahighway-prod-34600",
+      "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-prod-34600/c6e7c340-b18f-11ec-9ef2-0ee6e6b9563b",
       "AmplifyAppId": "d3gp1lr0l5y30h"
     },
     "categories": {
@@ -57,17 +57,17 @@
       },
       "function": {
         "SubmissionHandler": {
-          "deploymentBucketName": "amplify-adoptahighway-qa-210633-deployment",
+          "deploymentBucketName": "amplify-adoptahighway-prod-34600-deployment",
           "s3Key": "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
         },
         "ImageProcessor": {
           "secretsPathAmplifyAppId": "d3gp1lr0l5y30h",
-          "deploymentBucketName": "amplify-adoptahighway-qa-210633-deployment",
+          "deploymentBucketName": "amplify-adoptahighway-prod-34600-deployment",
           "s3Key": "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip"
         },
         "RoadScraper": {
           "secretsPathAmplifyAppId": "d3gp1lr0l5y30h",
-          "deploymentBucketName": "amplify-adoptahighway-qa-210633-deployment",
+          "deploymentBucketName": "amplify-adoptahighway-prod-34600-deployment",
           "s3Key": "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip"
         }
       },
