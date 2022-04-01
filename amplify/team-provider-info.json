@@ -1,75 +1,82 @@
 {
-    "dev": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-adoptahighway-dev-authRole",
-            "UnauthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-authRole",
-            "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-            "UnauthRoleName": "amplify-adoptahighway-dev-unauthRole",
-            "StackName": "amplify-adoptahighway-dev-53135",
-            "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-dev-53135/80f31150-6892-11ec-b018-0ee0692f5a4b",
-            "AmplifyAppId": "d3gp1lr0l5y30h"
-        },
-        "categories": {
-            "function": {
-                "SubmissionHandler": {
-                    "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-                    "s3Key": "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
-                },
-                "ImageProcessor": {
-                    "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-                    "s3Key": "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip",
-                    "secretsPathAmplifyAppId": "d3gp1lr0l5y30h"
-                },
-                "RoadScraper": {
-                    "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
-                    "s3Key": "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip",
-                    "secretsPathAmplifyAppId": "d3gp1lr0l5y30h"
-                }
-            },
-            "auth": {
-                "adoptahighwayef719878": {}
-            },
-            "hosting": {
-                "amplifyhosting": {
-                    "appId": "d3gp1lr0l5y30h",
-                    "type": "manual"
-                }
-            }
-        }
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-adoptahighway-dev-authRole",
+      "UnauthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-dev-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
+      "UnauthRoleName": "amplify-adoptahighway-dev-unauthRole",
+      "StackName": "amplify-adoptahighway-dev-53135",
+      "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-dev-53135/80f31150-6892-11ec-b018-0ee0692f5a4b",
+      "AmplifyAppId": "d3gp1lr0l5y30h"
     },
-    "prod": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-adoptahighway-prod-34600-authRole",
-            "UnauthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-prod-34600-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-prod-34600-authRole",
-            "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-adoptahighway-prod-34600-deployment",
-            "UnauthRoleName": "amplify-adoptahighway-prod-34600-unauthRole",
-            "StackName": "amplify-adoptahighway-prod-34600",
-            "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-prod-34600/c6e7c340-b18f-11ec-9ef2-0ee6e6b9563b",
-            "AmplifyAppId": "d3gp1lr0l5y30h"
+    "categories": {
+      "function": {
+        "SubmissionHandler": {
+          "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
+          "s3Key": "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
         },
-        "categories": {
-            "auth": {
-                "adoptahighwayef719878": {}
-            },
-            "function": {
-                "SubmissionHandler": {},
-                "ImageProcessor": {
-                    "secretsPathAmplifyAppId": "d3gp1lr0l5y30h"
-                },
-                "RoadScraper": {
-                    "secretsPathAmplifyAppId": "d3gp1lr0l5y30h"
-                }
-            },
-            "hosting": {
-                "amplifyhosting": {
-                    "appId": "d3gp1lr0l5y30h",
-                    "type": "manual"
-                }
-            }
+        "ImageProcessor": {
+          "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
+          "s3Key": "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip",
+          "secretsPathAmplifyAppId": "d3gp1lr0l5y30h"
+        },
+        "RoadScraper": {
+          "deploymentBucketName": "amplify-adoptahighway-dev-53135-deployment",
+          "s3Key": "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip",
+          "secretsPathAmplifyAppId": "d3gp1lr0l5y30h"
         }
+      },
+      "auth": {
+        "adoptahighwayef719878": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3gp1lr0l5y30h",
+          "type": "manual"
+        }
+      }
     }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-adoptahighway-prod-authRole",
+      "UnauthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-prod-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::179239537386:role/amplify-adoptahighway-prod-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-adoptahighway-prod-34600-deployment",
+      "UnauthRoleName": "amplify-adoptahighway-prod-unauthRole",
+      "StackName": "amplify-adoptahighway-prod-34600",
+      "StackId": "arn:aws:cloudformation:us-east-1:179239537386:stack/amplify-adoptahighway-prod-34600/c6e7c340-b18f-11ec-9ef2-0ee6e6b9563b",
+      "AmplifyAppId": "d3gp1lr0l5y30h"
+    },
+    "categories": {
+      "auth": {
+        "adoptahighwayef719878": {}
+      },
+      "function": {
+        "SubmissionHandler": {
+          "deploymentBucketName": "amplify-adoptahighway-prod-34600-deployment",
+          "s3Key": "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
+        },
+        "ImageProcessor": {
+          "secretsPathAmplifyAppId": "d3gp1lr0l5y30h",
+          "deploymentBucketName": "amplify-adoptahighway-prod-34600-deployment",
+          "s3Key": "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip"
+        },
+        "RoadScraper": {
+          "secretsPathAmplifyAppId": "d3gp1lr0l5y30h",
+          "deploymentBucketName": "amplify-adoptahighway-prod-34600-deployment",
+          "s3Key": "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3gp1lr0l5y30h",
+          "type": "manual"
+        }
+      }
+    }
+  }
 }
