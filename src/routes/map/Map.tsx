@@ -12,7 +12,7 @@ import './Map.css';
 
 const defaultFilters: Record<string, Filter> = {
   Adoptable: {
-    label: 'Adopted',
+    label: 'Adoptable',
     filterName: 'Adoptable',
     selectMode: 'multi',
     options: [
@@ -85,6 +85,65 @@ const litterPopupTemplate: __esri.PopupTemplate = {
       <li><a target="_blank" href="${process.env.REACT_APP_LITTER_BUCKET_URL}/{IMAGE_KEY}">Image Link</a></li>
       </ul> 
     `;
+  }
+} as any;
+
+const roadsPopupTemplate: __esri.PopupTemplate = {
+  title: 'Roads',
+  outFields: ['*'],
+  content: (_event: any) => {
+    let markup = `<ul>`;
+
+    const road: string = _event?.graphic?.attributes?.RdwayName;
+    if (road) {
+      const camelcase = road.split(/\s+/).map(term => {
+        const lowered = term.toLowerCase();
+        const cameled = lowered.slice(0, 1).toUpperCase() + lowered.slice(1);
+        return cameled;
+      }).join(' ');
+      markup += `<li> Road: ${camelcase}</li>`;
+    }
+
+    const adopted: boolean = _event?.graphic?.attributes?.Adoptable === 'N';
+    if (adopted) {
+      markup += `<li>Adopted By:</li>`;
+      let adoptedMarkup = `<ul>`;
+
+      const adoptedByMoreThanOne = !!_event?.graphic?.attributes?.GroupNameTwo;
+
+      if (_event?.graphic?.attributes?.GroupNameOne) {
+        const firstAdoptee = adoptedByMoreThanOne 
+        ? `${_event?.graphic?.attributes?.GroupNameOne} (from ${_event?.graphic?.attributes?.FromRoadOne} to ${_event?.graphic?.attributes?.ToRoadOne})`
+        : _event?.graphic?.attributes?.GroupNameOne;
+        adoptedMarkup += `<li>${firstAdoptee}</li>`;
+      }
+
+      if (_event?.graphic?.attributes?.GroupNameTwo) {
+        const secondAdoptee = `${_event?.graphic?.attributes?.GroupNameTwo} (from ${_event?.graphic?.attributes?.FromRoadTwo} to ${_event?.graphic?.attributes?.ToRoadTwo})`;
+        adoptedMarkup += `<li>${secondAdoptee}</li>`;
+      }
+
+      if (_event?.graphic?.attributes?.GroupNameThree) {
+        const thirdAdoptee = `${_event?.graphic?.attributes?.GroupNameThree} (from ${_event?.graphic?.attributes?.FromRoadThree} to ${_event?.graphic?.attributes?.ToRoadThree})`;
+        adoptedMarkup += `<li>${thirdAdoptee}</li>`;
+      }
+
+      const lastCleanups = [
+        _event?.graphic?.attributes?.LastCleanupOne || 0,
+        _event?.graphic?.attributes?.LastCleanupTwo || 0,
+        _event?.graphic?.attributes?.LastCleanupThree || 0
+      ].filter(date => !!date);
+      lastCleanups.sort((a, b) => b - a);
+      if (lastCleanups.length) {
+        adoptedMarkup += `<li>${new Date(lastCleanups[0]).toDateString()}</li>`;
+      }
+
+      adoptedMarkup += '</ul>';
+      markup += adoptedMarkup;
+    }
+
+    markup += '</ul>';
+    return markup;
   }
 } as any;
 
@@ -240,6 +299,7 @@ export function Map() {
           url: process.env.REACT_APP_ROADS_FEATURE_SERVICE_LAYER_URL,
           definitionExpression:
             roadsDefinitionExpression.join(' AND ') || '1=1',
+          popupTemplate: roadsPopupTemplate,
         });
 
         litterLayer.on('layerview-create', () => setLoadedLitterLayer(l => true));
