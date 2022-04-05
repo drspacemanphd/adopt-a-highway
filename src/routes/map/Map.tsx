@@ -135,7 +135,7 @@ const roadsPopupTemplate: __esri.PopupTemplate = {
       ].filter(date => !!date);
       lastCleanups.sort((a, b) => b - a);
       if (lastCleanups.length) {
-        adoptedMarkup += `<li>${new Date(lastCleanups[0]).toDateString()}</li>`;
+        adoptedMarkup += `<li>Last Recorded Cleanup: ${new Date(lastCleanups[0]).toDateString()}</li>`;
       }
 
       adoptedMarkup += '</ul>';
