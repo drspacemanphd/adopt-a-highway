@@ -1,3 +1,4 @@
+### Flagged Submissions
 resource "aws_s3_bucket" "flagged_submissions_bucket" {
   bucket = "ada-flagged-submissions-${var.env}"
 }
@@ -25,6 +26,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "flagged_submissions_lifecycle"
   }
 }
 
+
+### Image Submissions
 resource "aws_s3_bucket" "image_submissions_bucket" {
   bucket = "ada-image-submissions-${var.env}"
 }
@@ -52,6 +55,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "image_submissions_lifecycle" {
   }
 }
 
+
+### Litter Images
 resource "aws_s3_bucket" "litter_images_bucket" {
   bucket = "ada-litter-images-${var.env}"
 }
@@ -110,6 +115,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "litter_lifecycle" {
   }
 }
 
+
+### Rejected Submissions
 resource "aws_s3_bucket" "rejected_submissions_bucket" {
   bucket = "ada-rejected-submissions-${var.env}"
 }
