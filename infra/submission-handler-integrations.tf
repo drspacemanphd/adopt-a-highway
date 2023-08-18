@@ -1,3 +1,4 @@
+### S3 Access
 data "aws_iam_policy_document" "submission_handler_s3_policy_document" {
   statement {
     effect = "Allow"
@@ -18,6 +19,9 @@ resource "aws_iam_role_policy_attachment" "submission_handler_s3_policy_attachme
   policy_arn = aws_iam_policy.submission_handler_s3_policy.arn
 }
 
+
+
+### SQS access
 data "aws_iam_policy_document" "submission_handler_sqs_policy_document" {
   statement {
     effect = "Allow"
@@ -40,3 +44,23 @@ resource "aws_iam_role_policy_attachment" "submission_handler_sqs_policy_attachm
   policy_arn = aws_iam_policy.submission_handler_sqs_policy.arn
 }
 
+
+
+### Lambda Trigger
+resource "aws_lambda_permission" "image_submissions_bucket_notification_permission" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.submission_handler_function.function_name
+  principal     = "s3.amazonaws.com" 
+  source_arn    = aws_s3_bucket.image_submissions_bucket.arn 
+}
+
+resource "aws_s3_bucket_notification" "image_submissions_bucket_notification" {
+  bucket = aws_s3_bucket.image_submissions_bucket.id
+
+  lambda_function {
+    events              = [ "s3:ObjectCreate:*" ]
+    lambda_function_arn = aws_lambda_function.submission_handler_function.arn
+  }
+
+  depends_on = [ aws_lambda_permission.image_submissions_bucket_notification_permission ]
+}
