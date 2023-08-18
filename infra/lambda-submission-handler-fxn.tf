@@ -14,6 +14,7 @@ data "aws_iam_policy_document" "submission_handler_role_trust_policy" {
 resource "aws_iam_role" "submission_handler_role" {
   assume_role_policy = data.aws_iam_policy_document.submission_handler_role_trust_policy.json
   name               = "SubmissionHandlerExecutionRole-${var.env}"
+  inline_policy {}
 }
 
 resource "aws_lambda_function" "submission_handler_function" {
