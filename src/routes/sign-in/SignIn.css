@@ -1,0 +1,50 @@
+.route-layout#sign-in {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.route-layout#sign-in .sign-in-dialog {
+  background-color: rgb(255,255,255);
+  min-width: 75%;
+  padding: 0.75rem;
+}
+
+.route-layout#sign-in label {
+  color: rgb(4,75,100);
+}
+
+.route-layout#sign-in .form-control {
+  color: rgb(4,75,100);
+}
+
+.route-layout#sign-in .form-control:focus {
+  border-color: rgb(4,75,100);
+  box-shadow: 0 0 0 0.25rem rgba(4,75,100,0.25);
+}
+
+.route-layout#sign-in .form-control:-webkit-autofill,
+.route-layout#sign-in .form-control:-webkit-autofill:hover,
+.route-layout#sign-in .form-control:-webkit-autofill:focus,
+.route-layout#sign-in .form-control:-webkit-autofill:active,
+.route-layout#sign-in .form-control:-webkit-autofill::first-line {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: rgb(4,75,100);
+}
+
+.route-layout#sign-in .submit {
+  background-color: rgba(255,255,255);
+  color: rgb(4,75,100);
+  border-color: rgb(174, 179, 183);
+}
+
+.route-layout#sign-in .submit-active {
+  background-color: rgb(4,75,100);
+  color: rgb(255,255,255);
+  border-color: rgb(4,75,100);
+}
+
+.route-layout#sign-in .submit:hover {
+  background-color: rgb(0,0,0,0.05);
+}
