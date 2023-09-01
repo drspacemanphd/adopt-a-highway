@@ -1,52 +1,51 @@
-import {
-  IconLogin,
-  IconMap,
-  IconPhotoCamera,
-  Menu,
-  MenuItem
-} from '@aws-amplify/ui-react';
-import { Auth } from 'aws-amplify';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+
 import { AuthContext } from '../contexts/AuthContext';
+import { AuthenticatorService } from '../services/authenticator-service';
 
 import './GlobalNav.css';
 
 export function GlobalNav(): JSX.Element {
   const navigate = useNavigate();
-  const location = useLocation();
 
   return (
     <AuthContext.Consumer>
       {({ user }) => {
         return (
           <nav className='app-nav'>
-            <Menu className='app-nav-menu'>
-              <MenuItem
-                onClick={() => navigate('/')}
-                className={location.pathname === '/' ? 'app-nav-menu-item active' : 'app-nav-menu-item'}
+            <DropdownButton
+              title='Menu'
+            >
+              <Dropdown.Item
+                eventKey={'Map'}
+                onClick={() => navigate('/map')}
               >
-                <IconMap className='app-nav-menu-item-icon' />
                 Map
-              </MenuItem>
-              <MenuItem
+              </Dropdown.Item>
+              <Dropdown.Item
+                eventKey={'Upload'}
                 onClick={() => navigate('/upload')}
-                className={location.pathname === '/upload' ? 'app-nav-menu-item active' : 'app-nav-menu-item'}
               >
-                <IconPhotoCamera className='app-nav-menu-item-icon' />
                 Upload
-              </MenuItem>
-              {user ?
-                <MenuItem
-                  onClick={async () => {
-                    await Auth.signOut();
-                    navigate('/');
-                  }}
+              </Dropdown.Item>
+              {
+              user
+                ? <Dropdown.Item
+                    eventKey={'SignOut'}
+                    onClick={async () => await AuthenticatorService.signOut()}
                   >
-                    <IconLogin className='app-nav-menu-item-icon' />
                     Sign Out
-                </MenuItem>
-                : null}
-            </Menu>
+                  </Dropdown.Item>
+                : <Dropdown.Item
+                    eventKey={'SignIn'}
+                    onClick={() => navigate('/sign-in')}
+                  >
+                    Sign In
+                  </Dropdown.Item>
+              }
+            </DropdownButton>
           </nav>
         );
       }}

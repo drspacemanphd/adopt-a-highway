@@ -1,5 +1,6 @@
 import React from 'react';
-import { CheckboxField, Radio } from '@aws-amplify/ui-react';
+import Form from 'react-bootstrap/Form';
+
 import { Filter } from './Filter';
 
 import './Legend.css';
@@ -27,8 +28,9 @@ export function Legend(props: LegendProps) {
     if (mode === 'multi') {
       const inputs = (filterOptions || []).map((option: { label: string, value: string, selected: boolean }) => {
         return (
-          <CheckboxField
+          <Form.Check
             className='filter-option-checkbox'
+            type='checkbox'
             key={`${filterLabel}-${option.label}`}
             label={option.label}
             name={option.label}
@@ -54,9 +56,11 @@ export function Legend(props: LegendProps) {
     } else {
       const inputs = (filterOptions || []).map((option: { label: string, value: string, selected: boolean }) => {
         return (
-          <Radio
-            key={`${filterLabel}-${option.label}`}
+          <Form.Check            
             className='filter-option-radio'
+            type='radio'
+            key={`${filterLabel}-${option.label}`}
+            label={option.label}
             value={option.value}
             checked={option.selected}
             onChange={(e) => props.onChange({
@@ -65,9 +69,7 @@ export function Legend(props: LegendProps) {
               optionLabel: option.label,
               optionValue: option.value,
             })}
-          >
-            {option.label}
-          </Radio>
+          />
         );
       });
       section = (

@@ -24,6 +24,17 @@
   margin-top: 5px;
 }
 
+.ada-map-legend .form-check-input:checked {
+  background-color: rgb(4,75,100);
+  border-color: rgb(4,75,100);
+}
+
+.ada-map-legend .form-check-input:focus {
+  border-color: rgb(4,75,100);
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(4,75,100,.25);
+}
+
 .ada-map-legend .filter-option-checkbox {
   margin-right: 5%;
 }
@@ -32,5 +43,3 @@
   margin-right: 5%;
   gap: 10px;
 }
-
-

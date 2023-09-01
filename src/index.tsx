@@ -2,17 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Amplify from 'aws-amplify';
-import { Authenticator } from '@aws-amplify/ui-react';
 
 import { App } from './app/App';
 import { Upload } from './routes/upload/Upload';
 import { Map } from './routes/map/Map';
+import { SignIn } from './routes/sign-in/SignIn';
 
 import reportWebVitals from './reportWebVitals';
 import awsExports from './aws-exports';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
-import '@aws-amplify/ui-react/styles.css';
 
 // Configure Amplify
 Amplify.configure(awsExports);
@@ -37,14 +37,8 @@ ReactDOM.render(
         <Route path='/' element={<App />}>
           <Route index element={<Map />}/>
           <Route path='/map' element={<Map />}/>
-          <Route
-            path='/upload'
-            element={
-              <Authenticator>
-                {({ signOut, user }) => <Upload />}
-              </Authenticator>
-            }
-          />
+          <Route path='/upload' element={<Upload />}/>
+          <Route path='/sign-in' element={<SignIn />}/>
         </Route>
       </Routes>
     </BrowserRouter>

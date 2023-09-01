@@ -61,7 +61,7 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   user_pool_id            = aws_cognito_user_pool.user_pool.id
   auth_session_validity   = 3
   enable_token_revocation = true
-  refresh_token_validity  = 30 
+  refresh_token_validity  = 30
 }
 
 resource "aws_cognito_user_pool_client" "user_pool_web_client" {
@@ -69,7 +69,7 @@ resource "aws_cognito_user_pool_client" "user_pool_web_client" {
   user_pool_id            = aws_cognito_user_pool.user_pool.id
   auth_session_validity   = 3
   enable_token_revocation = true
-  refresh_token_validity  = 30 
+  refresh_token_validity  = 30
 }
 
 resource "aws_cognito_identity_pool" "identity_pool" {

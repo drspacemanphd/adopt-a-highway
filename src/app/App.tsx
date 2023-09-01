@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Auth, Hub } from 'aws-amplify';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Hub } from 'aws-amplify';
 
 import { AuthContext } from '../contexts/AuthContext';
 import { GlobalNav } from '../nav/GlobalNav';
+import { AuthenticatorService } from '../services/authenticator-service';
 
 import './App.css';
 
 export function App() {
   const [user, setUser] = useState(null);
-  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async (): Promise<void> => {
       try {
-        const user = await Auth.currentUserPoolUser();
+        const { user } = await AuthenticatorService.getCredentials();
         setUser(user);
       } catch (err) {
         console.error('could-not-get-user-info', err);
@@ -41,11 +41,7 @@ export function App() {
     <div className='app'>
       <AuthContext.Provider value={{ user: user }}>
         <GlobalNav />
-        {
-          location.pathname.toLowerCase().match(/(\/?$|\/map\/?$)/g).length
-          ? <Outlet />
-          : <Outlet />
-        }
+        <Outlet />
       </AuthContext.Provider>
     </div>
   );

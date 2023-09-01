@@ -1,12 +1,15 @@
 import React from 'react';
 import { v4 } from 'uuid';
-import { Auth } from 'aws-amplify';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { Button, Loader } from '@aws-amplify/ui-react';
+import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
+import { S3ClientService } from '../../services/s3-client-service';
+import { AuthenticatorService } from '../../services/authenticator-service';
 
 import './Upload.css';
+import { ProtectedRoute } from '../hoc/protected-route-hoc';
 
-export class Upload extends React.Component<any, any> {
+class UnprotectedUpload extends React.Component<any, any> {
   private s3: S3Client = null;
   private hasRequiredPermissions: boolean = false;
   private geolocationRefresher: any = null;
@@ -109,8 +112,7 @@ export class Upload extends React.Component<any, any> {
   }
 
   private async instantiateS3Client() {
-    const credentials = await Auth.currentCredentials();
-    this.s3 = new S3Client({ region: 'us-east-1', credentials });
+    this.s3 = await S3ClientService.getClient();
   }
 
   private setupGeolocationRefresher(): any {
@@ -133,7 +135,7 @@ export class Upload extends React.Component<any, any> {
     if (imageUploadEl) {
       const file = (imageUploadEl as any)?.files[0];
       if (file) {
-        const user = await Auth.currentAuthenticatedUser();
+        const { user } = await AuthenticatorService.getCredentials();
         const ext = (file.name as string).match(/\.\w+$/g);
         const guid = v4();
 
@@ -176,8 +178,8 @@ export class Upload extends React.Component<any, any> {
   render() {
     return (
       <div className='route-layout' id='ada-upload'>
-        {this.state.submitting ? <Loader size='large' className='ada-upload-loader' /> : null }
-        <Button id='upload-button' data-variation='primary'>
+        {this.state.submitting ? <Spinner size='sm' className='ada-upload-loader' /> : null }
+        <Button id='upload-button'>
           <label htmlFor='ada-image-upload'>Submit an Image!</label>
         </Button>
         <input
@@ -195,3 +197,5 @@ export class Upload extends React.Component<any, any> {
     );
   }
 }
+
+export const Upload = ProtectedRoute(UnprotectedUpload, '/upload');
