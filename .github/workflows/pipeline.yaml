@@ -25,16 +25,16 @@ jobs:
       - name: Install
         run: yarn --frozen-lockfile
       - name: Build
-        run: COMMIT_HASH=${{ env.GITHUB_SHA }} yarn run build
+        run: COMMIT_HASH=${{ github.sha }} yarn run build
       - name: Push Backend Code
-        run: COMMIT_HASH=${{ env.GITHUB_SHA }} bash ./scripts/deploy-lambda.sh
+        run: COMMIT_HASH=${{ github.sha }} bash ./scripts/deploy-lambda.sh
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
       - name: Setup Terraform Workspace
         run: terraform init && terraform workspace list && terraform workspace select dev
         working-directory: ./infra
       - name: Run Terraform Apply
-        run: TF_VAR_env=dev TF_VAR_commit_hash=${{ env.GITHUB_SHA }} terraform apply
+        run: TF_VAR_env=dev TF_VAR_commit_hash=${{ github.sha }} terraform apply --auto-approve
         working-directory: ./infra
 
 
