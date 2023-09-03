@@ -26,6 +26,12 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build
         run: COMMIT_HASH=${{ env.GITHUB_SHA }} yarn run build
-      - name: Deploy Backend Code
+      - name: Push Backend Code
         run: COMMIT_HASH=${{ env.GITHUB_SHA }} bash ./scripts/deploy-lambda.sh
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Setup Terraform Workspace
+        run: terraform workspace select dev
+        
+
 
