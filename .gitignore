@@ -22,7 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-
 #transpiled-lambda-src-intermediate-code-start
 amplify/backend/function/**/src/*
 #transpiled-lambda-src-intermediate-code-end
@@ -50,3 +49,5 @@ amplifytools.xcconfig
 
 amplify/backend/awscloudformation/
 **/.terraform/**
+
+**/*.zip

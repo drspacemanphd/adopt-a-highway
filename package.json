@@ -19,17 +19,12 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "postinstall": "yarn run amplify:SubmissionHandler:install && yarn run amplify:ImageProcessor:install && yarn run amplify:RoadScraper:install",
-    "amplify:SubmissionHandler:install": "(cd amplify/backend/function/SubmissionHandler/lib && yarn --cwd=./ install)",
-    "amplify:ImageProcessor:install": "(cd amplify/backend/function/ImageProcessor/lib && yarn --cwd=./ install)",
-    "amplify:RoadScraper:install": "(cd amplify/backend/function/RoadScraper/lib && yarn --cwd=./ install)",
+    "postinstall": "yarn run backend:install",
+    "backend:install": "ls ./backend | awk '{print}' | xargs -I '{}' yarn --frozen-lockfile --cwd=./backend/'{}'",
     "start": "REACT_APP_AMPLIFY_ENV=dev react-scripts start",
     "build": "REACT_APP_AMPLIFY_ENV=$AMPLIFY_ENV react-scripts build",
-    "build:services": "yarn run postbuild",
-    "postbuild": "yarn run amplify:SubmissionHandler && yarn run amplify:ImageProcessor && yarn run amplify:RoadScraper",
-    "amplify:SubmissionHandler": "node ./scripts/build-lambda.js SubmissionHandler",
-    "amplify:ImageProcessor": "node ./scripts/build-lambda.js ImageProcessor",
-    "amplify:RoadScraper": "node ./scripts/build-lambda.js RoadScraper",
+    "postbuild": "yarn backend:build",
+    "backend:build": "bash ./scripts/build-lambda.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -68,5 +63,8 @@
     "@types/react-dom": "^17.0.9",
     "@types/uuid": "^8.3.4",
     "source-map-explorer": "^2.5.2"
+  },
+  "resolutions": {
+    "@types/react": "17.0.65"
   }
 }
