@@ -1,8 +1,6 @@
 on:
   push:
     branches:
-      - dev
-      - prod
       - c/use-workspaces
   
 jobs:
