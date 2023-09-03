@@ -31,7 +31,9 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
       - name: Setup Terraform Workspace
-        run: terraform workspace select dev
-        
+        run: terraform workspace list && terraform workspace new dev && terraform workspace select dev
+      - name: Run Terraform Plan
+        run: terraform plan
+
 
 
