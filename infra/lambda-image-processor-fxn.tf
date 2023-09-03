@@ -64,5 +64,5 @@ resource "aws_lambda_function" "image_processor_function" {
   }
 
   s3_bucket = var.env == "dev" ? "amplify-adoptahighway-dev-53135-deployment" : "amplify-adoptahighway-prod-34600-deployment"
-  s3_key    = var.env == "dev" ? "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip" : "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip"
+  s3_key    = var.env == "dev" ? "amplify-builds/image-processor-${var.commit_hash}.zip" : "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip"
 }

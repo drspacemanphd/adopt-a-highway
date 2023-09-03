@@ -62,5 +62,5 @@ resource "aws_lambda_function" "road_scraper_function" {
   }
 
   s3_bucket = var.env == "dev" ? "amplify-adoptahighway-dev-53135-deployment" : "amplify-adoptahighway-prod-34600-deployment"
-  s3_key    = var.env == "dev" ? "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip" : "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip"
+  s3_key    = var.env == "dev" ? "amplify-builds/road-scraper-${var.commit_hash}.zip" : "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip"
 }
