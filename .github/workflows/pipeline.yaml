@@ -32,8 +32,11 @@ jobs:
         uses: hashicorp/setup-terraform@v2
       - name: Setup Terraform Workspace
         run: terraform workspace list && terraform workspace new dev && terraform workspace select dev
+        working-directory: ./infra
       - name: Run Terraform Plan
         run: terraform plan
+        working-directory: ./infra
+
 
 
 
