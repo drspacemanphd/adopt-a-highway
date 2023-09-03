@@ -29,5 +29,5 @@ jobs:
       - name: Build
         run: COMMIT_HASH=${{ env.GITHUB_SHA }} yarn run build
       - name: Deploy Backend Code
-        run: bash ./scripts/deploy-lambda.sh
+        run: COMMIT_HASH=${{ env.GITHUB_SHA }} bash ./scripts/deploy-lambda.sh
 
