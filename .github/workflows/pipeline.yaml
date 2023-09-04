@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - c/use-workspaces
+      - e/amplify-to-terraform
   
 jobs:
   setup:
