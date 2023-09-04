@@ -103,6 +103,31 @@ resource "aws_iam_role_policy_attachment" "image_processor_rekognition_policy_at
 
 
 
+### SSM access
+data "aws_iam_policy_document" "image_processor_ssm_policy_document" {
+  statement {
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    actions = [
+      "ssm:GetParameters",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "image_processor_ssm_policy" {
+  name   = "ImageProcessor-${var.env}-ssm-policy-${var.env}"
+  policy = data.aws_iam_policy_document.image_processor_ssm_policy_document.json
+}
+
+resource "aws_iam_role_policy_attachment" "image_processor_ssm_policy_attachment" {
+  role       = aws_iam_role.image_processor_role.name
+  policy_arn = aws_iam_policy.image_processor_ssm_policy.arn
+}
+
+
+
 ### Event Source Mapping
 resource "aws_lambda_event_source_mapping" "image_submissions_event_source_mapping" {
   event_source_arn                   = aws_sqs_queue.image_processing_queue.arn

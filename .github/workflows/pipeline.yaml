@@ -1,8 +1,8 @@
 on:
   push:
     branches:
-      - dev
-      - prod
+      - c/use-workspaces
+      - e/amplify-to-terraform
   
 jobs:
   setup:
@@ -23,22 +23,21 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install git -y
-          npm install -g @aws-amplify/cli@7.6.4
       - name: Install
-        run: yarn install --frozen-lockfile
-      - name: Build Lambda Functions
-        run: yarn run postbuild
-      - name: Pull environment
-        run: sh ./scripts/ci-amplify-init.sh
-        env:
-          ENV: ${{ github.ref_name }}
-      - name: Deploy
-        run: sh ./scripts/ci-amplify-publish.sh
-        env:
-          ENV: ${{ github.ref_name }}
-      - name: Force commit amplify modifications
-        uses: EndBug/add-and-commit@v8
-        with:
-          default_author: github_actions
-          message: Post-deployment Amplify modifications to ${{ github.ref_name }}
-          push: origin ${{ github.ref_name }} --force
+        run: yarn --frozen-lockfile
+      - name: Build
+        run: COMMIT_HASH=${{ github.sha }} yarn run build
+      - name: Push Backend Code
+        run: COMMIT_HASH=${{ github.sha }} bash ./scripts/deploy-lambda.sh
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Setup Terraform Workspace
+        run: terraform init && terraform workspace list && terraform workspace select dev
+        working-directory: ./infra
+      - name: Run Terraform Apply
+        run: TF_VAR_env=dev TF_VAR_commit_hash=${{ github.sha }} terraform apply --auto-approve
+        working-directory: ./infra
+
+
+
+

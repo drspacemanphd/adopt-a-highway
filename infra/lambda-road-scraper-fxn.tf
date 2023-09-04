@@ -51,8 +51,8 @@ resource "aws_lambda_function" "road_scraper_function" {
   environment {
     variables = {
       APP_SOURCE_LAYER_URL          = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-roads-${var.env}/FeatureServer/0"
-      ArcgisUsername                = data.aws_ssm_parameter.arcgis_username.value
-      ArcgisPassword                = data.aws_ssm_parameter.arcgis_password.value
+      ArcgisUsername                = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisUsername"
+      ArcgisPassword                = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisPassword"
       ENV	                          = var.env
       REGION                        =	"us-east-1"
       GROUPS_SOURCE_LAYER_QUERY_URL	= "https://services1.arcgis.com/bQ68YUVG6MKPIQ8f/ArcGIS/rest/services/AAH_Roads_View/FeatureServer/1"
@@ -62,5 +62,5 @@ resource "aws_lambda_function" "road_scraper_function" {
   }
 
   s3_bucket = var.env == "dev" ? "amplify-adoptahighway-dev-53135-deployment" : "amplify-adoptahighway-prod-34600-deployment"
-  s3_key    = var.env == "dev" ? "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip" : "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip"
+  s3_key    = var.env == "dev" ? "amplify-builds/road-scraper-${var.commit_hash}.zip" : "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip"
 }

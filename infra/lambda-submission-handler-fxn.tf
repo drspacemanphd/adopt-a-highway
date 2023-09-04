@@ -57,5 +57,5 @@ resource "aws_lambda_function" "submission_handler_function" {
   }
 
   s3_bucket = var.env == "dev" ? "amplify-adoptahighway-dev-53135-deployment" : "amplify-adoptahighway-prod-34600-deployment"
-  s3_key    = var.env == "dev" ? "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip" : "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
+  s3_key    = var.env == "dev" ? "amplify-builds/submission-handler-${var.commit_hash}.zip" : "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
 }

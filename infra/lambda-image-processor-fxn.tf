@@ -55,8 +55,8 @@ resource "aws_lambda_function" "image_processor_function" {
       FLAGGED_SUBMISSIONS_BUCKET      = aws_s3_bucket.flagged_submissions_bucket.bucket
       REJECTED_SUBMISSIONS_BUCKET     = aws_s3_bucket.rejected_submissions_bucket.bucket
       LITTER_IMAGES_BUCKET            = aws_s3_bucket.litter_images_bucket.bucket
-      ArcgisUsername                  = data.aws_ssm_parameter.arcgis_username.value
-      ArcgisPassword                  = data.aws_ssm_parameter.arcgis_password.value
+      ArcgisUsername                  = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisUsername"
+      ArcgisPassword                  = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisPassword"
       LITTER_FEATURE_LAYER_URL        = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-${var.env}/FeatureServer/0"
       LITTERLESS_FEATURE_LAYER_URL    = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-literless-${var.env}/FeatureServer/0"
       INAPPROPRIATE_FEATURE_LAYER_URL = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-inappropriate-${var.env}/FeatureServer/0"
@@ -64,5 +64,5 @@ resource "aws_lambda_function" "image_processor_function" {
   }
 
   s3_bucket = var.env == "dev" ? "amplify-adoptahighway-dev-53135-deployment" : "amplify-adoptahighway-prod-34600-deployment"
-  s3_key    = var.env == "dev" ? "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip" : "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip"
+  s3_key    = var.env == "dev" ? "amplify-builds/image-processor-${var.commit_hash}.zip" : "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip"
 }
