@@ -27,6 +27,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "flagged_submissions_lifecycle"
 }
 
 
+
 ### Image Submissions
 resource "aws_s3_bucket" "image_submissions_bucket" {
   bucket = "ada-image-submissions-${var.env}"
@@ -54,6 +55,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "image_submissions_lifecycle" {
     }
   }
 }
+
 
 
 ### Litter Images
@@ -116,6 +118,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "litter_lifecycle" {
 }
 
 
+
 ### Rejected Submissions
 resource "aws_s3_bucket" "rejected_submissions_bucket" {
   bucket = "ada-rejected-submissions-${var.env}"
@@ -144,3 +147,50 @@ resource "aws_s3_bucket_lifecycle_configuration" "rejected_submissions_lifecycle
   }
 }
 
+
+
+### Frontend App
+resource "aws_s3_bucket" "frontend_app" {
+  bucket = "ada-frontend-application-${var.env}"
+}
+
+resource "aws_s3_bucket_public_access_block" "frontend_app_public_access" {
+  bucket = aws_s3_bucket.frontend_app.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+data "aws_iam_policy_document" "frontend_app_bucket_policy" {
+  statement {
+    sid    = "PublicRead"
+    effect = "Allow"
+    actions = [
+      "s3:Get*",
+      "s3:List*"
+    ]
+    resources = [
+      aws_s3_bucket.frontend_app.arn,
+      "${aws_s3_bucket.frontend_app.arn}/*"
+    ]
+    principals {
+      type        = "*"
+      identifiers = [ "*" ]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "frontend_app_bucket_policy" {
+  bucket     = aws_s3_bucket.frontend_app.id
+  policy     = data.aws_iam_policy_document.frontend_app_bucket_policy.json
+  depends_on = [ aws_s3_bucket_public_access_block.frontend_app_public_access ]
+}
+
+resource "aws_s3_bucket_website_configuration" "frontend_app_website_config" {
+  bucket    = aws_s3_bucket.frontend_app.id
+  index_document {
+    suffix = "index.html"
+  }
+}
