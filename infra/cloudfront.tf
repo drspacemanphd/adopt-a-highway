@@ -36,7 +36,6 @@ resource "aws_cloudfront_distribution" "frontend_app" {
     allowed_methods            = ["GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
     cached_methods             = ["GET", "HEAD", "OPTIONS"]
     cache_policy_id            = data.aws_cloudfront_cache_policy.cache_optimized_policy.id
-    default_ttl                = 86400
     origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.s3cors_policy.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.response_headers_policy.id
     target_origin_id           = "adopt-a-highway-${var.env}"
