@@ -66,6 +66,10 @@ resource "aws_cloudfront_distribution" "frontend_app" {
 # This command "activates" the frontend build, such that "activation" is done
 # in terraform, along with a lambda code deployment/activation
 resource "terraform_data" "frontend_app_deployment" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
   provisioner "local-exec" {
     command = <<EOT
 aws s3 cp s3://${aws_s3_bucket.frontend_app.id}/index-${var.commit_hash}.html s3://${aws_s3_bucket.frontend_app.id}/index.html
