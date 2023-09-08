@@ -44,6 +44,7 @@ resource "aws_cloudfront_distribution" "frontend_app" {
 
   default_root_object = "index.html"
   enabled             = true
+  aliases = [ var.env == "prod" ? "adopt-a-highway.drspacemanphd.com" : "dev-adopt-a-highway.drspacemanphd.com" ]
 
   origin {
     domain_name              = aws_s3_bucket.frontend_app.bucket_regional_domain_name
