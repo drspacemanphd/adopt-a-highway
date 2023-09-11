@@ -457,15 +457,15 @@ resource "aws_s3_bucket_notification" "image_submissions_bucket_notification" {
 }
 
 
-# ## Frontend Activation
-# # This command "activates" the frontend build, such that "activation" is done
-# # in terraform, along with a lambda code deployment/activation
-# resource "null_resource" "frontend_app_deployment" {
-#   triggers = {
-#     always_run = "${timestamp()}"
-#   }
+## Frontend Activation
+# This command "activates" the frontend build, such that "activation" is done
+# in terraform, along with a lambda code deployment/activation
+resource "null_resource" "frontend_app_deployment" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
 
-#   provisioner "local-exec" {
-#     command = "aws s3 cp s3://${module.s3_buckets.frontend_app_bucket_name}/index-${var.commit_hash}.html s3://${module.s3_buckets.frontend_app_bucket_name}/index.html && aws cloudfront create-invalidation --distribution-id ${module.cloudfront.cloudfront_frontend_distribution_id} --paths /"
-#   }
-# }
+  provisioner "local-exec" {
+    command = "aws s3 cp s3://${module.s3_buckets.frontend_app_bucket_name}/index-${var.commit_hash}.html s3://${module.s3_buckets.frontend_app_bucket_name}/index.html && aws cloudfront create-invalidation --distribution-id ${module.cloudfront.cloudfront_frontend_distribution_id} --paths /"
+  }
+}
