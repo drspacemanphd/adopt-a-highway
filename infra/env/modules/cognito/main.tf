@@ -70,11 +70,6 @@ resource "aws_cognito_user_pool_client" "user_pool_web_client" {
   auth_session_validity   = 3
   enable_token_revocation = true
   refresh_token_validity  = 30
-  token_validity_units {
-    access_token  = "minutes"
-    id_token      = "minutes"
-    refresh_token = "days"
-  }
 }
 
 resource "aws_cognito_identity_pool" "identity_pool" {

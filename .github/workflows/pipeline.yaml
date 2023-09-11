@@ -35,10 +35,10 @@ jobs:
         uses: hashicorp/setup-terraform@v2
       - name: Setup Terraform Workspace
         run: terraform init && terraform workspace list && terraform workspace select dev
-        working-directory: ./infra
+        working-directory: ./infra/env
       - name: Deploy
         run: TF_VAR_env=dev TF_VAR_commit_hash=${{ github.sha }} terraform apply --auto-approve
-        working-directory: ./infra
+        working-directory: ./infra/env
 
 
 
