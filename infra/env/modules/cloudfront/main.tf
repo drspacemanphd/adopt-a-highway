@@ -42,11 +42,8 @@ resource "aws_cloudfront_distribution" "frontend_app" {
     viewer_protocol_policy     = "redirect-to-https" 
   }
 
-  default_root_object = "index.html"
-  enabled             = true
-
   origin {
-    domain_name              = aws_s3_bucket.frontend_app.bucket_regional_domain_name
+    domain_name              = var.bucket_regional_domain_name
     origin_id                = "adopt-a-highway-${var.env}"
     origin_access_control_id = aws_cloudfront_origin_access_control.frontend_app_oac.id
   }
@@ -57,20 +54,13 @@ resource "aws_cloudfront_distribution" "frontend_app" {
     }
   }
 
+  default_root_object = "index.html"
+  enabled             = true
+  aliases             = var.env == "prod" ? [ "www.adopt-a-highway.drspacemanphd.com", "adopt-a-highway.drspacemanphd.com" ] : [ "dev-adopt-a-highway.drspacemanphd.com", "www.dev-adopt-a-highway.drspacemanphd.com" ]
+  
   viewer_certificate {
-    cloudfront_default_certificate = true
-  }
-}
-
-### Frontend Activation
-# This command "activates" the frontend build, such that "activation" is done
-# in terraform, along with a lambda code deployment/activation
-resource "null_resource" "frontend_app_deployment" {
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-
-  provisioner "local-exec" {
-    command = "aws s3 cp s3://${aws_s3_bucket.frontend_app.id}/index-${var.commit_hash}.html s3://${aws_s3_bucket.frontend_app.id}/index.html && aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.frontend_app.id} --paths /"
+    acm_certificate_arn      = var.viewer_certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 }

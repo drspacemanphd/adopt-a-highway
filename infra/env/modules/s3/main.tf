@@ -96,12 +96,6 @@ resource "aws_s3_bucket_policy" "litter-images-bucket-policy" {
   depends_on = [ aws_s3_bucket_public_access_block.litter_images_public_access_block ]
 }
 
-resource "aws_s3_bucket_acl" "litter-images-bucket-acl" {
-  bucket = aws_s3_bucket.litter_images_bucket.id
-  acl    = "private"
-  depends_on = [ aws_s3_bucket_public_access_block.litter_images_public_access_block ]
-}
-
 resource "aws_s3_bucket_lifecycle_configuration" "litter_lifecycle" {
   bucket = aws_s3_bucket.litter_images_bucket.id
   rule {
