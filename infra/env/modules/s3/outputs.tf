@@ -37,3 +37,7 @@ output "litter_images_bucket_name" {
 output "litter_images_bucket_arn" {
   value = aws_s3_bucket.litter_images_bucket.arn
 }
+
+output "lambda_bucket_name" {
+  value = aws_s3_bucket.lambda_function_code.bucket
+}

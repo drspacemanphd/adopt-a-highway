@@ -5,14 +5,6 @@ data "aws_route53_zone" "frontend_domain" {
   name = "drspacemanphd.com"
 }
 
-data aws_ssm_parameter arcgis_username {
-  name = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisUsername"
-}
-
-data aws_ssm_parameter arcgis_password {
-  name = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisPassword"
-}
-
 # Modules
 module "cognito_pools" {
   source  = "./modules/cognito"
@@ -39,8 +31,8 @@ module "submission_handler_lambda" {
   source      = "./modules/lambda"
   lambda_name = "SubmissionHandler-${var.env}"
   account_id  = data.aws_caller_identity.current.account_id
-  s3_bucket   = var.env == "dev" ? "amplify-adoptahighway-dev-53135-deployment" : "amplify-adoptahighway-prod-34600-deployment"
-  s3_key      = var.env == "dev" ? "amplify-builds/submission-handler-${var.commit_hash}.zip" : "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
+  s3_bucket   = module.s3_buckets.lambda_bucket_name
+  s3_key      = var.env == "dev" ? "submission-handler-${var.commit_hash}.zip" : "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
   env_vars    = {
     ENV           = var.env
     REGION        = "us-east-1"
@@ -52,12 +44,12 @@ module "road_scraper_lambda" {
   source      = "./modules/lambda"
   lambda_name = "RoadScraper-${var.env}"
   account_id  = data.aws_caller_identity.current.account_id
-  s3_bucket   = var.env == "dev" ? "amplify-adoptahighway-dev-53135-deployment" : "amplify-adoptahighway-prod-34600-deployment"
-  s3_key      = var.env == "dev" ? "amplify-builds/road-scraper-${var.commit_hash}.zip" : "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip"
+  s3_bucket   = module.s3_buckets.lambda_bucket_name
+  s3_key      = var.env == "dev" ? "road-scraper-${var.commit_hash}.zip" : "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip"
   env_vars    = {
     APP_SOURCE_LAYER_URL          = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-roads-${var.env}/FeatureServer/0"
-    ArcgisUsername                = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisUsername"
-    ArcgisPassword                = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisPassword"
+    ArcgisUsername                = "/adopt-a-highway-${var.env}-ArcgisUsername"
+    ArcgisPassword                = "/adopt-a-highway-${var.env}-ArcgisPassword"
     ENV	                          = var.env
     REGION                        =	"us-east-1"
     GROUPS_SOURCE_LAYER_QUERY_URL	= "https://services1.arcgis.com/bQ68YUVG6MKPIQ8f/ArcGIS/rest/services/AAH_Roads_View/FeatureServer/1"
@@ -70,16 +62,16 @@ module "image_processor_lambda" {
   source      = "./modules/lambda"
   lambda_name = "ImageProcessor-${var.env}"
   account_id  = data.aws_caller_identity.current.account_id
-  s3_bucket   = var.env == "dev" ? "amplify-adoptahighway-dev-53135-deployment" : "amplify-adoptahighway-prod-34600-deployment"
-  s3_key      = var.env == "dev" ? "amplify-builds/image-processor-${var.commit_hash}.zip" : "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip"
+  s3_bucket   = module.s3_buckets.lambda_bucket_name
+  s3_key      = var.env == "dev" ? "image-processor-${var.commit_hash}.zip" : "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip"
   env_vars    = {
     ENV                             = var.env
     REGION                          = "us-east-1"
     FLAGGED_SUBMISSIONS_BUCKET      = module.s3_buckets.flagged_submissions_bucket_name
     REJECTED_SUBMISSIONS_BUCKET     = module.s3_buckets.rejected_submissions_bucket_name
     LITTER_IMAGES_BUCKET            = module.s3_buckets.litter_images_bucket_name
-    ArcgisUsername                  = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisUsername"
-    ArcgisPassword                  = "/amplify/d3gp1lr0l5y30h/${var.env}/AMPLIFY_ImageProcessor_ArcgisPassword"
+    ArcgisUsername                  = "/adopt-a-highway-${var.env}-ArcgisUsername"
+    ArcgisPassword                  = "/adopt-a-highway-${var.env}-ArcgisPassword"
     LITTER_FEATURE_LAYER_URL        = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-${var.env}/FeatureServer/0"
     LITTERLESS_FEATURE_LAYER_URL    = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-literless-${var.env}/FeatureServer/0"
     INAPPROPRIATE_FEATURE_LAYER_URL = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-inappropriate-${var.env}/FeatureServer/0"
@@ -438,7 +430,7 @@ resource "aws_iam_role_policy_attachment" "submission_handler_sqs_policy_attachm
 
 ### Lambda Trigger
 resource "aws_lambda_permission" "image_submissions_bucket_notification_permission" {
-  statement_id  = var.env == "dev" ? "amplify-adoptahighway-dev-53135-functionSubmissionHandler-1PXXT28C-S3TriggerPermission-10N7PY82AB3A7" : "amplify-adoptahighway-prod-34600-functionSubmissionHandler-G7QTZE0-S3TriggerPermission-1RHZULB54L7RO" 
+  statement_id  = var.env == "dev" ? "adopt-a-highway-${var.env}-image-processor-invocation-permission" : "amplify-adoptahighway-prod-34600-functionSubmissionHandler-G7QTZE0-S3TriggerPermission-1RHZULB54L7RO" 
   action        = "lambda:InvokeFunction"
   function_name = module.submission_handler_lambda.lambda_function_name
   principal     = "s3.amazonaws.com" 

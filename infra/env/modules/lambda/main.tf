@@ -54,15 +54,4 @@ resource "aws_lambda_function" "lambda_function" {
 
   s3_bucket = var.s3_bucket
   s3_key    = var.s3_key
-
-  # environment {
-  #   variables = {
-  #     ENV           = var.env
-  #     REGION        = "us-east-1"
-  #     SQS_QUEUE_URL = aws_sqs_queue.image_processing_queue.url
-  #   }
-  # }
-
-  # s3_bucket = var.env == "dev" ? "amplify-adoptahighway-dev-53135-deployment" : "amplify-adoptahighway-prod-34600-deployment"
-  # s3_key    = var.env == "dev" ? "amplify-builds/submission-handler-${var.commit_hash}.zip" : "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
 }
