@@ -7,13 +7,12 @@ if [ -z $COMMIT_HASH ]; then
   COMMIT_HASH="build"
 fi
 
-S3_BUCKET=amplify-adoptahighway-dev-53135-deployment
-S3_PREFIX=amplify-builds
+S3_BUCKET=adopt-a-highway-dev-lambda-function-code-10071987
 
 for dir in ./*; do
   name=$(echo $dir | cut -c 3-)
   echo DEPLOYING LAMBDA: $name
-  aws s3api put-object --bucket $S3_BUCKET --key $S3_PREFIX/$name-$COMMIT_HASH.zip --body ./$name/$name-$COMMIT_HASH.zip
+  aws s3api put-object --bucket $S3_BUCKET --key $name-$COMMIT_HASH.zip --body ./$name/$name-$COMMIT_HASH.zip
 done
 
 cd ..
