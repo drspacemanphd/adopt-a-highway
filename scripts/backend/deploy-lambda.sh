@@ -7,7 +7,7 @@ if [ -z $COMMIT_HASH ]; then
   COMMIT_HASH="build"
 fi
 
-S3_BUCKET=adopt-a-highway-dev-lambda-function-code-10071987
+S3_BUCKET=adopt-a-highway-$ENV-lambda-function-code-10071987
 
 for dir in ./*; do
   name=$(echo $dir | cut -c 3-)

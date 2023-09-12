@@ -5,7 +5,7 @@ if [ -z $COMMIT_HASH ]; then
   COMMIT_HASH="build"
 fi
 
-S3_BUCKET=ada-frontend-application-dev
+S3_BUCKET=ada-frontend-application-$ENV
 S3_PREFIX=/static-$COMMIT_HASH
 
 echo DEPLOYING FRONTEND
