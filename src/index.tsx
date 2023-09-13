@@ -2,20 +2,46 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Amplify from 'aws-amplify';
-import { Authenticator } from '@aws-amplify/ui-react';
 
 import { App } from './app/App';
 import { Upload } from './routes/upload/Upload';
 import { Map } from './routes/map/Map';
+import { SignIn } from './routes/sign-in/SignIn';
 
 import reportWebVitals from './reportWebVitals';
-import awsExports from './aws-exports';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
-import '@aws-amplify/ui-react/styles.css';
+
+const cognitoExports = {
+  "aws_project_region": "us-east-1",
+  "aws_cognito_identity_pool_id": process.env.REACT_APP_AWS_IDENTITY_POOL_ID,
+  "aws_cognito_region": "us-east-1",
+  "aws_user_pools_id": process.env.REACT_APP_AWS_USER_POOL_ID,
+  "aws_user_pools_web_client_id": process.env.REACT_APP_AWS_USER_POOL_WEB_CLIENT_ID,
+  "oauth": {},
+  "aws_cognito_username_attributes": [
+      "EMAIL"
+  ],
+  "aws_cognito_social_providers": [],
+  "aws_cognito_signup_attributes": [
+      "EMAIL"
+  ],
+  "aws_cognito_mfa_configuration": "OFF",
+  "aws_cognito_mfa_types": [
+      "SMS"
+  ],
+  "aws_cognito_password_protection_settings": {
+      "passwordPolicyMinLength": 8,
+      "passwordPolicyCharacters": []
+  },
+  "aws_cognito_verification_mechanisms": [
+      "EMAIL"
+  ]
+} as any;
 
 // Configure Amplify
-Amplify.configure(awsExports);
+Amplify.configure(cognitoExports);
 
 // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
 let vh = window.innerHeight * 0.01;
@@ -37,14 +63,8 @@ ReactDOM.render(
         <Route path='/' element={<App />}>
           <Route index element={<Map />}/>
           <Route path='/map' element={<Map />}/>
-          <Route
-            path='/upload'
-            element={
-              <Authenticator>
-                {({ signOut, user }) => <Upload />}
-              </Authenticator>
-            }
-          />
+          <Route path='/upload' element={<Upload />}/>
+          <Route path='/sign-in' element={<SignIn />}/>
         </Route>
       </Routes>
     </BrowserRouter>

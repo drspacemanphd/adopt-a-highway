@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@aws-amplify/ui-react": "2.11.0",
     "@aws-sdk/client-s3": "^3.47.0",
     "aws-amplify": "^4.3.12",
+    "bootstrap": "^5.3.1",
+    "env-cmd": "^10.1.0",
     "esri-loader": "^2.9.2",
     "react": "^17.0.2",
+    "react-bootstrap": "^2.8.0",
     "react-dom": "^17.0.2",
+    "react-icons": "^4.10.1",
     "react-router-dom": "^6.2.0",
     "react-scripts": "^5.0.0",
     "typescript": "^4.4.2",
@@ -17,17 +20,12 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "postinstall": "yarn run amplify:SubmissionHandler:install && yarn run amplify:ImageProcessor:install && yarn run amplify:RoadScraper:install",
-    "amplify:SubmissionHandler:install": "(cd amplify/backend/function/SubmissionHandler/lib && yarn --cwd=./ install)",
-    "amplify:ImageProcessor:install": "(cd amplify/backend/function/ImageProcessor/lib && yarn --cwd=./ install)",
-    "amplify:RoadScraper:install": "(cd amplify/backend/function/RoadScraper/lib && yarn --cwd=./ install)",
-    "start": "REACT_APP_AMPLIFY_ENV=dev react-scripts start",
-    "build": "REACT_APP_AMPLIFY_ENV=$AMPLIFY_ENV react-scripts build",
-    "build:services": "yarn run postbuild",
-    "postbuild": "yarn run amplify:SubmissionHandler && yarn run amplify:ImageProcessor && yarn run amplify:RoadScraper",
-    "amplify:SubmissionHandler": "node ./scripts/build-lambda.js SubmissionHandler",
-    "amplify:ImageProcessor": "node ./scripts/build-lambda.js ImageProcessor",
-    "amplify:RoadScraper": "node ./scripts/build-lambda.js RoadScraper",
+    "postinstall": "yarn run backend:install",
+    "backend:install": "ls ./backend | awk '{print}' | xargs -I '{}' yarn --frozen-lockfile --cwd=./backend/'{}'",
+    "start": "./node_modules/.bin/env-cmd -f ./.env.dev react-scripts start",
+    "build": "react-scripts build",
+    "postbuild": "yarn backend:build",
+    "backend:build": "bash ./scripts/backend/build-lambda.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -66,5 +64,8 @@
     "@types/react-dom": "^17.0.9",
     "@types/uuid": "^8.3.4",
     "source-map-explorer": "^2.5.2"
+  },
+  "resolutions": {
+    "@types/react": "17.0.65"
   }
 }

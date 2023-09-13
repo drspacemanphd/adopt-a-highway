@@ -1,28 +1,41 @@
 .app-nav {
+  position: relative;
   box-sizing: border-box;
   height: 8%;
   padding: 0.3rem 1rem 0.3rem 1rem;
   background-color: rgb(255, 255, 255);
-  box-shadow: 0px 1px 5px;
+  box-shadow: 0px 1px 3px;
+  z-index: 5;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.app-nav .amplify-menu-trigger {
-  max-height: 80% !important;
-}
-.app-nav .amplify-menu-trigger:hover {
-  background-color: rgba(4,75,100,1) !important;
-  color: white;
-  border-color: rgba(4,75,100,1) !important;
+.app-nav .dropdown .dropdown-toggle {
+  background-color: rgba(255,255,255);
+  color: rgb(4,75,100);
+  border-color: rgb(174, 179, 183);
 }
 
-.app-nav-menu-item.active {
-  background-color: rgba(4,75,100,1) !important;
-  color: white;
+.app-nav .dropdown .btn-primary:hover {
+  background-color: rgb(0,0,0,0.05);
 }
 
-.app-nav-menu-item-icon {
-  margin-right: 0.5em !important;
+.app-nav .dropdown .dropdown-toggle.show {
+  background-color: rgb(4,75,100);
+  color: rgb(255,255,255);
+  border-color: rgb(4,75,100);
+}
+
+.app-nav .dropdown .dropdown-menu {
+  padding: 0;
+}
+
+.app-nav .dropdown .dropdown-menu a {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.app-nav .dropdown .dropdown-menu a:hover {
+  background-color: rgba(0,0,0,0.05);
 }
