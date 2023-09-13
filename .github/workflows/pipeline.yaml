@@ -44,7 +44,7 @@ jobs:
         run: terraform init && terraform workspace list && terraform workspace select ${{ inputs.ENV }}
         working-directory: ./infra/env
       - name: Deploy
-        run: TF_VAR_env=ENV=${{ inputs.ENV }} TF_VAR_commit_hash=${{ github.sha }} terraform apply --auto-approve
+        run: TF_VAR_env=${{ inputs.ENV }} TF_VAR_commit_hash=${{ github.sha }} terraform apply --auto-approve
         working-directory: ./infra/env
 
 
