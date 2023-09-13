@@ -32,7 +32,7 @@ module "submission_handler_lambda" {
   lambda_name = "SubmissionHandler-${var.env}"
   account_id  = data.aws_caller_identity.current.account_id
   s3_bucket   = module.s3_buckets.lambda_bucket_name
-  s3_key      = var.env == "dev" ? "submission-handler-${var.commit_hash}.zip" : "amplify-builds/SubmissionHandler-55526c74577359477779-build.zip"
+  s3_key      = "submission-handler-${var.commit_hash}.zip"
   env_vars    = {
     ENV           = var.env
     REGION        = "us-east-1"
@@ -45,7 +45,7 @@ module "road_scraper_lambda" {
   lambda_name = "RoadScraper-${var.env}"
   account_id  = data.aws_caller_identity.current.account_id
   s3_bucket   = module.s3_buckets.lambda_bucket_name
-  s3_key      = var.env == "dev" ? "road-scraper-${var.commit_hash}.zip" : "amplify-builds/RoadScraper-4e635648646a2b31634b-build.zip"
+  s3_key      = "road-scraper-${var.commit_hash}.zip"
   env_vars    = {
     APP_SOURCE_LAYER_URL          = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-roads-${var.env}/FeatureServer/0"
     ArcgisUsername                = "/adopt-a-highway-${var.env}-ArcgisUsername"
@@ -63,7 +63,7 @@ module "image_processor_lambda" {
   lambda_name = "ImageProcessor-${var.env}"
   account_id  = data.aws_caller_identity.current.account_id
   s3_bucket   = module.s3_buckets.lambda_bucket_name
-  s3_key      = var.env == "dev" ? "image-processor-${var.commit_hash}.zip" : "amplify-builds/ImageProcessor-6f59587052703038506c-build.zip"
+  s3_key      = "image-processor-${var.commit_hash}.zip"
   env_vars    = {
     ENV                             = var.env
     REGION                          = "us-east-1"
@@ -111,7 +111,7 @@ data "aws_iam_policy_document" "authenticated_user_role_trust_policy" {
 }
 
 resource "aws_iam_role" "authenticated_user_role" {
-  name               = "amplify-adoptahighway-${var.env}-authRole"
+  name               = "adoptahighway-${var.env}-authRole"
   assume_role_policy = data.aws_iam_policy_document.authenticated_user_role_trust_policy.json
 
   inline_policy {}
@@ -165,7 +165,7 @@ data "aws_iam_policy_document" "unauthenticated_user_role_trust_policy" {
 }
 
 resource "aws_iam_role" "unauthenticated_user_role" {
-  name               = "amplify-adoptahighway-${var.env}-unauthRole"
+  name               = "adoptahighway-${var.env}-unauthRole"
   assume_role_policy = data.aws_iam_policy_document.unauthenticated_user_role_trust_policy.json
 
   inline_policy {}
@@ -430,7 +430,7 @@ resource "aws_iam_role_policy_attachment" "submission_handler_sqs_policy_attachm
 
 ### Lambda Trigger
 resource "aws_lambda_permission" "image_submissions_bucket_notification_permission" {
-  statement_id  = var.env == "dev" ? "adopt-a-highway-${var.env}-image-processor-invocation-permission" : "amplify-adoptahighway-prod-34600-functionSubmissionHandler-G7QTZE0-S3TriggerPermission-1RHZULB54L7RO" 
+  statement_id  = "adopt-a-highway-${var.env}-image-processor-invocation-permission"
   action        = "lambda:InvokeFunction"
   function_name = module.submission_handler_lambda.lambda_function_name
   principal     = "s3.amazonaws.com" 

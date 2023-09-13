@@ -1,7 +1,6 @@
 on:
   push:
     branches:
-    - e/amplify-to-terraform
     - dev
 
 jobs:

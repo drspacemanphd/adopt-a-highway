@@ -9,13 +9,39 @@ import { Map } from './routes/map/Map';
 import { SignIn } from './routes/sign-in/SignIn';
 
 import reportWebVitals from './reportWebVitals';
-import awsExports from './aws-exports';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
+const cognitoExports = {
+  "aws_project_region": "us-east-1",
+  "aws_cognito_identity_pool_id": process.env.REACT_APP_AWS_IDENTITY_POOL_ID,
+  "aws_cognito_region": "us-east-1",
+  "aws_user_pools_id": process.env.REACT_APP_AWS_USER_POOL_ID,
+  "aws_user_pools_web_client_id": process.env.REACT_APP_AWS_USER_POOL_WEB_CLIENT_ID,
+  "oauth": {},
+  "aws_cognito_username_attributes": [
+      "EMAIL"
+  ],
+  "aws_cognito_social_providers": [],
+  "aws_cognito_signup_attributes": [
+      "EMAIL"
+  ],
+  "aws_cognito_mfa_configuration": "OFF",
+  "aws_cognito_mfa_types": [
+      "SMS"
+  ],
+  "aws_cognito_password_protection_settings": {
+      "passwordPolicyMinLength": 8,
+      "passwordPolicyCharacters": []
+  },
+  "aws_cognito_verification_mechanisms": [
+      "EMAIL"
+  ]
+} as any;
+
 // Configure Amplify
-Amplify.configure(awsExports);
+Amplify.configure(cognitoExports);
 
 // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
 let vh = window.innerHeight * 0.01;

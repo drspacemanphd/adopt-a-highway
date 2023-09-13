@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  pipeline_dev:
+    uses: ./.github/workflows/pipeline.yaml
+    with:
+      ENV: dev
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  pipeline_prod:
+    uses: ./.github/workflows/pipeline.yaml
+    with:
+      ENV: prod
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    needs: pipeline_dev
