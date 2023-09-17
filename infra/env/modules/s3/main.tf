@@ -56,6 +56,19 @@ resource "aws_s3_bucket_lifecycle_configuration" "image_submissions_lifecycle" {
   }
 }
 
+resource "aws_s3_bucket_cors_configuration" "image_submissions_cors" {
+  bucket = aws_s3_bucket.image_submissions_bucket.id
+  
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "PUT", "POST"]
+    allowed_origins = [
+      "https://adopt-a-highway.drspacemanphd.com",
+      "https://dev-adopt-a-highway.drspacemanphd.com",
+    ]
+  }
+}
+
 
 
 ### Litter Images
