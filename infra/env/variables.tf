@@ -1,7 +1,6 @@
 variable "env" {
   type        = string
   description = "deployment environment"
-  default     = "dev"
 }
 
 variable "commit_hash" {
