@@ -55,8 +55,8 @@ resource "aws_lambda_function" "road_scraper_lambda" {
   environment {
     variables = {
       APP_SOURCE_LAYER_URL          = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-roads-${var.env}/FeatureServer/0"
-      ArcgisUsername                = "/adopt-a-highway-${var.env}-ArcgisUsername"
-      ArcgisPassword                = "/adopt-a-highway-${var.env}-ArcgisPassword"
+      ArcgisUsername                = "/adopt-a-highway-${var.env}/ArcgisUsername"
+      ArcgisPassword                = "/adopt-a-highway-${var.env}/ArcgisPassword"
       ENV	                          = var.env
       REGION                        =	"us-east-1"
       GROUPS_SOURCE_LAYER_QUERY_URL	= "https://services1.arcgis.com/bQ68YUVG6MKPIQ8f/ArcGIS/rest/services/AAH_Roads_View/FeatureServer/1"

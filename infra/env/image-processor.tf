@@ -59,8 +59,8 @@ resource "aws_lambda_function" "image_processor_lambda" {
       FLAGGED_SUBMISSIONS_BUCKET      = module.s3_buckets.flagged_submissions_bucket_name
       REJECTED_SUBMISSIONS_BUCKET     = module.s3_buckets.rejected_submissions_bucket_name
       LITTER_IMAGES_BUCKET            = module.s3_buckets.litter_images_bucket_name
-      ArcgisUsername                  = "/adopt-a-highway-${var.env}-ArcgisUsername"
-      ArcgisPassword                  = "/adopt-a-highway-${var.env}-ArcgisPassword"
+      ArcgisUsername                  = "/adopt-a-highway-${var.env}/ArcgisUsername"
+      ArcgisPassword                  = "/adopt-a-highway-${var.env}/ArcgisPassword"
       LITTER_FEATURE_LAYER_URL        = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-${var.env}/FeatureServer/0"
       LITTERLESS_FEATURE_LAYER_URL    = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-literless-${var.env}/FeatureServer/0"
       INAPPROPRIATE_FEATURE_LAYER_URL = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-inappropriate-${var.env}/FeatureServer/0"
