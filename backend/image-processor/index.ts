@@ -359,6 +359,7 @@ const getArcgisToken = async () => {
   const res = await axios.post('https://www.arcgis.com/sharing/rest/generateToken?f=json', params);
 
   if (!res?.data?.token) {
+    console.error(JSON.stringify(res.data));
     throw new Error(`Image Processor - Could not obtain token`);
   }
 
@@ -471,7 +472,6 @@ const processLitterImage = async (
       CopySource: `${record.bucket}/${record.key}`,
       Bucket: LITTER_IMAGES_BUCKET,
       Key: record.key,
-      ACL: 'public-read',
     }).promise();
     console.log(`Image Processor - Successfully copied: ${record.bucket}/${record.key} to ${LITTER_IMAGES_BUCKET}`);
   } catch (err) {

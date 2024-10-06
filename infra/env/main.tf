@@ -27,57 +27,6 @@ module "domain_certs" {
   zone_id = data.aws_route53_zone.frontend_domain.zone_id
 }
 
-module "submission_handler_lambda" {
-  source      = "./modules/lambda"
-  lambda_name = "SubmissionHandler-${var.env}"
-  account_id  = data.aws_caller_identity.current.account_id
-  s3_bucket   = module.s3_buckets.lambda_bucket_name
-  s3_key      = "submission-handler-${var.commit_hash}.zip"
-  env_vars    = {
-    ENV           = var.env
-    REGION        = "us-east-1"
-    SQS_QUEUE_URL = module.image_sqs_queue.image_processing_queue_url
-  } 
-}
-
-module "road_scraper_lambda" {
-  source      = "./modules/lambda"
-  lambda_name = "RoadScraper-${var.env}"
-  account_id  = data.aws_caller_identity.current.account_id
-  s3_bucket   = module.s3_buckets.lambda_bucket_name
-  s3_key      = "road-scraper-${var.commit_hash}.zip"
-  env_vars    = {
-    APP_SOURCE_LAYER_URL          = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-roads-${var.env}/FeatureServer/0"
-    ArcgisUsername                = "/adopt-a-highway-${var.env}-ArcgisUsername"
-    ArcgisPassword                = "/adopt-a-highway-${var.env}-ArcgisPassword"
-    ENV	                          = var.env
-    REGION                        =	"us-east-1"
-    GROUPS_SOURCE_LAYER_QUERY_URL	= "https://services1.arcgis.com/bQ68YUVG6MKPIQ8f/ArcGIS/rest/services/AAH_Roads_View/FeatureServer/1"
-    JOIN_SOURCE_LAYER_QUERY_URL	  = "https://services1.arcgis.com/bQ68YUVG6MKPIQ8f/ArcGIS/rest/services/AAH_Roads_View/FeatureServer/2"
-    ROADS_SOURCE_LAYER_QUERY_URL	= "https://services1.arcgis.com/bQ68YUVG6MKPIQ8f/arcgis/rest/services/AAH_Roads_View/FeatureServer/0"
-  }
-}
-
-module "image_processor_lambda" {
-  source      = "./modules/lambda"
-  lambda_name = "ImageProcessor-${var.env}"
-  account_id  = data.aws_caller_identity.current.account_id
-  s3_bucket   = module.s3_buckets.lambda_bucket_name
-  s3_key      = "image-processor-${var.commit_hash}.zip"
-  env_vars    = {
-    ENV                             = var.env
-    REGION                          = "us-east-1"
-    FLAGGED_SUBMISSIONS_BUCKET      = module.s3_buckets.flagged_submissions_bucket_name
-    REJECTED_SUBMISSIONS_BUCKET     = module.s3_buckets.rejected_submissions_bucket_name
-    LITTER_IMAGES_BUCKET            = module.s3_buckets.litter_images_bucket_name
-    ArcgisUsername                  = "/adopt-a-highway-${var.env}-ArcgisUsername"
-    ArcgisPassword                  = "/adopt-a-highway-${var.env}-ArcgisPassword"
-    LITTER_FEATURE_LAYER_URL        = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-${var.env}/FeatureServer/0"
-    LITTERLESS_FEATURE_LAYER_URL    = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-literless-${var.env}/FeatureServer/0"
-    INAPPROPRIATE_FEATURE_LAYER_URL = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-inappropriate-${var.env}/FeatureServer/0"
-  }
-}
-
 module "cloudfront" {
   source                      = "./modules/cloudfront"
   env                         = var.env
@@ -253,7 +202,7 @@ resource "aws_iam_policy" "image_processor_s3_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "image_processor_s3_policy_attachment" {
-  role       = module.image_processor_lambda.lambda_execution_role_name
+  role       = aws_iam_role.image_processor_lambda_execution_role.name
   policy_arn = aws_iam_policy.image_processor_s3_policy.arn
 }
 
@@ -278,7 +227,7 @@ resource "aws_iam_policy" "image_processor_sqs_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "image_processor_sqs_policy_attachment" {
-  role       = module.image_processor_lambda.lambda_execution_role_name
+  role       = aws_iam_role.image_processor_lambda_execution_role.name
   policy_arn = aws_iam_policy.image_processor_sqs_policy.arn
 }
 
@@ -302,7 +251,7 @@ resource "aws_iam_policy" "image_processor_rekognition_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "image_processor_rekognition_policy_attachment" {
-  role       = module.image_processor_lambda.lambda_execution_role_name
+  role       = aws_iam_role.image_processor_lambda_execution_role.name
   policy_arn = aws_iam_policy.image_processor_rekognition_policy.arn
 }
 
@@ -325,14 +274,14 @@ resource "aws_iam_policy" "image_processor_ssm_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "image_processor_ssm_policy_attachment" {
-  role       = module.image_processor_lambda.lambda_execution_role_name
+  role       = aws_iam_role.image_processor_lambda_execution_role.name
   policy_arn = aws_iam_policy.image_processor_ssm_policy.arn
 }
 
 ### Event Source Mapping
 resource "aws_lambda_event_source_mapping" "image_submissions_event_source_mapping" {
   event_source_arn                   = module.image_sqs_queue.image_processing_queue_arn
-  function_name                      = module.image_processor_lambda.lambda_function_name
+  function_name                      = aws_lambda_function.image_processor_lambda.function_name
   batch_size                         = 1
   maximum_batching_window_in_seconds = 3
 }
@@ -358,7 +307,7 @@ resource "aws_iam_policy" "road_scraper_ssm_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "road_scraper_ssm_policy_attachment" {
-  role       = module.road_scraper_lambda.lambda_execution_role_name
+  role       = aws_iam_role.road_scraper_lambda_execution_role.name
   policy_arn = aws_iam_policy.road_scraper_ssm_policy.arn
 }
 
@@ -371,13 +320,13 @@ resource "aws_cloudwatch_event_rule" "road_scraper_cron" {
 
 resource "aws_cloudwatch_event_target" "road_scraper_target" {
   rule = aws_cloudwatch_event_rule.road_scraper_cron.name
-  arn  = module.road_scraper_lambda.lambda_function_arn
+  arn  = aws_lambda_function.road_scraper_lambda.arn
 }
 
 resource "aws_lambda_permission" "road_scraper_cron_permissions" {
   statement_id  = "AllowCloudwatchEventBridge" 
   action        = "lambda:InvokeFunction"
-  function_name = module.road_scraper_lambda.lambda_function_name
+  function_name = aws_lambda_function.road_scraper_lambda.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.road_scraper_cron.arn
 }
@@ -401,7 +350,7 @@ resource "aws_iam_policy" "submission_handler_s3_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "submission_handler_s3_policy_attachment" {
-  role       = module.submission_handler_lambda.lambda_execution_role_name
+  role       = aws_iam_role.submission_handler_lambda_execution_role.name
   policy_arn = aws_iam_policy.submission_handler_s3_policy.arn
 }
 
@@ -424,7 +373,7 @@ resource "aws_iam_policy" "submission_handler_sqs_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "submission_handler_sqs_policy_attachment" {
-  role       = module.submission_handler_lambda.lambda_execution_role_name
+  role       = aws_iam_role.submission_handler_lambda_execution_role.name
   policy_arn = aws_iam_policy.submission_handler_sqs_policy.arn
 }
 
@@ -432,7 +381,7 @@ resource "aws_iam_role_policy_attachment" "submission_handler_sqs_policy_attachm
 resource "aws_lambda_permission" "image_submissions_bucket_notification_permission" {
   statement_id  = "adopt-a-highway-${var.env}-image-processor-invocation-permission"
   action        = "lambda:InvokeFunction"
-  function_name = module.submission_handler_lambda.lambda_function_name
+  function_name = aws_lambda_function.submission_handler_lambda.function_name
   principal     = "s3.amazonaws.com" 
   source_arn    = module.s3_buckets.image_submissions_bucket_arn
 }
@@ -442,7 +391,7 @@ resource "aws_s3_bucket_notification" "image_submissions_bucket_notification" {
 
   lambda_function {
     events              = [ "s3:ObjectCreated:*" ]
-    lambda_function_arn = module.submission_handler_lambda.lambda_function_arn
+    lambda_function_arn = aws_lambda_function.submission_handler_lambda.arn
   }
 
   depends_on = [ aws_lambda_permission.image_submissions_bucket_notification_permission ]
