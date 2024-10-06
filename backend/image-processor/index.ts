@@ -359,6 +359,7 @@ const getArcgisToken = async () => {
   const res = await axios.post('https://www.arcgis.com/sharing/rest/generateToken?f=json', params);
 
   if (!res?.data?.token) {
+    console.error(JSON.stringify(res.data));
     throw new Error(`Image Processor - Could not obtain token`);
   }
 
