@@ -506,5 +506,3 @@ const processLitterImage = async (
     console.warn(`Image Processor - Delete object request failed for ${record.bucket}/${record.key} due to ${err}`);
   }
 };
-
-handler({} as any).then(res => console.log(res)).catch((err) => console.error(err));

@@ -52,13 +52,13 @@ resource "aws_lambda_function" "submission_handler_lambda" {
   runtime       = "nodejs16.x"
   timeout       = 25
 
-  environment {
-    variables = {
-      ENV           = var.env
-      REGION        = "us-east-1"
-      SQS_QUEUE_URL = module.image_sqs_queue.image_processing_queue_url
-    }
-  }
+  # environment {
+  #   variables = {
+  #     ENV           = var.env
+  #     REGION        = "us-east-1"
+  #     SQS_QUEUE_URL = module.image_sqs_queue.image_processing_queue_url
+  #   }
+  # }
 
   s3_bucket = module.s3_buckets.lambda_bucket_name
   s3_key    = "submission-handler-${var.commit_hash}.zip"
