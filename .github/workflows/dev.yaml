@@ -2,6 +2,7 @@ on:
   push:
     branches:
     - dev
+    - e/refactor-to-remove-esri
   pull_request:
     branches:
     - master
