@@ -193,11 +193,12 @@ function validateRequestParams(request: Request): void {
     throw new NotFoundError("Not Found");
   }
 
-  for (const param of searchParams.keys()) {
+  searchParams.forEach((param) => {
     if (!valid_search_params.includes(param.toLowerCase())) {
       throw new BadRequestError(`Provided param "${param}" is invalid`);
     }
-  }
+  });
+
 }
 
 function generateSql(searchParams: URLSearchParams): string {
