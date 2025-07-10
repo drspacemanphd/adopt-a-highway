@@ -44,7 +44,7 @@ resource "aws_iam_role_policy_attachment" "lambda_execution_policy_attachment" {
 resource "aws_lambda_function" "lambda_function" {
   function_name = var.lambda_name
   role          = aws_iam_role.lambda_execution_role.arn
-  handler       = "index.handler" 
+  handler       = "index.handler"
   runtime       = "nodejs16.x"
   timeout       = 25
 

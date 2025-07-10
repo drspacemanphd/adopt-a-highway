@@ -21,7 +21,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "flagged_submissions_lifecycle"
     }
     transition {
       storage_class = "ONEZONE_IA"
-      days          = 30 
+      days          = 30
     }
   }
 }
@@ -51,14 +51,14 @@ resource "aws_s3_bucket_lifecycle_configuration" "image_submissions_lifecycle" {
     }
     transition {
       storage_class = "ONEZONE_IA"
-      days          = 30 
+      days          = 30
     }
   }
 }
 
 resource "aws_s3_bucket_cors_configuration" "image_submissions_cors" {
   bucket = aws_s3_bucket.image_submissions_bucket.id
-  
+
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "PUT", "POST"]
@@ -98,15 +98,15 @@ data "aws_iam_policy_document" "litter_images_bucket_policy" {
     ]
     principals {
       type        = "*"
-      identifiers = [ "*" ]
+      identifiers = ["*"]
     }
   }
 }
 
 resource "aws_s3_bucket_policy" "litter-images-bucket-policy" {
-  bucket = aws_s3_bucket.litter_images_bucket.id
-  policy = data.aws_iam_policy_document.litter_images_bucket_policy.json
-  depends_on = [ aws_s3_bucket_public_access_block.litter_images_public_access_block ]
+  bucket     = aws_s3_bucket.litter_images_bucket.id
+  policy     = data.aws_iam_policy_document.litter_images_bucket_policy.json
+  depends_on = [aws_s3_bucket_public_access_block.litter_images_public_access_block]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "litter_lifecycle" {
@@ -149,7 +149,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "rejected_submissions_lifecycle
     }
     transition {
       storage_class = "ONEZONE_IA"
-      days          = 30 
+      days          = 30
     }
   }
 }
@@ -184,7 +184,7 @@ data "aws_iam_policy_document" "frontend_app_bucket_policy" {
     ]
     principals {
       type        = "*"
-      identifiers = [ "*" ]
+      identifiers = ["*"]
     }
   }
 }
@@ -192,11 +192,11 @@ data "aws_iam_policy_document" "frontend_app_bucket_policy" {
 resource "aws_s3_bucket_policy" "frontend_app_bucket_policy" {
   bucket     = aws_s3_bucket.frontend_app.id
   policy     = data.aws_iam_policy_document.frontend_app_bucket_policy.json
-  depends_on = [ aws_s3_bucket_public_access_block.frontend_app_public_access ]
+  depends_on = [aws_s3_bucket_public_access_block.frontend_app_public_access]
 }
 
 resource "aws_s3_bucket_website_configuration" "frontend_app_website_config" {
-  bucket    = aws_s3_bucket.frontend_app.id
+  bucket = aws_s3_bucket.frontend_app.id
   index_document {
     suffix = "index.html"
   }
@@ -205,7 +205,7 @@ resource "aws_s3_bucket_website_configuration" "frontend_app_website_config" {
 
 ### Lambda Function Code
 resource "aws_s3_bucket" "lambda_function_code" {
-  bucket = "adopt-a-highway-${var.env}-lambda-function-code-10071987"
+  bucket        = "adopt-a-highway-${var.env}-lambda-function-code-10071987"
   force_destroy = true
 }
 

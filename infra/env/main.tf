@@ -5,10 +5,14 @@ data "aws_route53_zone" "frontend_domain" {
   name = "drspacemanphd.com"
 }
 
+data "aws_ssm_parameter" "litter_db_initialization_secret" {
+  name = "/adopt-a-highway-${var.env}/litter-db-initialization-secret"
+}
+
 # Modules
 module "cognito_pools" {
-  source  = "./modules/cognito"
-  env     = var.env
+  source = "./modules/cognito"
+  env    = var.env
 }
 
 module "s3_buckets" {
@@ -34,6 +38,21 @@ module "cloudfront" {
   viewer_certificate_arn      = module.domain_certs.frontend_app_cert_arn
 }
 
+module "cloudflare_d1_database" {
+  source                = "./modules/d1"
+  env                   = var.env
+  cloudflare_account_id = var.cloudflare_account_id
+}
+
+module "litter_api" {
+  source                = "./modules/worker"
+  env                   = var.env
+  cloudflare_account_id = var.cloudflare_account_id
+  d1_litter_db_id       = module.cloudflare_d1_database.adopt_a_highway_d1_db_id
+  commit_hash           = var.commit_hash
+  initialization_secret = data.aws_ssm_parameter.litter_db_initialization_secret.value
+}
+
 # Module Integration Points
 ## Cognito Pool Integrations
 data "aws_iam_policy_document" "authenticated_user_role_trust_policy" {
@@ -49,12 +68,12 @@ data "aws_iam_policy_document" "authenticated_user_role_trust_policy" {
     condition {
       test     = "StringEquals"
       variable = "cognito-identity.amazonaws.com:aud"
-      values   = [ module.cognito_pools.identity_pool_id ]
+      values   = [module.cognito_pools.identity_pool_id]
     }
     condition {
       test     = "ForAnyValue:StringLike"
       variable = "cognito-identity.amazonaws.com:amr"
-      values = [ "authenticated" ]
+      values   = ["authenticated"]
     }
   }
 }
@@ -68,15 +87,15 @@ resource "aws_iam_role" "authenticated_user_role" {
 
 data "aws_iam_policy_document" "authenticated_user_role_s3_access_policy_document" {
   statement {
-    actions   = [ "s3:ListBucket", "s3:GetBucketCORS" ]
+    actions   = ["s3:ListBucket", "s3:GetBucketCORS"]
     effect    = "Allow"
-    resources = [ module.s3_buckets.image_submissions_bucket_arn ]
+    resources = [module.s3_buckets.image_submissions_bucket_arn]
   }
 
   statement {
-    actions   = [ "s3:PutObject", "s3:PutObjectTagging" ]
+    actions   = ["s3:PutObject", "s3:PutObjectTagging"]
     effect    = "Allow"
-    resources = [ "${module.s3_buckets.image_submissions_bucket_arn}/*" ]
+    resources = ["${module.s3_buckets.image_submissions_bucket_arn}/*"]
   }
 }
 
@@ -103,12 +122,12 @@ data "aws_iam_policy_document" "unauthenticated_user_role_trust_policy" {
     condition {
       test     = "StringEquals"
       variable = "cognito-identity.amazonaws.com:aud"
-      values   = [ module.cognito_pools.identity_pool_id ]
+      values   = [module.cognito_pools.identity_pool_id]
     }
     condition {
       test     = "ForAnyValue:StringLike"
       variable = "cognito-identity.amazonaws.com:amr"
-      values = [ "unauthenticated" ]
+      values   = ["unauthenticated"]
     }
   }
 }
@@ -135,7 +154,7 @@ resource "aws_route53_record" "frontend_app_main" {
   name    = var.env == "prod" ? "adopt-a-highway.drspacemanphd.com" : "dev-adopt-a-highway.drspacemanphd.com"
   type    = "A"
   alias {
-    name                   = module.cloudfront.cloudfront_frontend_distribution_domain_name
+    name = module.cloudfront.cloudfront_frontend_distribution_domain_name
     # Cloudfront Distribution Zone Id
     zone_id                = "Z2FDTNDATAQYW2"
     evaluate_target_health = false
@@ -147,7 +166,7 @@ resource "aws_route53_record" "frontend_app_main_www" {
   name    = var.env == "prod" ? "www.adopt-a-highway.drspacemanphd.com" : "www.dev-adopt-a-highway.drspacemanphd.com"
   type    = "A"
   alias {
-    name                   = module.cloudfront.cloudfront_frontend_distribution_domain_name
+    name = module.cloudfront.cloudfront_frontend_distribution_domain_name
     # Cloudfront Distribution Zone Id
     zone_id                = "Z2FDTNDATAQYW2"
     evaluate_target_health = false
@@ -324,7 +343,7 @@ resource "aws_cloudwatch_event_target" "road_scraper_target" {
 }
 
 resource "aws_lambda_permission" "road_scraper_cron_permissions" {
-  statement_id  = "AllowCloudwatchEventBridge" 
+  statement_id  = "AllowCloudwatchEventBridge"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.road_scraper_lambda.function_name
   principal     = "events.amazonaws.com"
@@ -382,7 +401,7 @@ resource "aws_lambda_permission" "image_submissions_bucket_notification_permissi
   statement_id  = "adopt-a-highway-${var.env}-image-processor-invocation-permission"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.submission_handler_lambda.function_name
-  principal     = "s3.amazonaws.com" 
+  principal     = "s3.amazonaws.com"
   source_arn    = module.s3_buckets.image_submissions_bucket_arn
 }
 
@@ -390,11 +409,11 @@ resource "aws_s3_bucket_notification" "image_submissions_bucket_notification" {
   bucket = module.s3_buckets.image_submissions_bucket_name
 
   lambda_function {
-    events              = [ "s3:ObjectCreated:*" ]
+    events              = ["s3:ObjectCreated:*"]
     lambda_function_arn = aws_lambda_function.submission_handler_lambda.arn
   }
 
-  depends_on = [ aws_lambda_permission.image_submissions_bucket_notification_permission ]
+  depends_on = [aws_lambda_permission.image_submissions_bucket_notification_permission]
 }
 
 
@@ -410,3 +429,4 @@ resource "null_resource" "frontend_app_deployment" {
     command = "aws s3 cp s3://${module.s3_buckets.frontend_app_bucket_name}/index-${var.commit_hash}.html s3://${module.s3_buckets.frontend_app_bucket_name}/index.html && aws cloudfront create-invalidation --distribution-id ${module.cloudfront.cloudfront_frontend_distribution_id} --paths /"
   }
 }
+ 

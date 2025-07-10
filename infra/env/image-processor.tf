@@ -48,7 +48,7 @@ resource "aws_iam_role_policy_attachment" "image_processor_lambda_execution_poli
 resource "aws_lambda_function" "image_processor_lambda" {
   function_name = local.image_processor_lambda_name
   role          = aws_iam_role.image_processor_lambda_execution_role.arn
-  handler       = "index.handler" 
+  handler       = "index.handler"
   runtime       = "nodejs16.x"
   timeout       = 25
 

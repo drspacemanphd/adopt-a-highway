@@ -22,14 +22,14 @@ resource "aws_cloudfront_distribution" "frontend_app" {
     error_caching_min_ttl = 86400
     error_code            = 404
     response_code         = 200
-    response_page_path    = "/index.html" 
+    response_page_path    = "/index.html"
   }
 
   custom_error_response {
     error_caching_min_ttl = 86400
     error_code            = 403
     response_code         = 200
-    response_page_path    = "/index.html" 
+    response_page_path    = "/index.html"
   }
 
   default_cache_behavior {
@@ -39,7 +39,7 @@ resource "aws_cloudfront_distribution" "frontend_app" {
     origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.s3cors_policy.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.response_headers_policy.id
     target_origin_id           = "adopt-a-highway-${var.env}"
-    viewer_protocol_policy     = "redirect-to-https" 
+    viewer_protocol_policy     = "redirect-to-https"
   }
 
   origin {
@@ -56,8 +56,8 @@ resource "aws_cloudfront_distribution" "frontend_app" {
 
   default_root_object = "index.html"
   enabled             = true
-  aliases             = var.env == "prod" ? [ "www.adopt-a-highway.drspacemanphd.com", "adopt-a-highway.drspacemanphd.com" ] : [ "dev-adopt-a-highway.drspacemanphd.com", "www.dev-adopt-a-highway.drspacemanphd.com" ]
-  
+  aliases             = var.env == "prod" ? ["www.adopt-a-highway.drspacemanphd.com", "adopt-a-highway.drspacemanphd.com"] : ["dev-adopt-a-highway.drspacemanphd.com", "www.dev-adopt-a-highway.drspacemanphd.com"]
+
   viewer_certificate {
     acm_certificate_arn      = var.viewer_certificate_arn
     ssl_support_method       = "sni-only"

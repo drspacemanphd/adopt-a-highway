@@ -13,11 +13,11 @@ resource "aws_cognito_user_pool" "user_pool" {
     invite_message_template {
       email_subject = "Thanks for trying out Adopt-A-Highway!"
       email_message = "Hi There! Thanks for helping keep Delaware clean! Your username is {username} and your temporary password is {####}."
-      sms_message   = "Your username is {username} and temporary password is {####}." 
+      sms_message   = "Your username is {username} and temporary password is {####}."
     }
   }
 
-  auto_verified_attributes = [ "email" ]
+  auto_verified_attributes = ["email"]
 
   email_configuration {
     email_sending_account = "COGNITO_DEFAULT"
@@ -44,7 +44,7 @@ resource "aws_cognito_user_pool" "user_pool" {
     }
   }
 
-  username_attributes = [ "email" ]
+  username_attributes = ["email"]
   username_configuration {
     case_sensitive = false
   }

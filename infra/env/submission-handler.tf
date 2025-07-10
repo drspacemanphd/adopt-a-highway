@@ -48,7 +48,7 @@ resource "aws_iam_role_policy_attachment" "submission_handler_lambda_execution_p
 resource "aws_lambda_function" "submission_handler_lambda" {
   function_name = local.submission_handler_lambda_name
   role          = aws_iam_role.submission_handler_lambda_execution_role.arn
-  handler       = "index.handler" 
+  handler       = "index.handler"
   runtime       = "nodejs16.x"
   timeout       = 25
 

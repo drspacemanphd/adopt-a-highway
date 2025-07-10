@@ -1,6 +1,6 @@
 resource "aws_acm_certificate" "frontend_app_cert" {
   domain_name               = var.env == "prod" ? "adopt-a-highway.drspacemanphd.com" : "dev-adopt-a-highway.drspacemanphd.com"
-  subject_alternative_names = var.env == "prod" ? [ "www.adopt-a-highway.drspacemanphd.com" ] : [ "www.dev-adopt-a-highway.drspacemanphd.com" ]
+  subject_alternative_names = var.env == "prod" ? ["www.adopt-a-highway.drspacemanphd.com"] : ["www.dev-adopt-a-highway.drspacemanphd.com"]
   validation_method         = "DNS"
   lifecycle {
     create_before_destroy = true
@@ -12,7 +12,7 @@ resource "aws_route53_record" "verification_records" {
     for dvo in aws_acm_certificate.frontend_app_cert.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
-      type   = dvo.resource_record_type 
+      type   = dvo.resource_record_type
     }
   }
 

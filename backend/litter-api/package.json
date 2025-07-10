@@ -1,0 +1,33 @@
+{
+  "name": "litter-api",
+  "version": "0.1.0",
+  "description": "Cloudflare worker that handles litter api queries",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "typegen": "wrangler types"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.2",
+    "wrangler": "^4.22.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "rules": {
+      "semi": [
+        2,
+        "always"
+      ]
+    }
+  },
+  "dependencies": {
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "uuid": "^11.1.0"
+  }
+}

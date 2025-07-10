@@ -50,3 +50,6 @@ amplify/backend/awscloudformation/
 **/.terraform/**
 
 **/*.zip
+
+# IDE
+.vscode/**

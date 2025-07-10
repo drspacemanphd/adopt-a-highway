@@ -63,7 +63,8 @@
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "@types/uuid": "^8.3.4",
-    "source-map-explorer": "^2.5.2"
+    "source-map-explorer": "^2.5.2",
+    "wrangler": "^4.22.0"
   },
   "resolutions": {
     "@types/react": "17.0.65"
