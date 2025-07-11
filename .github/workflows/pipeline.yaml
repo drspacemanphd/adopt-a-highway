@@ -19,7 +19,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: us-east-1
       ENV: ${{ inputs.ENV }}
-      TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -47,6 +46,10 @@ jobs:
       - name: Deploy
         run: TF_VAR_env=${{ inputs.ENV }} TF_VAR_commit_hash=${{ github.sha }} terraform apply --auto-approve
         working-directory: ./infra/env
+        env:
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+
 
 
 
