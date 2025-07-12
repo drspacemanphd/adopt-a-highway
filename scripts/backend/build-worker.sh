@@ -11,7 +11,7 @@ for dir in ./*; do
   echo BUILDING WORKER: $dir
   cd $dir
   rm -rf ./dist
-  npx esbuild index.ts --bundle --outdir=./dist --tsconfig=./tsconfig.json
+  npx esbuild index.ts --bundle --outdir=./dist --tsconfig=./tsconfig.json --format=esm
   cd ..
 done
 
