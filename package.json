@@ -7,6 +7,7 @@
     "aws-amplify": "^4.3.12",
     "bootstrap": "^5.3.1",
     "env-cmd": "^10.1.0",
+    "esbuild": "^0.25.6",
     "esri-loader": "^2.9.2",
     "react": "^17.0.2",
     "react-bootstrap": "^2.8.0",
@@ -24,8 +25,9 @@
     "backend:install": "ls ./backend | awk '{print}' | xargs -I '{}' yarn --frozen-lockfile --cwd=./backend/'{}'",
     "start": "./node_modules/.bin/env-cmd -f ./.env.dev react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "yarn backend:build",
+    "postbuild": "yarn backend:build && yarn worker:build",
     "backend:build": "bash ./scripts/backend/build-lambda.sh",
+    "worker:build": "bash ./scripts/backend/build-worker.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
