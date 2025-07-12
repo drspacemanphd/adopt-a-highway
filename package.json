@@ -21,8 +21,9 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "postinstall": "yarn run backend:install",
+    "postinstall": "yarn run backend:install && yarn run worker:install",
     "backend:install": "ls ./backend | awk '{print}' | xargs -I '{}' yarn --frozen-lockfile --cwd=./backend/'{}'",
+    "worker:install": "ls ./workers | awk '{print}' | xargs -I '{}' yarn --frozen-lockfile --cwd=./workers/'{}'",
     "start": "./node_modules/.bin/env-cmd -f ./.env.dev react-scripts start",
     "build": "react-scripts build",
     "postbuild": "yarn backend:build && yarn worker:build",
