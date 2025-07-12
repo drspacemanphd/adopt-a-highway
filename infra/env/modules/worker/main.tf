@@ -1,7 +1,7 @@
 resource "cloudflare_workers_script" "litter_api_script" {
   account_id  = var.cloudflare_account_id
   script_name = "litter-api-${var.env}"
-  content     = file("${path.root}/../../backend/litter-api/dist/index.js")
+  content     = file("${path.root}/../../workers/litter-api/dist/index.js")
   main_module = "index.js"
   bindings = [
     {
