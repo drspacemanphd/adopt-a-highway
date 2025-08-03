@@ -9,6 +9,7 @@ const REJECTED_SUBMISSIONS_BUCKET = process.env.REJECTED_SUBMISSIONS_BUCKET;
 const LITTER_IMAGES_BUCKET = process.env.LITTER_IMAGES_BUCKET;
 
 const LITTER_FEATURE_LAYER_URL = process.env.LITTER_FEATURE_LAYER_URL;
+const LITTER_SUBMISSION_KEY = process.env.LITTER_SUBMISSION_KEY;
 const LITTERLESS_FEATURE_LAYER_URL = process.env.LITTERLESS_FEATURE_LAYER_URL;
 const INAPPROPRIATE_FEATURE_LAYER_URL = process.env.INAPPROPRIATE_FEATURE_LAYER_URL;
 
@@ -366,41 +367,54 @@ const getArcgisToken = async () => {
   return res.data.token;
 };
 
-const saveLitterImageDataToLayer = async (imageData: Array<{ record: { bucket: string, key: string, metadata: any }, response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse> }>, token: string) => {
+const saveLitterImageDataToLayer = async (
+  imageData: Array<
+  {
+    record: { bucket: string, key: string, metadata: any },
+    response: PromiseFulfilledResult<Rekognition.DetectLabelsResponse>
+  }>,
+) => {
   const features = imageData.map(image => {
     const litterLabels = image.response.value.Labels.filter(label => TRASH_RELATED_LABELS.includes(label.Name.toLowerCase()));
-  
+
     return {
-      attributes: {
-        GUID: image.record.metadata?.guid || '{11111111-1111-1111-1111-111111111111}',
-        USER_GUID: image.record.metadata?.userguid || '{11111111-1111-1111-1111-111111111111}',
-        IMAGE_KEY: image.record.key,
-        SUBMIT_DATE: new Date().toISOString(),
-        RAW_ANALYSIS: JSON.stringify(image.response.value.Labels),
-        CLASSIFICATION_FIRST: litterLabels[0]?.Name,
-        MODEL_CONFIDENCE_FIRST: litterLabels[0]?.Confidence,
-        CLASSIFICATION_SECOND: litterLabels[1]?.Name,
-        MODEL_CONFIDENCE_SECOND: litterLabels[1]?.Confidence,
-        CLASSIFICATION_THIRD: litterLabels[2]?.Name,
-        MODEL_CONFIDENCE_THIRD: litterLabels[2]?.Confidence
-      },
-      geometry: {
-        x: image.record.metadata?.longitude,
-        y: image.record.metadata?.latitude,
-      },
+      userGuid: image.record.metadata?.userguid,
+      imageKey: image.record.key,
+      rawAnalysis: JSON.stringify(image.response.value.Labels),
+      classificationFirst: litterLabels[0]?.Name,
+      modelConfidenceFirst: litterLabels[0]?.Confidence,
+      classificationSecond: litterLabels[1]?.Name,
+      modelConfidenceSecond:litterLabels[1]?.Confidence,
+      classificationThird: litterLabels[2]?.Name,
+      modelConfidenceThird: litterLabels[2]?.Confidence,
+      xCoord4326: image.record.metadata?.longitude,
+      yCoord4326: image.record.metadata?.latitude,
     };
   });
 
   const params = new URLSearchParams();
-  params.append('features', JSON.stringify(features));
-  params.append('rollbackOnFailure', true as any);
-  params.append('f', 'json');
+  params.append('key', LITTER_SUBMISSION_KEY);
 
-  const res = await axios.post(`${LITTER_FEATURE_LAYER_URL}/addFeatures?token=${token}&f=json`, params);
+  let failed = 0;
 
-  console.log(`Image Processor - Received response when saving litter record: ${JSON.stringify(res.data)}`);
+  for (const feature of features) {
+    try {
+      const res = await axios.post(`${LITTER_FEATURE_LAYER_URL}/submit`, {
+        feature,
+      });
+      if (res.status >= 400) {
+        console.error(`Image Processor - Received error when saving litter record: ${JSON.stringify(res.data)}`);
+        failed += 1;
+      }
+    } catch (err) {
+      console.error(`Image Processor - Received error when saving litter record: ${err.message}`);
+      failed += 1;
+    }
+  }
 
-  return res;
+  if (failed > 0) {
+    throw new Error(`Image Processor failed`);
+  }
 };
 
 const saveFlaggedImageDataToLayer = async (imageData: Array<{ record: { bucket: string, key: string, metadata: any }, response: PromiseFulfilledResult<Rekognition.DetectModerationLabelsResponse> }>, token: string) => {
@@ -479,24 +493,14 @@ const processLitterImage = async (
     throw err;
   }
 
-  try {
-    const res = await saveLitterImageDataToLayer([
-      {
-        record: { bucket: LITTER_IMAGES_BUCKET, key: record.key, metadata: record.metadata },
-        response
-      },
-    ], token);
+  await saveLitterImageDataToLayer([
+    {
+      record: { bucket: LITTER_IMAGES_BUCKET, key: record.key, metadata: record.metadata },
+      response
+    },
+  ]);
 
-    if (!res.data || !Array.isArray(res.data.addResults) || (res.data.addResults as any[]).filter(result => !result.success).length) {
-      throw new Error(JSON.stringify(res.data));
-    }
-
-    console.log(`Image Processor - Successfully saved litter image to layer: ${LITTER_IMAGES_BUCKET}/${record.key}`);
-
-  } catch (err) {
-    console.error(`Image Processor - Saving litter image to layer failed for ${record.bucket}/${record.key} due to ${err}`);
-    throw err;
-  }
+  console.log(`Image Processor - Successfully saved litter image to layer: ${LITTER_IMAGES_BUCKET}/${record.key}`);
 
   try {
     await s3.deleteObject({ Bucket: record.bucket, Key: record.key }).promise();

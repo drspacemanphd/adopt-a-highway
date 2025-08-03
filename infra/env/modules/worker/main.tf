@@ -36,6 +36,12 @@ resource "cloudflare_workers_script" "litter_api_script" {
       name         = "INITIALIZATION_KEY",
       text         = var.initialization_secret
       namespace_id = "adopt-a-highway-${var.env}",
+    },
+    {
+      type         = "secret_text",
+      name         = "SUBMIT_DATE",
+      text         = var.initialization_secret
+      namespace_id = "adopt-a-highway-${var.env}"
     }
   ]
   keep_assets = false

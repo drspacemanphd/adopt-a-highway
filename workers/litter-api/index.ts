@@ -120,12 +120,13 @@ async function initialize(request: Request, env: Env) {
 
   const db = env.DB;
   const deploymentEnv = env.ENV;
-  const runningLocally = env.RUNNING_LOCALLY === "true";
 
   const params = url.searchParams;
   if (params.get("key") !== env.INITIALIZATION_KEY) {
     throw new UnauthorizedError("Not Authorized");
   }
+  const shouldUpsert = (params.get("drop") || "").toLowerCase() === "true" && deploymentEnv.toLowerCase() !== "prod";
+
   const res = await db
     .prepare("SELECT name FROM sqlite_master WHERE type = 'table'")
     .bind()
@@ -134,13 +135,13 @@ async function initialize(request: Request, env: Env) {
     (result) => result.name === `litter_${deploymentEnv}`
   );
 
-  if (runningLocally) {
-    if (table_exists) {
-      await dropLitterTable(db, deploymentEnv);
-    }
+  if (table_exists && shouldUpsert) {
+    await dropLitterTable(db, deploymentEnv);
     await createLitterTable(db, deploymentEnv);
   } else if (!table_exists) {
     await createLitterTable(db, deploymentEnv);
+  } else {
+    throw new BadRequestError('Table already exists');
   }
 
   return (Response as Record<string, any>).json(

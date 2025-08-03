@@ -61,7 +61,8 @@ resource "aws_lambda_function" "image_processor_lambda" {
       LITTER_IMAGES_BUCKET            = module.s3_buckets.litter_images_bucket_name
       ArcgisUsername                  = "/adopt-a-highway-${var.env}/ArcgisUsername"
       ArcgisPassword                  = "/adopt-a-highway-${var.env}/ArcgisPassword"
-      LITTER_FEATURE_LAYER_URL        = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-${var.env}/FeatureServer/0"
+      LITTER_FEATURE_LAYER_URL        = "https://litter-api-${var.env}.markabrown87.workers.dev"
+      LITTER_SUBMISSION_KEY           = data.aws_ssm_parameter.litter_db_initialization_secret.value
       LITTERLESS_FEATURE_LAYER_URL    = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-literless-${var.env}/FeatureServer/0"
       INAPPROPRIATE_FEATURE_LAYER_URL = "https://services3.arcgis.com/5qxU4mTbYVURqQBF/ArcGIS/rest/services/adopt-a-highway-de-inappropriate-${var.env}/FeatureServer/0"
     }
