@@ -62,9 +62,10 @@ resource "aws_s3_bucket_cors_configuration" "image_submissions_cors" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "PUT", "POST"]
-    allowed_origins = [
-      "https://adopt-a-highway.drspacemanphd.com",
-      "https://dev-adopt-a-highway.drspacemanphd.com",
+    allowed_origins = var.env == "prod" ? [
+      "https://adopt-a-highway.drspacemanphd.com" ] : [ 
+        "https://${var.env}-adopt-a-highway.drspacemanphd.com",
+        "http://localhost:3000"
     ]
   }
 }
