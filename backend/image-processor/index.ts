@@ -392,14 +392,14 @@ const saveLitterImageDataToLayer = async (
     };
   });
 
-  const params = new URLSearchParams();
-  params.append('key', LITTER_SUBMISSION_KEY);
+  const url = new URL(`${LITTER_FEATURE_LAYER_URL}/submit`);
+  url.searchParams.set('key', LITTER_SUBMISSION_KEY);
 
   let failed = 0;
 
   for (const feature of features) {
     try {
-      const res = await axios.post(`${LITTER_FEATURE_LAYER_URL}/submit`, {
+      const res = await axios.post(url.href, {
         feature,
       });
       if (res.status >= 400) {
