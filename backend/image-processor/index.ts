@@ -398,11 +398,9 @@ const saveLitterImageDataToLayer = async (
   let failed = 0;
 
   for (const feature of features) {
-    console.log(`SENDING FEATURE: ${JSON.stringify(feature)}`);
+    console.log(`SENDING FEATURE: ${JSON.stringify(feature)} to ${url.href}`);
     try {
-      const res = await axios.post(url.href, {
-        ...feature,
-      });
+      const res = await axios.post(url.href, feature);
       if (res.status >= 400) {
         console.error(`Image Processor - Received error when saving litter record: ${JSON.stringify(res.data)}`);
         failed += 1;
