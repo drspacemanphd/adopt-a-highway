@@ -39,7 +39,7 @@ resource "cloudflare_workers_script" "litter_api_script" {
     },
     {
       type         = "secret_text",
-      name         = "SUBMIT_DATE",
+      name         = "SUBMIT_KEY",
       text         = var.initialization_secret
       namespace_id = "adopt-a-highway-${var.env}"
     }
